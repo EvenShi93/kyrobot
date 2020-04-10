@@ -5,7 +5,7 @@
  extern "C" {
 #endif
 
-#include "stm32f7xx_hal.h"
+#include "gpios.h"
 
 typedef enum {
   LED1 = 0,
