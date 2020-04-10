@@ -19,8 +19,6 @@
 
 #include "stm32f7xx_hal.h"
 
-void APP_StartThread(void const *argument);
-
 #endif /* __APPS_H */
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/
