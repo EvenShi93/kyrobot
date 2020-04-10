@@ -63,7 +63,7 @@ void att_est_q_task(void const *argument)
   ky_info(TAG, "keep IMU motionless ...");
   while(imu_selftest_done == 0) {
     /* read IMU data form sensor */
-    if(icm42605_read(&imu_raw, &imu_unit_6dof, osWaitForever) == status_ok) {
+    if(icm42605_read(&imu_raw, &imu_unit_6dof, 1000) == status_ok) {
       /* check for motionless state */
       imu_peace_check(&imu_unit_6dof.Gyr);
       if(gyr_peace_flag == 1) {
@@ -84,6 +84,8 @@ void att_est_q_task(void const *argument)
           ky_info(TAG, "acc st FAIL.");
         imu_selftest_done = 1;
       }
+    } else {
+      ky_err(TAG, "read sensor timeout!");
     }
   }
 
