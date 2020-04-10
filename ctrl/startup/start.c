@@ -7,8 +7,10 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "apps.h"
+#include "SysConfig.h"
+#if FREERTOS_ENABLED
 #include "cmsis_os.h"
+#endif /* FREERTOS_ENABLED */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -41,18 +43,25 @@ int SystemStart(void)
   /* Configure the system clock to 216 Mhz */
   SystemClock_Config();
 
-  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+#if SYSTICK_ENABLE
+  SysTick_Config(SystemCoreClock / 1000);
+#endif /* SYSTICK_ENABLE */
 
+#if FREERTOS_ENABLED
   /* Start Thread definition */
-  osThreadDef(START, APP_StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 4);
+  osThreadDef(START, APP_StartThread, osPriorityNormal, 0, START_TASK_STACK_SIZE);
   /* start thread */
   osThreadCreate(osThread(START), NULL);
 
   /* Start scheduler */
   osKernelStart();
+#else
+  StartThread(0);
+#endif /* FREERTOS_ENABLED */
 
   /* We should never get here as control is now taken by the scheduler */
   for(;;);
+  return -1;
 }
 
 /**
