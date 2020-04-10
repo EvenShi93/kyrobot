@@ -17,8 +17,10 @@ C_SRCS += \
 ./driver/bsp/src/ubloxa.c \
 ./driver/bsp/src/ubloxb.c \
 ./driver/bsp/src/leds.c \
+./driver/bsp/src/gpios.c \
 ./driver/bsp/src/imuif.c \
 ./driver/bsp/src/magif.c \
+./driver/bsp/src/dispif.c \
 ./driver/bsp/src/flashif.c \
 ./driver/bsp/src/usbdif.c \
 ./driver/bsp/src/ist83xx.c \
@@ -39,8 +41,10 @@ $(BuildPath)/driver/bsp/timebase.o \
 $(BuildPath)/driver/bsp/ubloxa.o \
 $(BuildPath)/driver/bsp/ubloxb.o \
 $(BuildPath)/driver/bsp/leds.o \
+$(BuildPath)/driver/bsp/gpios.o \
 $(BuildPath)/driver/bsp/imuif.o \
 $(BuildPath)/driver/bsp/magif.o \
+$(BuildPath)/driver/bsp/dispif.o \
 $(BuildPath)/driver/bsp/flashif.o \
 $(BuildPath)/driver/bsp/usbdif.o \
 $(BuildPath)/driver/bsp/ist83xx.o \
@@ -61,8 +65,10 @@ $(BuildPath)/driver/bsp/timebase.d \
 $(BuildPath)/driver/bsp/ubloxa.d \
 $(BuildPath)/driver/bsp/ubloxb.d \
 $(BuildPath)/driver/bsp/leds.d \
+$(BuildPath)/driver/bsp/gpios.d \
 $(BuildPath)/driver/bsp/imuif.d \
 $(BuildPath)/driver/bsp/magif.d \
+$(BuildPath)/driver/bsp/dispif.d \
 $(BuildPath)/driver/bsp/flashif.d \
 $(BuildPath)/driver/bsp/usbdif.d \
 $(BuildPath)/driver/bsp/ist83xx.d \
