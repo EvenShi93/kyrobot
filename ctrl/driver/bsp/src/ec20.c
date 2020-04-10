@@ -8,7 +8,7 @@ static UART_HandleTypeDef EC20_UartHandle;
 static DMA_HandleTypeDef EC20_TxDmaHandle;
 static DMA_HandleTypeDef EC20_RxDmaHandle;
 
-static __IO bool_t _ec20if_tx_ready = true;
+static __IO uint32_t _ec20if_tx_ready = true;
 
 #define EC20_RB_CAPACITY                           1024
 static ringbuffer_handle ec20_rb;
@@ -320,28 +320,28 @@ void ec20if_msp_deinit(UART_HandleTypeDef *huart)
   * @param  None
   * @retval None
   */
-void EC20_UART_DMA_RX_IRQHandler(void)
-{
-  HAL_DMA_IRQHandler(EC20_UartHandle.hdmarx);
-}
+//void EC20_UART_DMA_RX_IRQHandler(void)
+//{
+//  HAL_DMA_IRQHandler(EC20_UartHandle.hdmarx);
+//}
 
 /**
   * @brief  This function handles DMA interrupt request.
   * @param  None
   * @retval None
   */
-void EC20_UART_DMA_TX_IRQHandler(void)
-{
-  HAL_DMA_IRQHandler(EC20_UartHandle.hdmatx);
-}
+//void EC20_UART_DMA_TX_IRQHandler(void)
+//{
+//  HAL_DMA_IRQHandler(EC20_UartHandle.hdmatx);
+//}
 
 /**
   * @brief  This function handles UART interrupt request.
   * @param  None
   * @retval None
   */
-void EC20_UART_IRQHandler(void)
-{
-  UART_IDLE_Callback(&EC20_UartHandle);
-  HAL_UART_IRQHandler(&EC20_UartHandle);
-}
+//void EC20_UART_IRQHandler(void)
+//{
+//  UART_IDLE_Callback(&EC20_UartHandle);
+//  HAL_UART_IRQHandler(&EC20_UartHandle);
+//}

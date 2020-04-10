@@ -6,7 +6,7 @@ static UART_HandleTypeDef UBXA_UartHandle;
 static DMA_HandleTypeDef UBXA_TxDmaHandle;
 static DMA_HandleTypeDef UBXA_RxDmaHandle;
 
-static __IO bool_t _ubxa_tx_ready = true;
+static __IO uint32_t _ubxa_tx_ready = true;
 
 //static uint8_t ubxaif_cache[UBXAIF_CACHE_DEPTH];
 static uint8_t *ubxaif_cache = NULL;

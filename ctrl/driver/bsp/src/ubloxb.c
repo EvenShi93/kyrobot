@@ -6,7 +6,7 @@ static UART_HandleTypeDef UBXB_UartHandle;
 static DMA_HandleTypeDef UBXB_TxDmaHandle;
 static DMA_HandleTypeDef UBXB_RxDmaHandle;
 
-static __IO bool_t _ubxb_tx_ready = true;
+static __IO uint32_t _ubxb_tx_ready = true;
 
 //static uint8_t ubxbif_cache[UBXBIF_CACHE_DEPTH];
 static uint8_t *ubxbif_cache = NULL;
@@ -237,28 +237,28 @@ void ubxbif_msp_deinit(UART_HandleTypeDef *huart)
   * @param  None
   * @retval None
   */
-void UBXB_UART_DMA_RX_IRQHandler(void)
-{
-  HAL_DMA_IRQHandler(UBXB_UartHandle.hdmarx);
-}
+//void UBXB_UART_DMA_RX_IRQHandler(void)
+//{
+//  HAL_DMA_IRQHandler(UBXB_UartHandle.hdmarx);
+//}
 
 /**
   * @brief  This function handles DMA interrupt request.
   * @param  None
   * @retval None
   */
-void UBXB_UART_DMA_TX_IRQHandler(void)
-{
-  HAL_DMA_IRQHandler(UBXB_UartHandle.hdmatx);
-}
+//void UBXB_UART_DMA_TX_IRQHandler(void)
+//{
+//  HAL_DMA_IRQHandler(UBXB_UartHandle.hdmatx);
+//}
 
 /**
   * @brief  This function handles UART interrupt request.
   * @param  None
   * @retval None
   */
-void UBXB_UART_IRQHandler(void)
-{
-  UART_IDLE_Callback(&UBXB_UartHandle);
-  HAL_UART_IRQHandler(&UBXB_UartHandle);
-}
+//void UBXB_UART_IRQHandler(void)
+//{
+//  UART_IDLE_Callback(&UBXB_UartHandle);
+//  HAL_UART_IRQHandler(&UBXB_UartHandle);
+//}

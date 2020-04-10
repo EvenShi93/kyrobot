@@ -6,7 +6,7 @@ static UART_HandleTypeDef UartHandle;
 static DMA_HandleTypeDef TxDmaHandle;
 static DMA_HandleTypeDef RxDmaHandle;
 
-static __IO bool_t comif_tx_ready = true;
+static __IO uint32_t comif_tx_ready = true;
 
 //static uint8_t comif_cache[COMIF_CACHE_DEPTH];
 static uint8_t *comif_cache = NULL;

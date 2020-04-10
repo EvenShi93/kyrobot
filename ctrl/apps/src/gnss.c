@@ -63,7 +63,7 @@ void gnss_navg_task(void const *argument)
   vTaskDelete(NULL);
 }
 
-bool_t check_rtk_rover_ready(void)
+uint32_t check_rtk_rover_ready(void)
 {
   if(gnss_npvts_a.fix_type == 3 && gnss_npvts_b.fix_type == 3) {
     return true;

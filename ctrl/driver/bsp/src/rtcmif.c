@@ -8,7 +8,7 @@ static UART_HandleTypeDef RTCMIF_UartHandle;
 static DMA_HandleTypeDef RTCMIF_TxDmaHandle;
 static DMA_HandleTypeDef RTCMIF_RxDmaHandle;
 
-static __IO bool_t _rtcmif_tx_ready = true;
+static __IO uint32_t _rtcmif_tx_ready = true;
 
 #define RTCM_RB_CAPACITY                           1024
 static ringbuffer_handle rtcm_rb;
