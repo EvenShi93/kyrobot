@@ -17,8 +17,8 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
     rtcmif_txcplt_callback(UartHandle);
   } else if(UartHandle->Instance == EC20_UART) {
     ec20if_txcplt_callback(UartHandle);
-  } else if(UartHandle->Instance == UBXB_UART) {
-    ubxbif_txcplt_callback(UartHandle);
+//  } else if(UartHandle->Instance == UBXB_UART) {
+//    ubxbif_txcplt_callback(UartHandle);
   }
   /* Set transmission flag: trasfer complete*/
   /* Transfer in transmission process is correct */
@@ -41,8 +41,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
     rtcmif_rxcplt_callback(UartHandle);
   } else if(UartHandle->Instance == EC20_UART) {
     ec20if_rxcplt_callback(UartHandle);
-  } else if(UartHandle->Instance == UBXB_UART) {
-    ubxbif_rxcplt_callback(UartHandle);
+//  } else if(UartHandle->Instance == UBXB_UART) {
+//    ubxbif_rxcplt_callback(UartHandle);
   }
   /* Set transmission flag: trasfer complete*/
   /* Transfer in reception process is correct */
@@ -63,8 +63,8 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
     
   } else if(UartHandle->Instance == EC20_UART) {
     
-  } else if(UartHandle->Instance == UBXB_UART) {
-    
+//  } else if(UartHandle->Instance == UBXB_UART) {
+//
   }
 }
 
@@ -80,6 +80,8 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *SpiHandle)
     imuif_rxtxcplt_callback(SpiHandle);
   } else if(SpiHandle->Instance == FLASH_SPI) {
     flashif_rxtxcplt_callback(SpiHandle);
+  } else if(SpiHandle->Instance == DISP_SPI) {
+    dispif_rxtxcplt_callback(SpiHandle);
   }
 }
 

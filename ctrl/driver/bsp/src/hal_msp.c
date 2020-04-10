@@ -32,12 +32,12 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
     ubxaif_msp_init(huart);
   } else if(huart->Instance == COM_UART) {
     comif_msp_init(huart);
-  } else if(huart->Instance == RTCM_UART) {
-    rtcmif_msp_init(huart);
-  } else if(huart->Instance == EC20_UART) {
-    ec20if_msp_init(huart);
-  } else if(huart->Instance == UBXB_UART) {
-    ubxbif_msp_init(huart);
+//  } else if(huart->Instance == RTCM_UART) {
+//    rtcmif_msp_init(huart);
+//  } else if(huart->Instance == EC20_UART) {
+//    ec20if_msp_init(huart);
+//  } else if(huart->Instance == UBXB_UART) {
+//    ubxbif_msp_init(huart);
   }
 }
 
@@ -55,12 +55,12 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
     ubxaif_msp_deinit(huart);
   } else if(huart->Instance == COM_UART) {
     comif_msp_deinit(huart);
-  } else if(huart->Instance == RTCM_UART) {
-    rtcmif_msp_deinit(huart);
-  } else if(huart->Instance == EC20_UART) {
-    ec20if_msp_deinit(huart);
-  } else if(huart->Instance == UBXB_UART) {
-    ubxbif_msp_deinit(huart);
+//  } else if(huart->Instance == RTCM_UART) {
+//    rtcmif_msp_deinit(huart);
+//  } else if(huart->Instance == EC20_UART) {
+//    ec20if_msp_deinit(huart);
+//  } else if(huart->Instance == UBXB_UART) {
+//    ubxbif_msp_deinit(huart);
   }
 }
 
@@ -80,6 +80,8 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
     imuif_msp_init(hspi);
   } else if(hspi->Instance == FLASH_SPI) {
     flashif_msp_init(hspi);
+  } else if(hspi->Instance == DISP_SPI) {
+    dispif_msp_init(hspi);
   }
 }
 
@@ -97,6 +99,8 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
     imuif_msp_deinit(hspi);
   } else if(hspi->Instance == FLASH_SPI) {
     flashif_msp_deinit(hspi);
+  } else if(hspi->Instance == DISP_SPI) {
+    dispif_msp_deinit(hspi);
   }
 }
 
