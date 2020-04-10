@@ -8,7 +8,7 @@ typedef struct {
   uint32_t capacity;
   uint32_t ptr_in;
   uint32_t ptr_out;
-  bool_t flipped;
+  uint32_t flipped;
 } ringbuffer_handle;
 
 status_t ringbuffer_init(ringbuffer_handle *prb, uint8_t *buffer, uint32_t capacity);
