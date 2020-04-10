@@ -20,7 +20,7 @@
 /* Entry Point */
 ENTRY(Reset_Handler)
 
-#include "boardconfig.h"
+#include "config.h"
 
 /* Specify the memory areas */
 MEMORY
@@ -150,7 +150,7 @@ SECTIONS
   {
     . = ALIGN(4);
     ucHeap = .;
-    . = . + RTOS_HEAP_DEPTH;
+    . = . + FREERTOS_HEAP_SIZE;
     . = ALIGN(4);
   } >SYS_MAIN_MEMORY
 
