@@ -283,9 +283,9 @@ void I2Cx_DMA_RX_IRQHandler(void)
   * @Note   This function is related to DMA Channel
   *         used for I2C data reception
   */
-void I2Cx_DMA_TX_IRQHandler(void)
-{
-  HAL_DMA_IRQHandler(MAG_I2cHandle.hdmatx);
-}
+//void I2Cx_DMA_TX_IRQHandler(void)
+//{
+//  HAL_DMA_IRQHandler(MAG_I2cHandle.hdmatx);
+//}
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/
