@@ -46,6 +46,7 @@ void att_est_q_task(void const *argument)
 {
   (void) argument;
   uint8_t st_ret = 0;
+  uint32_t test_ts = 0;
   float delta_t = 1e-3;
   uint32_t last_t_us = 0, delta_t_us = 0;
 
@@ -83,6 +84,12 @@ void att_est_q_task(void const *argument)
         else
           ky_info(TAG, "acc st FAIL.");
         imu_selftest_done = 1;
+      } else {
+        time_now = xTaskGetTickCountFromISR();
+        if((time_now - test_ts) >= 1000) {
+          test_ts = time_now;
+          ky_warn(TAG, "waiting. %d", imu_raw.Gyr.X);
+        }
       }
     } else {
       ky_err(TAG, "read sensor timeout!");
@@ -141,7 +148,7 @@ void att_est_q_task(void const *argument)
   }
 }
 
-#define GYR_PEACE_THRESHOLD                      (0.2f) /* unit: dps */
+#define GYR_PEACE_THRESHOLD                      (0.5f) /* unit: dps */
 
 static _3AxisUnit last_gyr = {0};
 static void imu_peace_check(_3AxisUnit *pgyr)
