@@ -17,6 +17,9 @@ OutPath = $(TopPath)/output
 # Platform
 PLATFORM = -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16
 
+# user definitions
+-include .config
+
 # Include Directories
 INCS = -I$(TopPath)/startup \
        -I$(TopPath)/sysconfig \
@@ -186,7 +189,7 @@ jflash: all
 	@JLinkExe -CommanderScript f732.jlink
 
 monitor:
-	@./../../tools/monitor/Debug/monitor
+	@./../tools/monitor/Debug/monitor
 
 post-build:
 	$(ECHO) ' Generate disassembled listing for checking ...'
