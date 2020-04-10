@@ -1,9 +1,11 @@
 #ifndef __DRIVERS_H
 #define __DRIVERS_H
 
+#include "gpios.h"
 #include "leds.h"
 #include "ec20.h"
 #include "comif.h"
+#include "dispif.h"
 #include "ubloxa.h"
 #include "ubloxb.h"
 #include "rtcmif.h"
