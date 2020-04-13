@@ -13,10 +13,10 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
     ubxaif_txcplt_callback(UartHandle);
   } else if(UartHandle->Instance == COM_UART) {
     comif_txcplt_callback(UartHandle);
-  } else if(UartHandle->Instance == RTCM_UART) {
-    rtcmif_txcplt_callback(UartHandle);
-  } else if(UartHandle->Instance == EC20_UART) {
-    ec20if_txcplt_callback(UartHandle);
+//  } else if(UartHandle->Instance == RTCM_UART) {
+//    rtcmif_txcplt_callback(UartHandle);
+//  } else if(UartHandle->Instance == EC20_UART) {
+//    ec20if_txcplt_callback(UartHandle);
 //  } else if(UartHandle->Instance == UBXB_UART) {
 //    ubxbif_txcplt_callback(UartHandle);
   }
@@ -37,10 +37,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
     ubxaif_rxcplt_callback(UartHandle);
   } else if(UartHandle->Instance == COM_UART) {
     comif_rxcplt_callback(UartHandle);
-  } else if(UartHandle->Instance == RTCM_UART) {
-    rtcmif_rxcplt_callback(UartHandle);
-  } else if(UartHandle->Instance == EC20_UART) {
-    ec20if_rxcplt_callback(UartHandle);
+//  } else if(UartHandle->Instance == RTCM_UART) {
+//    rtcmif_rxcplt_callback(UartHandle);
+//  } else if(UartHandle->Instance == EC20_UART) {
+//    ec20if_rxcplt_callback(UartHandle);
 //  } else if(UartHandle->Instance == UBXB_UART) {
 //    ubxbif_rxcplt_callback(UartHandle);
   }
@@ -61,10 +61,23 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
     
   } else if(UartHandle->Instance == COM_UART) {
     
-  } else if(UartHandle->Instance == EC20_UART) {
-    
+//  } else if(UartHandle->Instance == EC20_UART) {
+//
 //  } else if(UartHandle->Instance == UBXB_UART) {
 //
+  }
+}
+
+/**
+  * @brief  Tx Transfer completed callback.
+  * @param  hspi pointer to a SPI_HandleTypeDef structure that contains
+  *               the configuration information for SPI module.
+  * @retval None
+  */
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *SpiHandle)
+{
+  if(SpiHandle->Instance == DISP_SPI) {
+    dispif_txcplt_callback(SpiHandle);
   }
 }
 
@@ -80,8 +93,6 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *SpiHandle)
     imuif_rxtxcplt_callback(SpiHandle);
   } else if(SpiHandle->Instance == FLASH_SPI) {
     flashif_rxtxcplt_callback(SpiHandle);
-  } else if(SpiHandle->Instance == DISP_SPI) {
-    dispif_rxtxcplt_callback(SpiHandle);
   }
 }
 
