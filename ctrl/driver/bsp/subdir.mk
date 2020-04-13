@@ -20,6 +20,7 @@ C_SRCS += \
 ./driver/bsp/src/gpios.c \
 ./driver/bsp/src/imuif.c \
 ./driver/bsp/src/magif.c \
+./driver/bsp/src/disp.c \
 ./driver/bsp/src/dispif.c \
 ./driver/bsp/src/flashif.c \
 ./driver/bsp/src/usbdif.c \
@@ -44,6 +45,7 @@ $(BuildPath)/driver/bsp/leds.o \
 $(BuildPath)/driver/bsp/gpios.o \
 $(BuildPath)/driver/bsp/imuif.o \
 $(BuildPath)/driver/bsp/magif.o \
+$(BuildPath)/driver/bsp/disp.o \
 $(BuildPath)/driver/bsp/dispif.o \
 $(BuildPath)/driver/bsp/flashif.o \
 $(BuildPath)/driver/bsp/usbdif.o \
@@ -68,6 +70,7 @@ $(BuildPath)/driver/bsp/leds.d \
 $(BuildPath)/driver/bsp/gpios.d \
 $(BuildPath)/driver/bsp/imuif.d \
 $(BuildPath)/driver/bsp/magif.d \
+$(BuildPath)/driver/bsp/disp.d \
 $(BuildPath)/driver/bsp/dispif.d \
 $(BuildPath)/driver/bsp/flashif.d \
 $(BuildPath)/driver/bsp/usbdif.d \
