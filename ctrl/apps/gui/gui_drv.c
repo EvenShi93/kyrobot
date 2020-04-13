@@ -162,7 +162,6 @@ static void _SetPixelIndex(GUI_DEVICE * pDevice, int x, int y, int PixelIndex) {
       // Write into hardware ... Adapt to your system
       //
       if((x < ips_ram->ui_x) && (y < ips_ram->ui_y)) {
-        ((uint16_t *)ips_ram->ui_buf)[y * ips_ram->ui_x + x] = PixelIndex;
         ips_ram->ui_buf[pos] = PixelIndex >> 8;
         ips_ram->ui_buf[pos + 1] = PixelIndex;
       }
@@ -184,6 +183,7 @@ static void _SetPixelIndex(GUI_DEVICE * pDevice, int x, int y, int PixelIndex) {
 */
 static unsigned int _GetPixelIndex(GUI_DEVICE * pDevice, int x, int y) {
   unsigned int PixelIndex = 0;
+  uint16_t pos = (y * ips_ram->ui_x + x) * 2;
     //
     // Convert logical into physical coordinates (Dep. on LCDConf.h)
     //
@@ -204,7 +204,7 @@ static unsigned int _GetPixelIndex(GUI_DEVICE * pDevice, int x, int y) {
       // Write into hardware ... Adapt to your system
       //
       if((x < ips_ram->ui_x) && (y < ips_ram->ui_y))
-        PixelIndex = ((uint16_t *)ips_ram->ui_buf)[y * ips_ram->ui_x + x];
+        PixelIndex = (uint16_t)ips_ram->ui_buf[pos] << 8 | ips_ram->ui_buf[pos + 1];
     }
     #if (LCD_MIRROR_X == 0) && (LCD_MIRROR_Y == 0) && (LCD_SWAP_XY == 0)
       #undef xPhys
