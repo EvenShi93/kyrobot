@@ -11,7 +11,7 @@
 #include "SysConfig.h"
 
 #define INPUT_IO_NUMBER        4
-#define OUTPUT_IO_NUMBER       6
+#define OUTPUT_IO_NUMBER       7
 
 typedef enum {
   IO_BTN2 = 0,
@@ -26,7 +26,8 @@ typedef enum {
   IO_LED_GREEN = 2,
   IO_OTG_SWT = 3,
   IO_DISP_RST = 4,
-  IO_DISP_BL = 5
+  IO_DISP_BL = 5,
+  IO_DISP_DC = 6
 } OUTPUT_IO_ID;
 
 void board_gpio_init(void);
