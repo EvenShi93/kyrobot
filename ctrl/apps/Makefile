@@ -39,6 +39,7 @@ MODULE_NAME := libapp
 #ECHO    := $(Q)@echo
 
 C_SRCS := $(wildcard src/*.c)
+C_SRCS += $(wildcard gui/*.c)
 OBJS := $(addprefix $(BUILD)/,$(C_SRCS:.c=.o))
 OBJ_DIRS := $(sort $(dir $(OBJS)))
 
