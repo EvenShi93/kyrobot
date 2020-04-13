@@ -12,10 +12,10 @@
 
 #define SYS_XCLK_FREQUENCY                       (8000000)
 
-#define SYS_BOOT_ORIGIN                          0x08000000
-#define SYS_BOOT_LENGTH                          32K
+//#define SYS_BOOT_ORIGIN                          0x08000000
+//#define SYS_BOOT_LENGTH                          32K
 #define SYS_TEXT_ORIGIN                          0x08000000
-#define SYS_TEXT_LENGTH                          480K
+#define SYS_TEXT_LENGTH                          512K
 #define SYS_SRAM_ORIGIN                          0x20000000
 #define SYS_SRAM_LENGTH                          256K
 
