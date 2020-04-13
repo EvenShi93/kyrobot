@@ -5,7 +5,7 @@
 ################################################################################
 
 # Project Name
-ProjName = rtk_rover
+ProjName = kyrobctrl
 
 # TOP path
 TopPath = $(shell pwd)
@@ -24,6 +24,8 @@ PLATFORM = -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16
 INCS = -I$(TopPath)/startup \
        -I$(TopPath)/sysconfig \
        -I$(TopPath)/apps/inc \
+       -I$(TopPath)/apps/gui \
+       -I$(TopPath)/apps/demo \
        -I$(TopPath)/driver/bsp/inc \
        -I$(TopPath)/driver/cmsis/device \
        -I$(TopPath)/driver/cmsis/core \
@@ -36,7 +38,9 @@ INCS = -I$(TopPath)/startup \
        -I$(TopPath)/middleware/kylink \
        -I$(TopPath)/middleware/rb \
        -I$(TopPath)/middleware/ubx \
-       -I$(TopPath)/middleware/log
+       -I$(TopPath)/middleware/log \
+       -I$(TopPath)/middleware/vscn \
+       -I$(TopPath)/middleware/STemWin/inc
 
 LD_INCS = -I$(TopPath)/sysconfig
 
@@ -50,14 +54,16 @@ DEFS = -DSTM32 -DSTM32F7 -DSTM32F732xx -DUSE_HAL_DRIVER -D__FPU_PRESENT=1 -DAPPL
 LIB_PATH := -L$(BuildPath)/rb \
             -L$(BuildPath)/ubx \
             -L$(BuildPath)/log \
+            -L$(BuildPath)/vscn \
             -L$(BuildPath)/bsp \
             -L$(BuildPath)/rtos \
             -L$(BuildPath)/fatfs \
             -L$(BuildPath)/stdrv \
             -L$(BuildPath)/kylink \
-            -L$(BuildPath)/algorithm 
+            -L$(BuildPath)/algorithm \
+            -L$(TopPath)/middleware/STemWin
 # External Libraries -lbsp
-LIBS := -lrb -lubx -llog -lkylink -lalgorithm -lstdrv -lrtos -lfatfs
+LIBS := -lrb -lubx -llog -lvscn -lkylink -lalgorithm -lstdrv -lrtos -lfatfs -lSTemWin532_cm7_os_ot
 
 # Other configuration # -Wshadow
 CFGS = -mthumb -Dprintf=iprintf -fno-exceptions -fno-builtin --short-enums -ffunction-sections -fdata-sections -fno-strict-aliasing -pipe
@@ -171,6 +177,7 @@ libraries:
 	$(MAKE) -C middleware/rb BUILD=$(BuildPath)/rb
 	$(MAKE) -C middleware/ubx BUILD=$(BuildPath)/ubx
 	$(MAKE) -C middleware/log BUILD=$(BuildPath)/log
+	$(MAKE) -C middleware/vscn BUILD=$(BuildPath)/vscn
 	$(MAKE) -C middleware/kylink BUILD=$(BuildPath)/kylink
 	$(MAKE) -C middleware/algorithm BUILD=$(BuildPath)/algorithm
 	$(MAKE) -C middleware/fatfs BUILD=$(BuildPath)/fatfs
