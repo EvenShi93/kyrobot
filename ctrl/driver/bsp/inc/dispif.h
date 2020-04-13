@@ -14,8 +14,7 @@
 #define DISP_SPI_CLK_ENABLE()                __HAL_RCC_SPI3_CLK_ENABLE()
 #define DISP_SPI_DMA_CLK_ENABLE()            __HAL_RCC_DMA1_CLK_ENABLE()
 
-#define DISP_GPIO_CLK_ENABLE()               do { __HAL_RCC_GPIOA_CLK_ENABLE(); \
-                                                  __HAL_RCC_GPIOC_CLK_ENABLE(); } while(0)
+#define DISP_GPIO_CLK_ENABLE()               do { __HAL_RCC_GPIOC_CLK_ENABLE(); } while(0)
 
 #define DISP_SPI_FORCE_RESET()               __HAL_RCC_SPI3_FORCE_RESET()
 #define DISP_SPI_RELEASE_RESET()             __HAL_RCC_SPI3_RELEASE_RESET()
@@ -23,13 +22,10 @@
 /* Definition for DISP_SPI Pins */
 #define DISP_SPI_SCK_PIN                     GPIO_PIN_10
 #define DISP_SPI_SCK_GPIO_PORT               GPIOC
-#define DISP_SPI_SCK_AF                      GPIO_AF5_SPI3
+#define DISP_SPI_SCK_AF                      GPIO_AF6_SPI3
 #define DISP_SPI_MOSI_PIN                    GPIO_PIN_12
 #define DISP_SPI_MOSI_GPIO_PORT              GPIOC
-#define DISP_SPI_MOSI_AF                     GPIO_AF5_SPI3
-
-#define DISP_SPI_DC_PIN                      GPIO_PIN_15
-#define DISP_SPI_DC_GPIO_PORT                GPIOA
+#define DISP_SPI_MOSI_AF                     GPIO_AF6_SPI3
 
 #define DISP_SPI_NSS_PIN                     GPIO_PIN_11
 #define DISP_SPI_NSS_GPIO_PORT               GPIOC
@@ -49,6 +45,6 @@ status_t dispif_tx_bytes_dma(uint8_t *pTxData, uint16_t Size);
 
 void dispif_msp_init(SPI_HandleTypeDef *hspi);
 void dispif_msp_deinit(SPI_HandleTypeDef *hspi);
-void dispif_rxtxcplt_callback(SPI_HandleTypeDef *hspi);
+void dispif_txcplt_callback(SPI_HandleTypeDef *hspi);
 
 #endif /* BSP_INC_DISPIF_H_ */

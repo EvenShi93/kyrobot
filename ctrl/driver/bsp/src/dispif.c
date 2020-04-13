@@ -27,10 +27,10 @@ status_t dispif_init(void)
   /* Set the SPI parameters */
   Disp_SpiHandle.Instance               = DISP_SPI;
   Disp_SpiHandle.Init.Mode              = SPI_MODE_MASTER;
-  Disp_SpiHandle.Init.Direction         = SPI_DIRECTION_2LINES;
-  Disp_SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
-  Disp_SpiHandle.Init.CLKPhase          = SPI_PHASE_1EDGE; // MODE 0
-  Disp_SpiHandle.Init.CLKPolarity       = SPI_POLARITY_LOW;
+  Disp_SpiHandle.Init.Direction         = SPI_CR1_BIDIOE | SPI_CR1_BIDIMODE; // TX ONLY
+  Disp_SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  Disp_SpiHandle.Init.CLKPhase          = SPI_PHASE_2EDGE; // MODE 3
+  Disp_SpiHandle.Init.CLKPolarity       = SPI_POLARITY_HIGH;
   Disp_SpiHandle.Init.DataSize          = SPI_DATASIZE_8BIT;
   Disp_SpiHandle.Init.FirstBit          = SPI_FIRSTBIT_MSB;
   Disp_SpiHandle.Init.TIMode            = SPI_TIMODE_DISABLE;
@@ -79,7 +79,7 @@ status_t dispif_tx_bytes_dma(uint8_t *pTxData, uint16_t Size)
   return (status_t)HAL_SPI_Transmit_DMA(&Disp_SpiHandle, pTxData, Size);
 }
 
-void dispif_rxtxcplt_callback(SPI_HandleTypeDef *hspi)
+void dispif_txcplt_callback(SPI_HandleTypeDef *hspi)
 {
   DISP_SPI_CS_DESELECT();
 #if FREERTOS_ENABLED
@@ -108,9 +108,6 @@ void dispif_msp_init(SPI_HandleTypeDef *hspi)
   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(DISP_SPI_NSS_GPIO_PORT, &GPIO_InitStruct);
   HAL_GPIO_WritePin(DISP_SPI_NSS_GPIO_PORT, DISP_SPI_NSS_PIN, GPIO_PIN_SET);
-
-  GPIO_InitStruct.Pin       = DISP_SPI_DC_PIN;
-  HAL_GPIO_Init(DISP_SPI_DC_GPIO_PORT, &GPIO_InitStruct);
 
   /* SPI SCK GPIO pin configuration */
   GPIO_InitStruct.Pin       = DISP_SPI_SCK_PIN;
