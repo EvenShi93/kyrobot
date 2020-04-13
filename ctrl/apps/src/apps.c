@@ -28,17 +28,15 @@ static const char SystemInfo[] =
 
 void APP_StartThread(void const *argument)
 {
+  osDelay(500);
   /* Initialize GPIOs */
   board_gpio_init();
 
   /* lock power */
   output_port_set(IO_PWR_CTRL);
 
-  output_port_set(IO_DISP_BL);
-
   comif_init();
   log_init(comif_tx_string_util);
-  osDelay(500);
   comif_tx_string_util("!!!KERNEL START!!!\n");
   comif_tx_string_util(SystemInfo);
 
@@ -48,29 +46,28 @@ void APP_StartThread(void const *argument)
 //    vTaskDelete(NULL);
 //  }
 
-  osThreadDef(SINS, att_est_q_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 4); // stack size = 512B
 //  osThreadDef(MAGS, magnetics_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 4); // stack size = 512B
 //  osThreadDef(GNSS, gnss_navg_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 2); // stack size = 256B
 //  osThreadDef(RTCM, rtcm_transfer_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 2); // stack size = 256B
-#if (TEST_CASE_TASK_ENABLE)
-  osThreadDef(TEST, test_case_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 8); // stack size = 1KB
-#endif /* (TEST_CASE_TASK_ENABLE) */
-//  osThreadDef(MESG, mesg_proc_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 4); // stack size = 512B
-//  osThreadDef(FILE, transfile_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 4); // stack size = 512B
 
+  osThreadDef(UGUI, gui_task, osPriorityNormal, 0, 512);
+  if(osThreadCreate(osThread(UGUI), NULL) == NULL) ky_err(TAG, "gui task create failed.");
+  osThreadDef(SINS, att_est_q_task, osPriorityNormal, 0, 512);
   if(osThreadCreate(osThread(SINS), NULL) == NULL) ky_err(TAG, "sins task create failed.");
 //  if(osThreadCreate(osThread(MAGS), NULL) == NULL) ky_err(TAG, "mags task create failed.");
 //  if(osThreadCreate(osThread(GNSS), NULL) == NULL) ky_err(TAG, "gnss task create failed.");
 //  if(osThreadCreate(osThread(RTCM), NULL) == NULL) ky_err(TAG, "rtcm task create failed.");
 #if (TEST_CASE_TASK_ENABLE)
+  osThreadDef(TEST, test_case_task, osPriorityNormal, 0, 1024); // stack size = 1KB
   if(osThreadCreate(osThread(TEST), NULL) == NULL) ky_err(TAG, "test task create failed.");
 #endif /* (TEST_CASE_TASK_ENABLE) */
-//  if(osThreadCreate(osThread(MESG), NULL) == NULL) ky_err(TAG, "mesg task create failed.");
+  osThreadDef(MESG, mesg_proc_task, osPriorityNormal, 0, 512);
+  if(osThreadCreate(osThread(MESG), NULL) == NULL) ky_err(TAG, "mesg task create failed.");
+//  osThreadDef(FILE, transfile_task, osPriorityNormal, 0, 512); // stack size = 512B
 //  if(osThreadCreate(osThread(FILE), NULL) == NULL) ky_err(TAG, "file task create failed.");
 
   /* LED INDICATOR TASK */
-  osThreadDef(LEDS, led_thread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE); // stack size = 128B
-
+  osThreadDef(LEDS, led_thread, osPriorityNormal, 0, 128); // stack size = 128B
   if(osThreadCreate(osThread(LEDS), NULL) == NULL) ky_err(TAG, "leds task create failed.");
 
   vTaskDelete(NULL);

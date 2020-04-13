@@ -19,6 +19,8 @@
 
 #include "stm32f7xx_hal.h"
 
+void gui_task(void const *argument);
+
 #endif /* __APPS_H */
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/
