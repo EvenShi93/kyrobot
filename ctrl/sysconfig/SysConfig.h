@@ -9,8 +9,6 @@
 
 #include "sys_def.h"
 
-#include "log.h"
-
 #include "config.h"
 
 #if FREERTOS_ENABLED
