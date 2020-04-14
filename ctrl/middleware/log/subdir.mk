@@ -5,13 +5,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-./middleware/log/log.c 
+./middleware/log/log.c \
+./middleware/log/log_buffers.c 
 
 OBJS += \
-$(BuildPath)/middleware/log/log.o 
-
-C_DEPS += \
-$(BuildPath)/middleware/log/log.d 
+$(BuildPath)/middleware/log/log.o \
+$(BuildPath)/middleware/log/log_buffers.o
 
 OBJ_DIRS = $(sort $(dir $(OBJS)))
 

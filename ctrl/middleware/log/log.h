@@ -10,23 +10,29 @@
 
 #include "logconfig.h"
 
+/**
+ * @brief Log level
+ */
 typedef enum {
-    KY_LOG_NONE,       /*!< No log output */
-    KY_LOG_ERROR,      /*!< Critical errors, software module can not recover on its own */
-    KY_LOG_WARN,       /*!< Error conditions from which recovery measures have been taken */
-    KY_LOG_INFO,       /*!< Information messages which describe normal flow of events */
-    KY_LOG_DEBUG,      /*!< Extra information which is not necessary for normal use (values, pointers, sizes, etc). */
-    KY_LOG_VERBOSE     /*!< Bigger chunks of debugging information, or frequent messages which can potentially flood the output. */
-} kylog_level_t;
+  LOG_NONE,       /*!< No log output */
+  LOG_ERROR,      /*!< Critical errors, software module can not recover on its own */
+  LOG_WARN,       /*!< Error conditions from which recovery measures have been taken */
+  LOG_INFO,       /*!< Information messages which describe normal flow of events */
+  LOG_DEBUG,      /*!< Extra information which is not necessary for normal use (values, pointers, sizes, etc). */
+  LOG_VERBOSE     /*!< Bigger chunks of debugging information, or frequent messages which can potentially flood the output. */
+} log_level_t;
 
 typedef status_t (*log_put_t)(const char *);
 
+#if CONFIG_LOG_ENABLE
 status_t log_init(log_put_t ptx);
-uint32_t log_timestamp(void);
-
-#if (CONFIG_DEBUG_ALERT || CONFIG_DEBUG_ERROR || CONFIG_DEBUG_WARN || CONFIG_DEBUG_INFO)
 status_t log_write(const char *format, ...) __attribute__ ((__format__ (__printf__, 1, 2)));
-#endif /* (CONFIG_DEBUG_ALERT || CONFIG_DEBUG_ERROR || CONFIG_DEBUG_WARN || CONFIG_DEBUG_INFO) */
+#else
+#define log_init(ptx)                            do { (void)ptx; } while(0)
+#define log_write(format, ...)                   do { (void)format; } while(0)
+#endif /* CONFIG_LOG_ENABLE */
+
+uint32_t log_timestamp(void);
 
 #if CONFIG_LOG_COLORS_ENABLED
 #define LOG_COLOR_BLACK   "30"
@@ -55,35 +61,32 @@ status_t log_write(const char *format, ...) __attribute__ ((__format__ (__printf
 
 #define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter " (%ld) %s: " format LOG_RESET_COLOR "\n"
 
-#ifndef CONFIG_DEBUG_ERROR
-#  define ky_err                                 (void)
+#define LOG_LEVEL(level, tag, format, ...) do {                         \
+        if (level==LOG_ERROR )          { log_write(LOG_FORMAT(E, format), log_timestamp(), tag, ##__VA_ARGS__); } \
+        else if (level==LOG_WARN )      { log_write(LOG_FORMAT(W, format), log_timestamp(), tag, ##__VA_ARGS__); } \
+        else if (level==LOG_DEBUG )     { log_write(LOG_FORMAT(D, format), log_timestamp(), tag, ##__VA_ARGS__); } \
+        else if (level==LOG_VERBOSE )   { log_write(LOG_FORMAT(V, format), log_timestamp(), tag, ##__VA_ARGS__); } \
+        else                            { log_write(LOG_FORMAT(I, format), log_timestamp(), tag, ##__VA_ARGS__); } \
+    } while(0)
+
+#if CONFIG_LOG_ERROR_ENABLED
+#define ky_err(tag, format, ...)               log_write(LOG_FORMAT(E, format), log_timestamp(), tag, ##__VA_ARGS__)
 #else
-#  define ky_err(tag, format, ...)               log_write(LOG_FORMAT(E, format), log_timestamp(), tag, ##__VA_ARGS__)
-#endif
-
-#ifndef CONFIG_DEBUG_WARN
-#  define ky_warn                                (void)
+#define ky_err(tag, format, ...)               do { (void)tag; } while(0)
+#endif /* CONFIG_LOG_ERROR_ENABLED */
+#if CONFIG_LOG_WARN_ENABLED
+#define ky_warn(tag, format, ...)              log_write(LOG_FORMAT(W, format), log_timestamp(), tag, ##__VA_ARGS__)
 #else
-#  define ky_warn(tag, format, ...)              log_write(LOG_FORMAT(W, format), log_timestamp(), tag, ##__VA_ARGS__)
-#endif
-
-#ifndef CONFIG_DEBUG_INFO
-#  define ky_info                                (void)
+#define ky_warn(tag, format, ...)              do { (void)tag; } while(0)
+#endif /* CONFIG_LOG_WARN_ENABLED */
+#if CONFIG_LOG_INFO_ENABLED
+#define ky_info(tag, format, ...)              log_write(LOG_FORMAT(I, format), log_timestamp(), tag, ##__VA_ARGS__)
 #else
-#  define ky_info(tag, format, ...)              log_write(LOG_FORMAT(I, format), log_timestamp(), tag, ##__VA_ARGS__)
-#endif
+#define ky_info(tag, format, ...)              do { (void)tag; } while(0)
+#endif /* CONFIG_LOG_INFO_ENABLED */
 
-/* This determines the importance of the message. The levels are, in order
- * of decreasing importance:
- */
-
-//#define LOG_EMERG     0  /* System is unusable */
-//#define LOG_ALERT     1  /* Action must be taken immediately */
-//#define LOG_CRIT      2  /* Critical conditions */
-//#define LOG_ERR       3  /* Error conditions */
-//#define LOG_WARNING   4  /* Warning conditions */
-//#define LOG_NOTICE    5  /* Normal, but significant, condition */
-//#define LOG_INFO      6  /* Informational message */
-//#define LOG_DEBUG     7  /* Debug-level message */
+void log_buffer_hex(const char *tag, const void *buffer, uint16_t buff_len, log_level_t log_level);
+void log_buffer_char(const char *tag, const void *buffer, uint16_t buff_len, log_level_t log_level);
+void log_buffer_hexdump(const char *tag, const void *buffer, uint16_t buff_len, log_level_t log_level);
 
 #endif /* _LOG_H_ */
