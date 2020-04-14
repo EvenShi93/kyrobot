@@ -9,8 +9,8 @@
 #ifndef __APPS_H
 #define __APPS_H
 
-#include "gnss.h"
-#include "server.h"
+#include "log.h"
+
 #include "mesg.h"
 #include "compass.h"
 #include "att_est_q.h"
