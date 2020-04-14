@@ -1,15 +1,18 @@
 /*
- * debug.c
+ * log.c
  *
  *  Created on: Dec 10, 2019
  *      Author: kychu
  */
 
 #include "log.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 
-#ifdef DEBUG_ENABLE
+#if FREERTOS_ENABLED
+#include "cmsis_os.h"
+#endif /* FREERTOS_ENABLED */
 
 static char *log_cache = NULL;
 static log_put_t log_put_func = NULL;
@@ -30,7 +33,7 @@ static osMutexId logMutex = NULL;
 
 status_t log_init(log_put_t ptx)
 {
-  log_cache = kmm_alloc(128);
+  log_cache = kmm_alloc(CONFIG_LOG_CACHE_SIZE);
   if(log_cache == NULL) return status_nomem;
 
   /* Create the mutex  */
@@ -115,13 +118,15 @@ status_t log_write(const char *format, ...)
 //    } while( buff_len );
 //}
 
-uint32_t log_timestamp(void)
+__weak uint32_t log_timestamp(void)
 {
+#if FREERTOS_ENABLED
   if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
     return 0;
   }
 
   return xTaskGetTickCount() * (1000 / configTICK_RATE_HZ);
+#else
+  return 0;
+#endif /* FREERTOS_ENABLED */
 }
-
-#endif /* DEBUG_ENABLE */
