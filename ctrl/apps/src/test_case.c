@@ -1,11 +1,10 @@
-#include "test_case.h"
+#include "apps.h"
+
 #include <stdio.h>
 #include "ringbuffer.h"
 #include <string.h>
 #include "cpu_utils.h"
 #include "ff_gen_drv.h"
-
-#include "log.h"
 
 static const char *TAG = "TEST";
 

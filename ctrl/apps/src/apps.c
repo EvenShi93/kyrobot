@@ -1,5 +1,4 @@
 #include "apps.h"
-#include "test_case.h"
 
 static const char *TAG = "APP";
 

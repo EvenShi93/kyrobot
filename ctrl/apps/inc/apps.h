@@ -11,6 +11,8 @@
 
 #include "log.h"
 
+#include "drivers.h"
+
 #include "mesg.h"
 #include "compass.h"
 #include "att_est_q.h"
@@ -20,6 +22,8 @@
 #include "stm32f7xx_hal.h"
 
 void gui_task(void const *argument);
+
+void test_case_task(void const *argument);
 
 #endif /* __APPS_H */
 
