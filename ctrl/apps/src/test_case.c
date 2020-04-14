@@ -14,8 +14,8 @@ void test_w25qxx(void);
 void scan_i2c_dev(void);
 void check_ist83xx(void);
 void list_file_fatfs(void);
-static void write_file(void);
-static void print_buffer(char *tag, uint8_t *buf, uint32_t size);
+void write_file(void);
+void print_buff_test(void);
 
 void test_case_task(void const *argument)
 {
@@ -28,7 +28,8 @@ void test_case_task(void const *argument)
 //  test_w25qxx();
 //  test_fatfs();
 //  list_file_fatfs();
-  write_file();
+//  write_file();
+  print_buff_test();
 
   ky_info(TAG, "test done.");
 
@@ -41,7 +42,18 @@ const uint8_t magdata[56] = {
 0x70, 0x71, 0x1a, 0xc0, 0x99, 0x9a, 0x3c, 0xc1, 0x42, 0x0c, 0xa0, 0x41, 0x19, 0x1f, 0x78, 0x3f,
 0xc1, 0x9a, 0x7f, 0x3f, 0xf1, 0xad, 0x71, 0x3f,
 };
-static void write_file(void)
+
+void print_buff_test(void)
+{
+  ky_info(TAG, "log_buffer_hex:");
+  log_buffer_hex("magdata", magdata, 56, LOG_INFO);
+  ky_info(TAG, "log_buffer_char:");
+  log_buffer_char("magdata", magdata, 56, LOG_INFO);
+  ky_info(TAG, "log_buffer_hexdump:");
+  log_buffer_hexdump("magdata", magdata, 56, LOG_INFO);
+}
+
+void write_file(void)
 {
   FRESULT ret;
   uint32_t bytes_rw;
@@ -88,7 +100,7 @@ static void write_file(void)
   }
 
 //  ky_info(TAG, "data in file: %s", rtext);
-  print_buffer("data", rtext, 56);
+  log_buffer_hex("data", rtext, 56, LOG_VERBOSE);
 
   ky_info(TAG, "close file.");
   ret = f_close(file);
@@ -268,7 +280,7 @@ void test_w25qxx(void)
   for(int i = 0; i < wbytes; i ++) {
     wcache[i] = i + 0x63;
   }
-  print_buffer("wcache", wcache, wbytes);
+  log_buffer_hex("wcache", wcache, wbytes, LOG_VERBOSE);
 
   ky_info(TAG, "write start ...");
   if(w25qxx_write_bytes(wcache, waddr, wbytes) != status_ok) {
@@ -285,7 +297,7 @@ void test_w25qxx(void)
     kmm_free(rcache);
     return;
   }
-  print_buffer("rcache", rcache, wbytes);
+  log_buffer_hex("rcache", rcache, wbytes, LOG_VERBOSE);
 
 //  w25qxx_erase_sector(0);
 //
@@ -297,7 +309,7 @@ void test_w25qxx(void)
 //    kmm_free(rcache);
 //    return;
 //  }
-//  print_buffer("rcache", rcache, wbytes);
+//  log_buffer_hex("rcache", rcache, wbytes, LOG_VERBOSE);
 
   ky_info(TAG, "compare data ...");
   int i = 0;
@@ -320,17 +332,6 @@ void test_w25qxx(void)
 //	  osDelay(100);
 //	  w25qxx_erase_sector(0);
 //  }
-}
-
-static void print_buffer(char *tag, uint8_t *buf, uint32_t size)
-{
-  log_write("\n%s: %ld bytes: \n    ", tag, size);
-  for(int i = 0; i < size; i ++) {
-	log_write("%02x  ", buf[i]);
-	if((i & 0xF) == 0xF)
-	  log_write("\n    ");
-  }
-  log_write("\n");
 }
 
 void check_ist83xx(void)
