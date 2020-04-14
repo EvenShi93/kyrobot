@@ -5,6 +5,8 @@
 #include "cpu_utils.h"
 #include "ff_gen_drv.h"
 
+#include "log.h"
+
 static const char *TAG = "TEST";
 
 void test_fatfs(void);

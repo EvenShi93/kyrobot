@@ -7,6 +7,7 @@
 
 #include "compass.h"
 
+#include "log.h"
 #include "mesg.h"
 #include "ff_gen_drv.h"
 

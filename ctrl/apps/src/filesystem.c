@@ -7,6 +7,8 @@
 
 #include "filesystem.h"
 
+#include "log.h"
+
 static const char *TAG = "FS";
 
 extern const Diskio_drvTypeDef mtd_driver;

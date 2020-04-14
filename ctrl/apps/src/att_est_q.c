@@ -8,6 +8,7 @@
 #include "att_est_q.h"
 #include "algorithm.h"
 
+#include "log.h"
 #include "mesg.h"
 #include "kyLink.h"
 #include "compass.h"

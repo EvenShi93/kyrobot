@@ -1,5 +1,8 @@
 #include "mesg.h"
+
+#include "log.h"
 #include "kyLink.h"
+
 #include <math.h>
 
 #include "filetransfer.h"

@@ -7,6 +7,8 @@
 
 #include "filetransfer.h"
 
+#include "log.h"
+
 static const char *TAG = "FT";
 
 static FileTransReq_T currentReq;

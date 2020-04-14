@@ -21,4 +21,6 @@
 
 #include "usb_cdcif.h"
 
+#include "log.h"
+
 #endif /* __DRIVERS_H */

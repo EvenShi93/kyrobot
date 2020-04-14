@@ -7,6 +7,8 @@
 
 #include "apps.h"
 
+#include "log.h"
+
 #include "vscn.h"
 #include "disp.h"
 
