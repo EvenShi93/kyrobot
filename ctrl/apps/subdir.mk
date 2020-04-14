@@ -7,9 +7,6 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ./apps/src/apps.c \
-./apps/src/f9pconfig.c \
-./apps/src/gnss.c \
-./apps/src/server.c \
 ./apps/src/compass.c \
 ./apps/src/gui_task.c \
 ./apps/src/test_case.c \
@@ -44,9 +41,6 @@ C_SRCS += \
 
 OBJS += \
 $(BuildPath)/apps/src/apps.o \
-$(BuildPath)/apps/src/f9pconfig.o \
-$(BuildPath)/apps/src/gnss.o \
-$(BuildPath)/apps/src/server.o \
 $(BuildPath)/apps/src/compass.o \
 $(BuildPath)/apps/src/gui_task.o \
 $(BuildPath)/apps/src/test_case.o \
@@ -78,43 +72,6 @@ $(BuildPath)/apps/demo/GUIDEMO_Speed.o \
 $(BuildPath)/apps/demo/GUIDEMO_Start.o \
 $(BuildPath)/apps/demo/GUIDEMO_TransparentDialog.o \
 $(BuildPath)/apps/demo/GUIDEMO_Treeview.o
-
-C_DEPS += \
-$(BuildPath)/apps/src/apps.d \
-$(BuildPath)/apps/src/f9pconfig.d \
-$(BuildPath)/apps/src/gnss.d \
-$(BuildPath)/apps/src/server.d \
-$(BuildPath)/apps/src/compass.d \
-$(BuildPath)/apps/src/gui_task.d \
-$(BuildPath)/apps/src/test_case.d \
-$(BuildPath)/apps/src/att_est_q.d \
-$(BuildPath)/apps/src/cpu_utils.d \
-$(BuildPath)/apps/src/filesystem.d \
-$(BuildPath)/apps/src/filetransfer.d \
-$(BuildPath)/apps/src/mesg.d
-
-C_DEPS += \
-$(BuildPath)/apps/gui/gui_drv.d \
-$(BuildPath)/apps/gui/GUIConf.d \
-$(BuildPath)/apps/gui/LCDConf.d \
-$(BuildPath)/apps/gui/gui_x_rtos.d
-
-C_DEPS += \
-$(BuildPath)/apps/demo/GUIDEMO_Automotive.d \
-$(BuildPath)/apps/demo/GUIDEMO_Bitmap.d \
-$(BuildPath)/apps/demo/GUIDEMO.d \
-$(BuildPath)/apps/demo/GUIDEMO_ColorBar.d \
-$(BuildPath)/apps/demo/GUIDEMO_Conf.d \
-$(BuildPath)/apps/demo/GUIDEMO_Cursor.d \
-$(BuildPath)/apps/demo/GUIDEMO_Graph.d \
-$(BuildPath)/apps/demo/GUIDEMO_IconView.d \
-$(BuildPath)/apps/demo/GUIDEMO_Intro.d \
-$(BuildPath)/apps/demo/GUIDEMO_Listview.d \
-$(BuildPath)/apps/demo/GUIDEMO_Resource.d \
-$(BuildPath)/apps/demo/GUIDEMO_Speed.d \
-$(BuildPath)/apps/demo/GUIDEMO_Start.d \
-$(BuildPath)/apps/demo/GUIDEMO_TransparentDialog.d \
-$(BuildPath)/apps/demo/GUIDEMO_Treeview.d
 
 OBJ_DIRS = $(sort $(dir $(OBJS)))
 
