@@ -45,6 +45,12 @@
   #endif /* __CC_ARM */
 #endif /* __GNUC__ */
 
+#if defined   (__GNUC__)        /* GNU Compiler */
+  #ifndef __weak
+    #define __weak   __attribute__((weak))
+  #endif /* __weak */
+#endif /* __GNUC__ */
+
 typedef enum 
 {
   status_ok      = 0x00U,
