@@ -8,31 +8,48 @@
 
 #include "leds.h"
 
+typedef struct {
+  GPIO_TypeDef* GPIOx;
+  uint16_t GPIO_Pin;
+} USER_IO_LIST;
+
+static const USER_IO_LIST LED_IOS[NLEDS] = {
+  {GPIOC, GPIO_PIN_2}, // LED BLUE
+  {GPIOC, GPIO_PIN_3}, // LED GREEN
+};
+
+void leds_init(void)
+{
+  int i;
+  GPIO_InitTypeDef  GPIO_InitStruct;
+  /* Enable GPIOs clock */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  /* configuration for output pins */
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  for(i = 0; i < NLEDS; i ++) {
+    GPIO_InitStruct.Pin = LED_IOS[i].GPIO_Pin;
+    HAL_GPIO_Init(LED_IOS[i].GPIOx, &GPIO_InitStruct);
+  }
+}
+
 void led_on(Led_TypeDef led)
 {
-  if(led == LED1) {
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_2, GPIO_PIN_RESET);
-  } else {
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_RESET);
-  }
+  if(led < NLEDS)
+    LED_IOS[led].GPIOx->BSRR = LED_IOS[led].GPIO_Pin << 16;
 }
 
 void led_off(Led_TypeDef led)
 {
-  if(led == LED1) {
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_2, GPIO_PIN_SET);
-  } else {
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_SET);
-  }
+  if(led < NLEDS)
+    LED_IOS[led].GPIOx->BSRR = LED_IOS[led].GPIO_Pin;
 }
 
 void led_toggle(Led_TypeDef led)
 {
-  if(led == LED1) {
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_2);
-  } else {
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
-  }
+  if(led < NLEDS)
+    LED_IOS[led].GPIOx->ODR ^= LED_IOS[led].GPIO_Pin;
 }
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/

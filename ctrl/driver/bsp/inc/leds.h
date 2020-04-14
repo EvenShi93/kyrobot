@@ -7,6 +7,8 @@
 
 #include "gpios.h"
 
+#define NLEDS                  2
+
 typedef enum {
   LED1 = 0,
   LED_BLUE = LED1,
@@ -25,4 +27,3 @@ void led_toggle(Led_TypeDef led);
 #endif
 
 #endif /* __DRIVER_BSP_LEDS_H */
-
