@@ -11,7 +11,7 @@
 #include "SysConfig.h"
 
 #if CONFIG_LOG_ENABLE
-#define CONFIG_LOG_CACHE_SIZE                    (80)
+#define CONFIG_LOG_CACHE_SIZE                    (128)
 #endif /* CONFIG_LOG_ENABLE */
 
 #if CONFIG_LOG_ENABLE
