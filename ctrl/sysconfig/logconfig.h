@@ -11,17 +11,25 @@
 #include "SysConfig.h"
 
 #if CONFIG_LOG_ENABLE
-#define CONFIG_DEBUG_ALERT                       (0)
-#define CONFIG_DEBUG_ERROR                       (1)
-#define CONFIG_DEBUG_WARN                        (1)
-#define CONFIG_DEBUG_INFO                        (1)
+#define CONFIG_LOG_CACHE_SIZE                    (80)
+#endif /* CONFIG_LOG_ENABLE */
+
+#if CONFIG_LOG_ENABLE
+#define CONFIG_LOG_ALERT_ENABLED                 (0)
+#define CONFIG_LOG_ERROR_ENABLED                 (1)
+#define CONFIG_LOG_WARN_ENABLED                  (1)
+#define CONFIG_LOG_INFO_ENABLED                  (1)
+#define CONFIG_LOG_DEBUG_ENABLED                 (0)
+#define CONFIG_LOG_VERBOSE_ENABLED               (0)
 
 #define CONFIG_LOG_COLORS_ENABLED                (1)
 #else
-#define CONFIG_DEBUG_ALERT                       (0)
-#define CONFIG_DEBUG_ERROR                       (0)
-#define CONFIG_DEBUG_WARN                        (0)
-#define CONFIG_DEBUG_INFO                        (0)
+#define CONFIG_LOG_ALERT_ENABLED                 (0)
+#define CONFIG_LOG_ERROR_ENABLED                 (0)
+#define CONFIG_LOG_WARN_ENABLED                  (0)
+#define CONFIG_LOG_INFO_ENABLED                  (0)
+#define CONFIG_LOG_DEBUG_ENABLED                 (0)
+#define CONFIG_LOG_VERBOSE_ENABLED               (0)
 
 #define CONFIG_LOG_COLORS_ENABLED                (0)
 #endif /* CONFIG_LOG_ENABLE */
