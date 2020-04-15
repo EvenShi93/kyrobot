@@ -1,7 +1,8 @@
 #ifndef __RINGBUFFER_H
 #define __RINGBUFFER_H
 
-#include "SysConfig.h"
+#include "sys_def.h"
+#include <stdint.h>
 
 typedef struct {
   uint8_t *elements;
