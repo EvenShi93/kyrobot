@@ -6,6 +6,8 @@
 #include "ec20.h"
 #include "comif.h"
 #include "dispif.h"
+#include "buttons.h"
+
 #include "ubloxa.h"
 #include "ubloxb.h"
 #include "rtcmif.h"
