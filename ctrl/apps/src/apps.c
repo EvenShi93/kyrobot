@@ -53,6 +53,8 @@ void APP_StartThread(void const *argument)
   if(osThreadCreate(osThread(UGUI), NULL) == NULL) ky_err(TAG, "gui task create failed.");
   osThreadDef(SINS, att_est_q_task, osPriorityNormal, 0, 512);
   if(osThreadCreate(osThread(SINS), NULL) == NULL) ky_err(TAG, "sins task create failed.");
+  osThreadDef(EVET, evt_proc_task, osPriorityNormal, 0, 256);
+  if(osThreadCreate(osThread(EVET), NULL) == NULL) ky_err(TAG, "event task create failed.");
 //  if(osThreadCreate(osThread(MAGS), NULL) == NULL) ky_err(TAG, "mags task create failed.");
 //  if(osThreadCreate(osThread(GNSS), NULL) == NULL) ky_err(TAG, "gnss task create failed.");
 //  if(osThreadCreate(osThread(RTCM), NULL) == NULL) ky_err(TAG, "rtcm task create failed.");
