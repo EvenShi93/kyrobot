@@ -39,6 +39,8 @@ C_SRCS += \
 ./apps/demo/GUIDEMO_TransparentDialog.c \
 ./apps/demo/GUIDEMO_Treeview.c
 
+C_SRCS += $(wildcard ./apps/evt/*.c)
+
 OBJS += \
 $(BuildPath)/apps/src/apps.o \
 $(BuildPath)/apps/src/compass.o \
@@ -72,6 +74,9 @@ $(BuildPath)/apps/demo/GUIDEMO_Speed.o \
 $(BuildPath)/apps/demo/GUIDEMO_Start.o \
 $(BuildPath)/apps/demo/GUIDEMO_TransparentDialog.o \
 $(BuildPath)/apps/demo/GUIDEMO_Treeview.o
+
+OBJS += \
+$(BuildPath)/apps/evt/evt_proc.o
 
 OBJ_DIRS = $(sort $(dir $(OBJS)))
 

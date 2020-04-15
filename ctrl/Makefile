@@ -56,14 +56,16 @@ LIB_PATH := -L$(BuildPath)/rb \
             -L$(BuildPath)/log \
             -L$(BuildPath)/vscn \
             -L$(BuildPath)/bsp \
+            -L$(BuildPath)/start \
             -L$(BuildPath)/rtos \
             -L$(BuildPath)/fatfs \
             -L$(BuildPath)/stdrv \
+            -L$(BuildPath)/usbdrv \
             -L$(BuildPath)/kylink \
             -L$(BuildPath)/algorithm \
             -L$(TopPath)/middleware/STemWin
-# External Libraries -lbsp
-LIBS := -lrb -lubx -llog -lvscn -lkylink -lalgorithm -lstdrv -lrtos -lfatfs -lSTemWin532_cm7_os_ot
+# External Libraries
+LIBS := -lrb -lubx -llog -lvscn -lkylink -lalgorithm -lstdrv -lrtos -lfatfs -lSTemWin532_cm7_os_ot -lusbdrv
 
 # Other configuration # -Wshadow
 CFGS = -mthumb -Dprintf=iprintf -fno-exceptions -fno-builtin --short-enums -ffunction-sections -fdata-sections -fno-strict-aliasing -pipe
@@ -139,11 +141,9 @@ export TopPath
 all: $(ProjName).elf
 
 # All of the sources participating in the build are defined here
-#-include subdir.mk
 -include apps/subdir.mk
 -include driver/subdir.mk
 -include startup/subdir.mk
-#-include middleware/subdir.mk
 
 # user definitions
 -include makefile.defs
@@ -183,9 +183,7 @@ libraries:
 	$(MAKE) -C middleware/fatfs BUILD=$(BuildPath)/fatfs
 	$(MAKE) -C middleware/freertos BUILD=$(BuildPath)/rtos
 	$(MAKE) -C driver/stdriver BUILD=$(BuildPath)/stdrv
-	$(MAKE) -C driver/bsp BUILD=$(BuildPath)/bsp
-	$(MAKE) -C apps BUILD=$(BuildPath)/app
-	$(MAKE) -C startup BUILD=$(BuildPath)/start
+	$(MAKE) -C driver/usbdrv BUILD=$(BuildPath)/usbdrv
 
 BINARY := $(OutPath)/$(ProjName).bin
 

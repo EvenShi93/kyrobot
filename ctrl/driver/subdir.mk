@@ -5,6 +5,3 @@
 ################################################################################
 
 -include driver/bsp/subdir.mk
-#-include driver/stdriver/subdir.mk
--include driver/usbdrv/subdir.mk
-
