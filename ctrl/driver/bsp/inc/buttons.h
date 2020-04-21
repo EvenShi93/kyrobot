@@ -24,8 +24,14 @@ typedef enum {
   BTN3 = 3
 } Btn_TypeDef;
 
+typedef enum {
+  btn_pressed = 0,
+  btn_released = 1,
+  btn_invalid = 0xF,
+} Btn_PressDef;
+
 void buttons_init(void);
-int button_read(Btn_TypeDef btn);
+Btn_PressDef button_read(Btn_TypeDef btn);
 
 #ifdef __cplusplus
 }

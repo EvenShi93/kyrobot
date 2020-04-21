@@ -10,13 +10,14 @@
 typedef struct {
   GPIO_TypeDef* GPIOx;
   uint16_t GPIO_Pin;
+  GPIO_PinState PressState;
 } USER_IO_LIST;
 
 static const USER_IO_LIST BTN_IOS[NBTNS] = {
-  {GPIOC, GPIO_PIN_0}, // KEY PWR
-  {GPIOB, GPIO_PIN_11}, // KEY 1
-  {GPIOB, GPIO_PIN_10}, // KEY 2
-  {GPIOC, GPIO_PIN_8}, // KEY 3
+  {GPIOC, GPIO_PIN_0, GPIO_PIN_RESET}, // KEY PWR
+  {GPIOB, GPIO_PIN_11, GPIO_PIN_RESET}, // KEY 1
+  {GPIOB, GPIO_PIN_10, GPIO_PIN_RESET}, // KEY 2
+  {GPIOC, GPIO_PIN_8, GPIO_PIN_RESET}, // KEY 3
 };
 
 void buttons_init(void)
@@ -38,9 +39,13 @@ void buttons_init(void)
   }
 }
 
-int button_read(Btn_TypeDef btn)
+Btn_PressDef button_read(Btn_TypeDef btn)
 {
-  if(btn < NBTNS)
-    return HAL_GPIO_ReadPin(BTN_IOS[btn].GPIOx, BTN_IOS[btn].GPIO_Pin);
-  return 0;
+  if(btn < NBTNS) {
+    if(HAL_GPIO_ReadPin(BTN_IOS[btn].GPIOx, BTN_IOS[btn].GPIO_Pin) == BTN_IOS[btn].PressState)
+      return btn_pressed;
+    else
+      return btn_released;
+  }
+  return btn_invalid;
 }
