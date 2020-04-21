@@ -93,6 +93,8 @@
 #define APP_RX_DATA_SIZE                         256
 #endif /* CONFIG_USB_IF_ENABLE */
 
+#define CONFIG_STEMWIN_DEMO_ENABLE               (0)
+
 #endif /* SYSCONFIG_CONFIG_H_ */
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/
