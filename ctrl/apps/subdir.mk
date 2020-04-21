@@ -22,6 +22,7 @@ C_SRCS += \
 ./apps/guicfg/LCDConf.c \
 ./apps/guicfg/gui_x_rtos.c
 
+ifeq ($(CONFIG_STEMWIN_DEMO_ENABLE), y)
 C_SRCS += \
 ./apps/demo/GUIDEMO_Automotive.c \
 ./apps/demo/GUIDEMO_Bitmap.c \
@@ -38,6 +39,10 @@ C_SRCS += \
 ./apps/demo/GUIDEMO_Start.c \
 ./apps/demo/GUIDEMO_TransparentDialog.c \
 ./apps/demo/GUIDEMO_Treeview.c
+else
+C_SRCS += \
+./apps/gui/gui_graph.c
+endif
 
 C_SRCS += $(wildcard ./apps/evt/*.c)
 
@@ -58,6 +63,7 @@ $(BuildPath)/apps/guicfg/GUIConf.o \
 $(BuildPath)/apps/guicfg/LCDConf.o \
 $(BuildPath)/apps/guicfg/gui_x_rtos.o
 
+ifeq ($(STEMWIN_DEMO_ENABLE), y)
 OBJS += \
 $(BuildPath)/apps/demo/GUIDEMO_Automotive.o \
 $(BuildPath)/apps/demo/GUIDEMO_Bitmap.o \
@@ -74,6 +80,10 @@ $(BuildPath)/apps/demo/GUIDEMO_Speed.o \
 $(BuildPath)/apps/demo/GUIDEMO_Start.o \
 $(BuildPath)/apps/demo/GUIDEMO_TransparentDialog.o \
 $(BuildPath)/apps/demo/GUIDEMO_Treeview.o
+else
+OBJS += \
+$(BuildPath)/apps/gui/gui_graph.o
+endif
 
 OBJS += \
 $(BuildPath)/apps/evt/evt_proc.o
