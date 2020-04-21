@@ -17,10 +17,10 @@ C_SRCS += \
 ./apps/src/mesg.c
 
 C_SRCS += \
-./apps/gui/gui_drv.c \
-./apps/gui/GUIConf.c \
-./apps/gui/LCDConf.c \
-./apps/gui/gui_x_rtos.c
+./apps/guicfg/gui_drv.c \
+./apps/guicfg/GUIConf.c \
+./apps/guicfg/LCDConf.c \
+./apps/guicfg/gui_x_rtos.c
 
 C_SRCS += \
 ./apps/demo/GUIDEMO_Automotive.c \
@@ -53,10 +53,10 @@ $(BuildPath)/apps/src/filetransfer.o \
 $(BuildPath)/apps/src/mesg.o
 
 OBJS += \
-$(BuildPath)/apps/gui/gui_drv.o \
-$(BuildPath)/apps/gui/GUIConf.o \
-$(BuildPath)/apps/gui/LCDConf.o \
-$(BuildPath)/apps/gui/gui_x_rtos.o
+$(BuildPath)/apps/guicfg/gui_drv.o \
+$(BuildPath)/apps/guicfg/GUIConf.o \
+$(BuildPath)/apps/guicfg/LCDConf.o \
+$(BuildPath)/apps/guicfg/gui_x_rtos.o
 
 OBJS += \
 $(BuildPath)/apps/demo/GUIDEMO_Automotive.o \
