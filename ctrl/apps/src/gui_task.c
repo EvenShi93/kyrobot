@@ -15,7 +15,13 @@
 #include "WM.h"
 #include "GUI.h"
 #include "DIALOG.h"
+#if CONFIG_STEMWIN_DEMO_ENABLE
 #include "GUIDEMO.h"
+#endif /* CONFIG_STEMWIN_DEMO_ENABLE */
+
+#include "gui_demo.h"
+
+#include "../gui/boot_logo.c"
 
 static const char *TAG = "GUI";
 
@@ -99,12 +105,17 @@ void emwin_task(void const *argument)
   /* STemwin Init */
   GUI_Init();
 
-  GUI_DispStringAt("Starting...", 0, 0);
   /* Activate the use of memory device feature */
   WM_SetCreateFlags(WM_CF_MEMDEV);
+  GUI_DrawBitmap(&bmboot_logo, 0, 15);
+  delay(2000);
+  gui_graph_start();
   for(;;) {
+#if CONFIG_STEMWIN_DEMO_ENABLE
     /* Start Demo */
     GUIDEMO_Main();
+#endif /* CONFIG_STEMWIN_DEMO_ENABLE */
+    delay(1000);
   }
 }
 
