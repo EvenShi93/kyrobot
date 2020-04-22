@@ -1639,7 +1639,7 @@ static int should_exit = 0;
 *
 *       GUIDEMO_IconView
 */
-void gui_iconview_start(void) {
+int gui_iconview_start(void) {
   WM_CALLBACK * pcbPrev;
   int           i, xSize, ySize;
 
@@ -1672,6 +1672,7 @@ void gui_iconview_start(void) {
   should_exit = 0;
   WM_DeleteWindow(hIconView);
   WM_SetCallback(WM_HBKWIN, pcbPrev);
+  return cur_sel;
 }
 
 static void iconview_btn_evt_cb(int id, btn_evt_type_t evt)
