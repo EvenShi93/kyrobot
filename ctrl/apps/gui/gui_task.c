@@ -115,9 +115,15 @@ void emwin_task(void const *argument)
     /* Start Demo */
     GUIDEMO_Main();
 #else
-    gui_iconview_start();
-    gui_graph_start();
-    delay(500);
+    switch(gui_iconview_start()) {
+    case 0:
+      gui_graph_start();
+    break;
+    case 2:
+      gui_setting_menu_start();
+    break;
+    }
+//    delay(500);
 #endif /* CONFIG_STEMWIN_DEMO_ENABLE */
   }
 }
