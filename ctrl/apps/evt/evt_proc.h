@@ -10,6 +10,8 @@
 
 #include "SysConfig.h"
 
+#include "buttons.h"
+
 typedef enum {
   btn_evt_release = 0,
   btn_evt_pressed = 1,
