@@ -70,12 +70,12 @@ void gui_task(void const *argument)
   delay(100);
   output_port_set(IO_DISP_RST);
   delay(100);
-  output_port_set(IO_DISP_BL);
 
   if(disp_init(ips_drv) != status_ok) {
     ky_err(TAG, "disp init failed");
     goto exit;
   }
+  dispif_backlight(500); // display on
   if(vscn_init(ips_ram) != status_ok) {
     ky_err(TAG, "gui init failed");
     goto exit;
@@ -123,7 +123,6 @@ void emwin_task(void const *argument)
       gui_setting_menu_start();
     break;
     }
-//    delay(500);
 #endif /* CONFIG_STEMWIN_DEMO_ENABLE */
   }
 }
