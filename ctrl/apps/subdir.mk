@@ -42,7 +42,8 @@ else
 C_SRCS += \
 ./apps/gui/gui_task.c \
 ./apps/gui/gui_graph.c \
-./apps/gui/gui_iconview.c
+./apps/gui/gui_iconview.c \
+./apps/gui/gui_setting_meu.c
 endif
 
 C_SRCS += $(wildcard ./apps/evt/*.c)
@@ -84,7 +85,8 @@ else
 OBJS += \
 $(BuildPath)/apps/gui/gui_task.o \
 $(BuildPath)/apps/gui/gui_graph.o \
-$(BuildPath)/apps/gui/gui_iconview.o
+$(BuildPath)/apps/gui/gui_iconview.o \
+$(BuildPath)/apps/gui/gui_setting_menu.o
 endif
 
 OBJS += \
