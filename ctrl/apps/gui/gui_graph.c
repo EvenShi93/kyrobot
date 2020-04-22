@@ -13,7 +13,7 @@
 #define BK_COLOR_0        0xFF5555
 #define BK_COLOR_1        0x880000
 
-#define DIST_TO_BORDER   10
+#define DIST_TO_BORDER   0
 #define DIST_TO_WIN      5
 
 #define BORDER_TOP       0
@@ -31,7 +31,7 @@
 #define TICK_DIST_H      25
 #define TICK_DIST_V      20
 
-#define TIME_RUN         5000
+#define TIME_RUN         20000
 #define TIME_STEP        15
 
 #define MAX_NUM_DATA_OBJ 5
@@ -48,7 +48,6 @@
 **********************************************************************
 */
 typedef struct {
-  char  * Name;
   int     ScaleVOff;
   int     DataVOff;
   int     GridVOff;
@@ -132,14 +131,14 @@ static void _AddData_Heartbeat(GRAPH_DATA_Handle hData, int DataID) {
 *       DATA _aWave - Keep below _AddData-functions
 */
 GRAPH_WAVE _aWave[] = {
-  { "Heartbeat",        // Name
+  {
     157,                // Vertical scale offset in relation to GRAPH_DIV
     152,                // Vertical data  offset in relatio n to GRAPH_DIV
     21,                 // Vertical grid  offset in relation to GRAPH_DIV
     _AddData_Heartbeat, // Pointer to specific AddData function
     1                   // Number of waves
   },
-  { "Sine Waves",
+  {
     265,
     253,
     23,
@@ -268,7 +267,6 @@ void gui_graph_start(void)
   //
   i = 0;
   while (_aWave[i].pfAddData != 0) {
-//    GUIDEMO_ShowInfo(_aWave[i].Name);
     GRAPH_AttachScale(hGraph, _hScaleH);
     GRAPH_AttachScale(hGraph, _hScaleV);
     _DataAdjust = (Data_ySize * _aWave[i].DataVOff) >> GRAPH_DIV;
