@@ -11,7 +11,7 @@
 
 const static char *TAG = "EVTP";
 
-#define BUTTON_EVENT_CALLBACK_TEST               (1)
+#define BUTTON_EVENT_CALLBACK_TEST               (0)
 
 #define BTN_STATE_LAST_STATE   0x01 /* this bit used to hold last button state */
 #define BTN_STATE_PRES_STATE   0x02
