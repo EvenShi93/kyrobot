@@ -24,6 +24,7 @@ PLATFORM = -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16
 INCS = -I$(TopPath)/startup \
        -I$(TopPath)/sysconfig \
        -I$(TopPath)/apps/inc \
+       -I$(TopPath)/apps/evt \
        -I$(TopPath)/apps/gui \
        -I$(TopPath)/apps/guicfg \
        -I$(TopPath)/apps/demo \
