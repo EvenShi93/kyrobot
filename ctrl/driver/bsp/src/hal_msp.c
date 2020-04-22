@@ -136,4 +136,19 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
   }
 }
 
+/**
+  * @brief TIM MSP Initialization
+  *        This function configures the hardware resources used in this example:
+  *           - Peripheral's clock enable
+  *           - Peripheral's GPIO Configuration
+  * @param htim: TIM handle pointer
+  * @retval None
+  */
+void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
+{
+  if(htim->Instance == DISP_BL_TIM) {
+    dispif_bl_msp_init(htim);
+  }
+}
+
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/

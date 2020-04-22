@@ -23,6 +23,11 @@ static osMutexId if_mutex = NULL;
 
 status_t dispif_init(void)
 {
+  /* Timer handler declaration */
+  TIM_HandleTypeDef    TimHandle;
+  /* Timer Output Compare Configuration Structure declaration */
+  TIM_OC_InitTypeDef sConfig;
+
   /*##-1- Configure the SPI peripheral #######################################*/
   /* Set the SPI parameters */
   Disp_SpiHandle.Instance               = DISP_SPI;
@@ -48,7 +53,80 @@ status_t dispif_init(void)
 #else
 #endif /* FREERTOS_ENABLED */
 
+  /*##-1- Configure the TIM peripheral #######################################*/
+  /* -----------------------------------------------------------------------
+  TIM2 Configuration: generate 1 PWM signals with 0% duty cycles.
+
+    In this driver TIM2 input clock (TIM2CLK) is set to APB1 clock x 2,
+    since APB1 prescaler is equal to 2.
+      TIM2CLK = APB1CLK*2
+      APB1CLK = HCLK/4
+      => TIM2CLK = HCLK = SystemCoreClock / 2
+
+    To get TIM2 counter clock at 12 MHz, the prescaler is computed as follows:
+       Prescaler = (TIM2CLK / TIM2 counter clock) - 1
+       Prescaler = ((SystemCoreClock / 2) /12 MHz) - 1
+
+    To get TIM2 output clock at 12 KHz, the period (ARR)) is computed as follows:
+       ARR = (TIM2 counter clock / TIM2 output clock) - 1
+           = 999
+
+    TIM2 Channel2 duty cycle = (TIM2_CCR2/ TIM2_ARR + 1)* 100
+
+    Note:
+     SystemCoreClock variable holds HCLK frequency and is defined in system_stm32f7xx.c file.
+     Each time the core clock (HCLK) changes, user had to update SystemCoreClock
+     variable value. Otherwise, any configuration based on this variable will be incorrect.
+     This variable is updated in three ways:
+      1) by calling CMSIS function SystemCoreClockUpdate()
+      2) by calling HAL API function HAL_RCC_GetSysClockFreq()
+      3) each time HAL_RCC_ClockConfig() is called to configure the system clock frequency
+  ----------------------------------------------------------------------- */
+
+  /* Initialize TIM2 peripheral as follows:
+       + Prescaler = ((SystemCoreClock / 2) / 12000000) - 1
+       + Period = (1000 - 1)
+       + ClockDivision = 0
+       + Counter direction = Up
+  */
+  TimHandle.Instance = DISP_BL_TIM;
+
+  TimHandle.Init.Prescaler         = 8;
+  TimHandle.Init.Period            = 999;
+  TimHandle.Init.ClockDivision     = 0;
+  TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
+  TimHandle.Init.RepetitionCounter = 0;
+  TimHandle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_PWM_Init(&TimHandle) != HAL_OK) return status_error; /* Initialization Error */
+
+  /*##-2- Configure the PWM channels #########################################*/
+  /* Common configuration for channel2 */
+  sConfig.OCMode       = TIM_OCMODE_PWM1;
+  sConfig.OCPolarity   = TIM_OCPOLARITY_HIGH;
+  sConfig.OCFastMode   = TIM_OCFAST_DISABLE;
+  sConfig.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
+  sConfig.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+
+  sConfig.OCIdleState  = TIM_OCIDLESTATE_RESET;
+
+  /* Set the pulse value for channel 2 */
+  sConfig.Pulse = 0;
+  if (HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, DISP_BL_TIM_CHANNEL) != HAL_OK) return status_error; /* Initialization Error */
+
+  /*##-3- Start PWM signals generation #######################################*/
+  /* Start channel 2 */
+  if (HAL_TIM_PWM_Start(&TimHandle, DISP_BL_TIM_CHANNEL) != HAL_OK) return status_error; /* Initialization Error */
+
   return status_ok;
+}
+
+status_t dispif_backlight(uint32_t bl)
+{
+  if(bl < 1000) {
+    DISP_BL_TIM->CCR2 = bl;
+    return status_ok;
+  }
+  return status_error;
 }
 
 status_t dispif_tx_bytes(uint8_t *pTxData, uint16_t Size)
@@ -147,6 +225,27 @@ void dispif_msp_init(SPI_HandleTypeDef *hspi)
   /* NVIC configuration for DMA transfer complete interrupt (IMU_SPI_TX) */
   HAL_NVIC_SetPriority(DISP_SPI_DMA_TX_IRQn, INT_PRIO_DISPIF_DMATX, 0);
   HAL_NVIC_EnableIRQ(DISP_SPI_DMA_TX_IRQn);
+}
+
+void dispif_bl_msp_init(TIM_HandleTypeDef *htim)
+{
+  GPIO_InitTypeDef   GPIO_InitStruct;
+  /*##-1- Enable peripherals and GPIO Clocks #################################*/
+  /* TIM2 Peripheral clock enable */
+  DISP_BL_TIM_CLK_ENABLE();
+
+  /* Enable all GPIO Channels Clock requested */
+  DISP_BL_TIM_CHANNEL_GPIO_PORT();
+
+  /* Configure PB.03 in output, push-pull, alternate function mode */
+  /* Common configuration for all channels */
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+
+  GPIO_InitStruct.Alternate = DISP_BL_TIM_GPIO_AF_CHANNEL2;
+  GPIO_InitStruct.Pin = DISP_BL_TIM_GPIO_PIN_CHANNEL2;
+  HAL_GPIO_Init(DISP_BL_TIM_GPIO_PORT_CHANNEL2, &GPIO_InitStruct);
 }
 
 void dispif_msp_deinit(SPI_HandleTypeDef *hspi)
