@@ -110,15 +110,15 @@ void emwin_task(void const *argument)
   WM_SetCreateFlags(WM_CF_MEMDEV);
   GUI_DrawBitmap(&bmboot_logo, 0, 15);
   delay(2000);
-  GUI_DrawBitmap(&bmbackground, 0, 0);
-  delay(2000);
-  gui_graph_start();
   for(;;) {
 #if CONFIG_STEMWIN_DEMO_ENABLE
     /* Start Demo */
     GUIDEMO_Main();
+#else
+    gui_iconview_start();
+    gui_graph_start();
+    delay(500);
 #endif /* CONFIG_STEMWIN_DEMO_ENABLE */
-    delay(1000);
   }
 }
 
