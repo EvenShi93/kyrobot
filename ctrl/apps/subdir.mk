@@ -8,7 +8,6 @@
 C_SRCS += \
 ./apps/src/apps.c \
 ./apps/src/compass.c \
-./apps/src/gui_task.c \
 ./apps/src/test_case.c \
 ./apps/src/att_est_q.c \
 ./apps/src/cpu_utils.c \
@@ -41,6 +40,7 @@ C_SRCS += \
 ./apps/demo/GUIDEMO_Treeview.c
 else
 C_SRCS += \
+./apps/gui/gui_task.c \
 ./apps/gui/gui_graph.c
 endif
 
@@ -49,7 +49,6 @@ C_SRCS += $(wildcard ./apps/evt/*.c)
 OBJS += \
 $(BuildPath)/apps/src/apps.o \
 $(BuildPath)/apps/src/compass.o \
-$(BuildPath)/apps/src/gui_task.o \
 $(BuildPath)/apps/src/test_case.o \
 $(BuildPath)/apps/src/att_est_q.o \
 $(BuildPath)/apps/src/cpu_utils.o \
@@ -82,6 +81,7 @@ $(BuildPath)/apps/demo/GUIDEMO_TransparentDialog.o \
 $(BuildPath)/apps/demo/GUIDEMO_Treeview.o
 else
 OBJS += \
+$(BuildPath)/apps/gui/gui_task.o \
 $(BuildPath)/apps/gui/gui_graph.o
 endif
 

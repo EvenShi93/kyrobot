@@ -21,7 +21,8 @@
 
 #include "gui_demo.h"
 
-#include "../gui/boot_logo.c"
+#include "boot_logo.c"
+#include "background.c"
 
 static const char *TAG = "GUI";
 
@@ -108,6 +109,8 @@ void emwin_task(void const *argument)
   /* Activate the use of memory device feature */
   WM_SetCreateFlags(WM_CF_MEMDEV);
   GUI_DrawBitmap(&bmboot_logo, 0, 15);
+  delay(2000);
+  GUI_DrawBitmap(&bmbackground, 0, 0);
   delay(2000);
   gui_graph_start();
   for(;;) {
