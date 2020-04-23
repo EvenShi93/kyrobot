@@ -28,6 +28,7 @@ INCS = -I$(TopPath)/startup \
        -I$(TopPath)/apps/gui \
        -I$(TopPath)/apps/guicfg \
        -I$(TopPath)/apps/demo \
+       -I$(TopPath)/apps/ctrl \
        -I$(TopPath)/driver/bsp/inc \
        -I$(TopPath)/driver/cmsis/device \
        -I$(TopPath)/driver/cmsis/core \
