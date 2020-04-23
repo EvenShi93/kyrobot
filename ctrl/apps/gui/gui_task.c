@@ -75,7 +75,7 @@ void gui_task(void const *argument)
     ky_err(TAG, "disp init failed");
     goto exit;
   }
-  dispif_backlight(500); // display on
+  dispif_set_backlight(500); // display on
   if(vscn_init(ips_ram) != status_ok) {
     ky_err(TAG, "gui init failed");
     goto exit;
@@ -120,7 +120,17 @@ void emwin_task(void const *argument)
       gui_graph_start();
     break;
     case 2:
-      gui_setting_menu_start();
+      switch(gui_setting_menu_start()) {
+      case 0:
+        gui_ctrl_steer_start();
+      break;
+      case 1:
+        gui_ctrl_motor_start();
+      break;
+      case 2:
+        gui_config_backlight_start();
+      break;
+      }
     break;
     }
 #endif /* CONFIG_STEMWIN_DEMO_ENABLE */
