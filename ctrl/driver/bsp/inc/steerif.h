@@ -19,8 +19,8 @@
 #define STEER_TIM_GPIO_PIN_CHANNEL4        GPIO_PIN_9
 #define STEER_TIM_GPIO_AF_CHANNEL4         GPIO_AF3_TIM8
 
-status_t steerif_init(void);
-status_t steerif_set_angle(uint32_t ang);
+status_t steerif_init(uint32_t period_us, uint32_t poswidth_us);
+status_t steerif_set_poswidth(uint32_t poswidth_us);
 void steerif_msp_init(TIM_HandleTypeDef *htim);
 
 #endif /* BSP_INC_STEERIF_H_ */

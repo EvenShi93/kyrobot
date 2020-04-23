@@ -7,12 +7,16 @@
 
 #include "steerif.h"
 
-status_t steerif_init(void)
+status_t steerif_init(uint32_t period_us, uint32_t poswidth_us)
 {
   /* Timer handler declaration */
   TIM_HandleTypeDef    TimHandle;
   /* Timer Output Compare Configuration Structure declaration */
   TIM_OC_InitTypeDef sConfig;
+
+  if(period_us > 20000) period_us = 20000; // limit range [2.5ms, 20ms]
+  if(period_us < 2500) period_us = 2500;
+  if(poswidth_us > 2000) poswidth_us = 2000; // limit range [0ms, 2ms]
 
   /*##-1- Configure the TIM peripheral #######################################*/
   /* -----------------------------------------------------------------------
@@ -54,7 +58,7 @@ status_t steerif_init(void)
   TimHandle.State = HAL_TIM_STATE_RESET;
 
   TimHandle.Init.Prescaler         = 215;
-  TimHandle.Init.Period            = 19999;
+  TimHandle.Init.Period            = period_us - 1;
   TimHandle.Init.ClockDivision     = 0;
   TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
   TimHandle.Init.RepetitionCounter = 0;
@@ -72,7 +76,7 @@ status_t steerif_init(void)
   sConfig.OCIdleState  = TIM_OCIDLESTATE_RESET;
 
   /* Set the pulse value for channel 4 */
-  sConfig.Pulse = 1500;
+  sConfig.Pulse = poswidth_us;
   if (HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, STEER_TIM_CHANNEL) != HAL_OK) return status_error; /* Initialization Error */
 
   /*##-3- Start PWM signals generation #######################################*/
@@ -82,10 +86,10 @@ status_t steerif_init(void)
   return status_ok;
 }
 
-status_t steerif_set_angle(uint32_t ang)
+status_t steerif_set_poswidth(uint32_t poswidth_us)
 {
-  if(ang < 1000) {
-    STEER_TIM->CCR4 = ang + 1000;
+  if(poswidth_us <= 2000) {
+    STEER_TIM->CCR4 = poswidth_us;
     return status_ok;
   }
   return status_error;

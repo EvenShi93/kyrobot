@@ -53,8 +53,8 @@ static void _cbWin(WM_MESSAGE * pMsg) {
         //
         val   = SLIDER_GetValue(pMsg->hWinSrc);
 //        dispif_set_backlight(val * 10);
-        steerif_set_angle(val * 10);
-        ky_info("STEER", "set steer to %d%%", val);
+        steerif_set_poswidth(val * 10 + 1000);
+//        ky_info("STEER", "set steer to %d%%", val);
       break;
       }
     break;
