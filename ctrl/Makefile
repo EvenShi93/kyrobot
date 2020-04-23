@@ -190,10 +190,12 @@ libraries:
 
 BINARY := $(OutPath)/$(ProjName).bin
 
-flash: all
-	@st-flash --reset write $(BINARY) 0x08000000
+$(BINARY): $(ProjName).elf
 
-jflash: all
+flash: $(BINARY)
+	@st-flash --reset write $< 0x08000000
+
+jflash: $(BINARY)
 	@JLinkExe -CommanderScript f732.jlink
 
 monitor:
