@@ -21,6 +21,9 @@ C_SRCS += \
 ./apps/guicfg/LCDConf.c \
 ./apps/guicfg/gui_x_rtos.c
 
+C_SRCS += \
+./apps/ctrl/ctrl_task.c
+
 ifeq ($(CONFIG_STEMWIN_DEMO_ENABLE), y)
 C_SRCS += \
 ./apps/demo/GUIDEMO_Automotive.c \
@@ -43,6 +46,9 @@ C_SRCS += \
 ./apps/gui/gui_task.c \
 ./apps/gui/gui_graph.c \
 ./apps/gui/gui_iconview.c \
+./apps/gui/gui_config_bl.c \
+./apps/gui/gui_ctrl_motor.c \
+./apps/gui/gui_ctrl_steer.c \
 ./apps/gui/gui_setting_meu.c
 endif
 
@@ -63,6 +69,9 @@ $(BuildPath)/apps/guicfg/gui_drv.o \
 $(BuildPath)/apps/guicfg/GUIConf.o \
 $(BuildPath)/apps/guicfg/LCDConf.o \
 $(BuildPath)/apps/guicfg/gui_x_rtos.o
+
+OBJS += \
+$(BuildPath)/apps/ctrl/ctrl_task.o
 
 ifeq ($(STEMWIN_DEMO_ENABLE), y)
 OBJS += \
@@ -86,6 +95,9 @@ OBJS += \
 $(BuildPath)/apps/gui/gui_task.o \
 $(BuildPath)/apps/gui/gui_graph.o \
 $(BuildPath)/apps/gui/gui_iconview.o \
+$(BuildPath)/apps/gui/gui_config_bl.o \
+$(BuildPath)/apps/gui/gui_ctrl_motor.o \
+$(BuildPath)/apps/gui/gui_ctrl_steer.o \
 $(BuildPath)/apps/gui/gui_setting_menu.o
 endif
 
