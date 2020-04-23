@@ -49,7 +49,8 @@
 #define DISP_BL_TIM_GPIO_AF_CHANNEL2         GPIO_AF1_TIM2
 
 status_t dispif_init(void);
-status_t dispif_backlight(uint32_t bl);
+status_t dispif_set_backlight(uint32_t bl);
+uint32_t dispif_get_backlight(void);
 status_t dispif_tx_bytes(uint8_t *pTxData, uint16_t Size);
 status_t dispif_tx_bytes_dma(uint8_t *pTxData, uint16_t Size);
 

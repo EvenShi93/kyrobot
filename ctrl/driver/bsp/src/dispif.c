@@ -18,6 +18,8 @@ static osMutexId if_mutex = NULL;
 #else
 #endif /* FREERTOS_ENABLED */
 
+static uint32_t dispif_backlight_save = 0;
+
 #define DISP_SPI_CS_SELECT()    HAL_GPIO_WritePin(DISP_SPI_NSS_GPIO_PORT, DISP_SPI_NSS_PIN, GPIO_PIN_RESET)
 #define DISP_SPI_CS_DESELECT()  HAL_GPIO_WritePin(DISP_SPI_NSS_GPIO_PORT, DISP_SPI_NSS_PIN, GPIO_PIN_SET)
 
@@ -110,7 +112,7 @@ status_t dispif_init(void)
   sConfig.OCIdleState  = TIM_OCIDLESTATE_RESET;
 
   /* Set the pulse value for channel 2 */
-  sConfig.Pulse = 0;
+  sConfig.Pulse = dispif_backlight_save;
   if (HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, DISP_BL_TIM_CHANNEL) != HAL_OK) return status_error; /* Initialization Error */
 
   /*##-3- Start PWM signals generation #######################################*/
@@ -120,13 +122,19 @@ status_t dispif_init(void)
   return status_ok;
 }
 
-status_t dispif_backlight(uint32_t bl)
+status_t dispif_set_backlight(uint32_t bl)
 {
   if(bl < 1000) {
     DISP_BL_TIM->CCR2 = bl;
+    dispif_backlight_save = bl;
     return status_ok;
   }
   return status_error;
+}
+
+uint32_t dispif_get_backlight(void)
+{
+  return dispif_backlight_save;
 }
 
 status_t dispif_tx_bytes(uint8_t *pTxData, uint16_t Size)
