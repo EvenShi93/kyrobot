@@ -29,12 +29,12 @@ struct btn_cb_t settingmenu_btn_evt = {
 };
 
 static GUI_ConstString pMenuTexts[] = {
-  "LISTBOXTEXT0",
-  "LISTBOXTEXT1",
-  "LISTBOXTEXT2",
-  "LISTBOXTEXT3",
-  "LISTBOXTEXT4",
-  "LISTBOXTEXT5",
+  "Steer Control",
+  "Motor Control",
+  "Display Brightness",
+  "SUBMENU3",
+  "SUBMENU4",
+  "< Return",
   0
 };
 
@@ -81,8 +81,9 @@ static WM_HWIN hListBox;
 
 static int should_exit = 0;
 
-void gui_setting_menu_start(void)
+int gui_setting_menu_start(void)
 {
+  int sel = 0;
   WM_CALLBACK * pcbPrev;
   int           xSize, ySize;
 
@@ -95,7 +96,7 @@ void gui_setting_menu_start(void)
   ySize = LCD_GetYSize();
   hListBox = LISTBOX_CreateEx(0, 0, xSize, ySize, WM_HBKWIN, WM_CF_SHOW, 0, GUI_ID_LISTBOX0, pMenuTexts);
   LISTBOX_SetDefaultBkColor(hListBox, GUI_GRAY);
-  LISTBOX_SetFont(hListBox, &GUI_Font16B_ASCII);
+  LISTBOX_SetFont(hListBox, &GUI_FontComic18B_ASCII);
 
   WM_SetFocus(hListBox);
 
@@ -104,9 +105,13 @@ void gui_setting_menu_start(void)
     GUI_Delay(50);
   } while(should_exit == 0);
   btn_evt_unregister_callback(&settingmenu_btn_evt);
+
+  sel = LISTBOX_GetSel(hListBox);
+
   should_exit = 0;
   WM_DeleteWindow(hListBox);
   WM_SetCallback(WM_HBKWIN, pcbPrev);
+  return sel;
 }
 
 static void settingmenu_btn_evt_cb(int id, btn_evt_type_t evt)
