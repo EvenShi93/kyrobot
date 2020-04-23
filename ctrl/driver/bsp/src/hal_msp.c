@@ -146,7 +146,9 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
   */
 void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
 {
-  if(htim->Instance == DISP_BL_TIM) {
+  if(htim->Instance == MOTOR_TIM) {
+    motorif_msp_init(htim);
+  } else if(htim->Instance == DISP_BL_TIM) {
     dispif_bl_msp_init(htim);
   } else if(htim->Instance == STEER_TIM) {
     steerif_msp_init(htim);
