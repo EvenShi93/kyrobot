@@ -10,8 +10,10 @@
 #include "SLIDER.h"
 
 #include "log.h"
+#include "motorif.h"
 #include "evt_proc.h"
 
+static void auto_slider_step(int flag);
 static void ctrl_motor_btn_evt_cb(int id, btn_evt_type_t evt);
 
 /*********************************************************************
@@ -52,6 +54,13 @@ static void _cbWin(WM_MESSAGE * pMsg) {
         //
         val   = SLIDER_GetValue(pMsg->hWinSrc);
 //        dispif_set_backlight(val * 10);
+        if(val > 0) {
+          motorif_set_dutycycle_a(val * 10);
+          motorif_set_dutycycle_b(0);
+        } else {
+          motorif_set_dutycycle_a(0);
+          motorif_set_dutycycle_b(-val * 10);
+        }
         ky_info("MOTOR", "set motor to %d%%", val);
       break;
       }
@@ -89,28 +98,44 @@ void gui_ctrl_motor_start(void)
   xSize = LCD_GetXSize();
   ySize = LCD_GetYSize();
   hSlider = SLIDER_CreateEx(0, (ySize - CTRL_MOTOR_SLIDER_HEIGHT) >> 1, xSize, CTRL_MOTOR_SLIDER_HEIGHT, WM_HBKWIN, WM_CF_SHOW | WM_CF_HASTRANS, 0, GUI_ID_SLIDER0);
-  SLIDER_SetRange(hSlider, 0, 99);
+  SLIDER_SetRange(hSlider, -100, 100);
   SLIDER_SetNumTicks(hSlider, 10);
-//  slider_value = dispif_get_backlight() / 10;
-  SLIDER_SetValue(hSlider, slider_value);
+  slider_value = 0;
+  SLIDER_SetValue(hSlider, 0);
   WM_SetFocus(hSlider);
 
   btn_evt_register_callback(&ctrl_motor_btn_evt);
   do {
     GUI_Delay(100);
-    if(auto_dec_inc == 1) {
-      SLIDER_Inc(hSlider);
-      slider_value ++;
-    } else if(auto_dec_inc == -1) {
-      SLIDER_Dec(hSlider);
-      slider_value --;
-    }
+    auto_slider_step(auto_dec_inc);
   } while(should_exit == 0);
   btn_evt_unregister_callback(&ctrl_motor_btn_evt);
+  motorif_set_dutycycle_a(0); // stop motor
+  motorif_set_dutycycle_b(0);
   auto_dec_inc = 0;
   should_exit = 0;
   WM_DeleteWindow(hSlider);
   WM_SetCallback(WM_HBKWIN, pcbPrev);
+}
+
+#define SLIDER_ADJ_STEP      5
+
+static void auto_slider_step(int flag)
+{
+  if(flag != 0) {
+    if(flag > 0) {
+      if((slider_value + SLIDER_ADJ_STEP) <= 100)
+        slider_value += SLIDER_ADJ_STEP;
+      else
+        slider_value = 100;
+    } else {
+      if((slider_value - SLIDER_ADJ_STEP) >= -100)
+        slider_value -= SLIDER_ADJ_STEP;
+      else
+        slider_value = -100;
+    }
+    SLIDER_SetValue(hSlider, slider_value);
+  }
 }
 
 static void ctrl_motor_btn_evt_cb(int id, btn_evt_type_t evt)
@@ -118,20 +143,12 @@ static void ctrl_motor_btn_evt_cb(int id, btn_evt_type_t evt)
   if(evt == btn_evt_release) {
     if(id == BTN1) {
       if(auto_dec_inc == 0) {
-        if(slider_value > 10)
-          slider_value -= 10;
-        else
-          slider_value = 1;
-        SLIDER_SetValue(hSlider, slider_value);
+        auto_slider_step(-1);
       } else auto_dec_inc = 0;
     }
     if(id == BTN3) {
       if(auto_dec_inc == 0) {
-        if(slider_value < 90)
-          slider_value += 10;
-        else
-          slider_value = 99;
-        SLIDER_SetValue(hSlider, slider_value);
+        auto_slider_step(1);
       } else auto_dec_inc = 0;
     }
     if(id == BTN2) {
