@@ -7,6 +7,7 @@
 #include "comif.h"
 #include "dispif.h"
 #include "steerif.h"
+#include "motorif.h"
 #include "buttons.h"
 
 #include "ubloxa.h"
