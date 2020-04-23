@@ -12,6 +12,8 @@
 
 void att_est_q_task(void const *argument);
 
+void att_est_get_euler(Euler_T *e);
+
 #endif /* APPS_INC_ATT_EST_Q_H_ */
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/

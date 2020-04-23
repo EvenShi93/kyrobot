@@ -149,6 +149,11 @@ void att_est_q_task(void const *argument)
   }
 }
 
+void att_est_get_euler(Euler_T *e)
+{
+  *e = est_e;
+}
+
 #define GYR_PEACE_THRESHOLD                      (0.5f) /* unit: dps */
 
 static _3AxisUnit last_gyr = {0};
