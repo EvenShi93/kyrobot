@@ -20,8 +20,11 @@ typedef enum {
   BTN0 = 0,
   BTN_PWR = BTN0,
   BTN1 = 1,
+  BTN_LEFT = BTN1,
   BTN2 = 2,
-  BTN3 = 3
+  BTN_CENTER = BTN2,
+  BTN3 = 3,
+  BTN_RIGHT = BTN3,
 } Btn_TypeDef;
 
 typedef enum {
