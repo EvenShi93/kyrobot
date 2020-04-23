@@ -6,6 +6,7 @@
 #include "ec20.h"
 #include "comif.h"
 #include "dispif.h"
+#include "steerif.h"
 #include "buttons.h"
 
 #include "ubloxa.h"
