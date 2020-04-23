@@ -105,7 +105,7 @@ void steerif_msp_init(TIM_HandleTypeDef *htim)
   /* Enable all GPIO Channels Clock requested */
   STEER_TIM_CHANNEL_GPIO_PORT();
 
-  /* Configure PB.03 in output, push-pull, alternate function mode */
+  /* Configure PC.09 in output, push-pull, alternate function mode */
   /* Common configuration for all channels */
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
