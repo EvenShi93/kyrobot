@@ -23,6 +23,7 @@ $(BuildPath)/driver/bsp/magif.o \
 $(BuildPath)/driver/bsp/disp.o \
 $(BuildPath)/driver/bsp/dispif.o \
 $(BuildPath)/driver/bsp/steerif.o \
+$(BuildPath)/driver/bsp/motorif.o \
 $(BuildPath)/driver/bsp/flashif.o \
 $(BuildPath)/driver/bsp/usbdif.o \
 $(BuildPath)/driver/bsp/ist83xx.o \
