@@ -90,7 +90,7 @@ status_t steerif_set_angle(uint32_t ang)
   }
   return status_error;
 }
-#include "log.h"
+
 void steerif_msp_init(TIM_HandleTypeDef *htim)
 {
   GPIO_InitTypeDef   GPIO_InitStruct;
@@ -100,7 +100,7 @@ void steerif_msp_init(TIM_HandleTypeDef *htim)
 
   /* Enable all GPIO Channels Clock requested */
   STEER_TIM_CHANNEL_GPIO_PORT();
-ky_info("TIM8", "msp init ...");
+
   /* Configure PB.03 in output, push-pull, alternate function mode */
   /* Common configuration for all channels */
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
