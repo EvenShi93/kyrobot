@@ -116,10 +116,10 @@ void emwin_task(void const *argument)
     GUIDEMO_Main();
 #else
     switch(gui_iconview_start()) {
-    case 0:
+    case menu_code_waves:
       gui_graph_start();
     break;
-    case 2:
+    case menu_code_system:
       switch(gui_setting_menu_start()) {
       case 0:
         gui_ctrl_steer_start();
@@ -132,6 +132,11 @@ void emwin_task(void const *argument)
       break;
       }
     break;
+    case menu_code_poweroff:
+      output_port_clear(IO_PWR_CTRL);
+    break;
+    case menu_code_nothing:
+    default: break;
     }
 #endif /* CONFIG_STEMWIN_DEMO_ENABLE */
   }
