@@ -16,10 +16,11 @@
 
 #include "att_est_q.h"
 
+static const char *TAG = "WAVE";
+
 #define BK_COLOR_0        0xFF5555
 #define BK_COLOR_1        0x880000
 
-//#define DIST_TO_BORDER   0
 #define DIST_TO_WIN      5
 
 #define BORDER_TOP       0
@@ -40,16 +41,13 @@
 #define TIME_RUN         20000
 #define TIME_STEP        15
 
-#define MAX_NUM_DATA_OBJ 5 // max waves we support
-
-//#define GRAPH_DIV        9   // (2^9 = 512) If this value is changed _aWaves[] need to be changed too!
 #define GRID_DIST_X      25
 #define GRID_DIST_Y      10
-//#define GRID_OFF_Y       25
+
+#define WAVE_NUMBER      2
+#define MAX_NUM_DATA_OBJ 5 // max waves we support
 
 static void graph_btn_evt_cb(int id, btn_evt_type_t evt);
-
-extern GUI_CONST_STORAGE GUI_BITMAP bmbackground;
 
 struct btn_cb_t graph_btn_evt = {
   graph_btn_evt_cb,
@@ -64,30 +62,13 @@ static Euler_T euler;
 *
 **********************************************************************
 */
-//typedef struct {
-//  int     ScaleVOff;
-//  int     DataVOff;
-//  int     GridVOff;
-//  void (* pfAddData)(GRAPH_DATA_Handle hData, int DataID);
-//  int     NumWaves;
-//} GRAPH_WAVE;
-
 typedef struct {
   const char *Title;
   int         ScaleVOff;
   void     (* pfAddData)(GRAPH_DATA_Handle hData, int WaveID);
   int         NumWaves;
+  int         DataPeriod;
 } GraphWaveDef;
-
-//static int _HeartBeat[] = {
-//    2,   4,   6,   8,  10,   6,   2,   0,   0,   0,
-//   -8,  16,  40,  64,  88,  58,  28,  -2, -32, -30,
-//  -20, -10,   0,   2,   2,   4,   4,   6,   6,   8,
-//    8,  10,  12,  14,  16,  18,  20,  16,  12,   8,
-//    4,   2,   2,   0,   0,   0,   0,   0,   0,   0,
-//    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-//    0,   0,   0,   0,   0,   0,   0,   0,   0,   0
-//};
 
 static GUI_COLOR _aColorData[MAX_NUM_DATA_OBJ] = {
   0x50C0FF,
@@ -110,102 +91,40 @@ static int         _DataAdjust;
 *
 *       _AddData_Heartbeat
 */
-static void _AddData_Heartbeat(GRAPH_DATA_Handle hData, int DataID) {
-//  static int Index = 0;
-
-//  GRAPH_DATA_YT_AddValue(hData, (_HeartBeat[Index]) + _DataAdjust);
+static void _AddData_Euler(GRAPH_DATA_Handle hData, int DataID) {
   if(DataID == 0) {
     att_est_get_euler(&euler);
     GRAPH_DATA_YT_AddValue(hData, euler.pitch + _DataAdjust);//Index osGetCPUUsage()
   } else {
     GRAPH_DATA_YT_AddValue(hData, euler.roll + _DataAdjust);
   }
-//  if (++Index == GUI_COUNTOF(_HeartBeat)) {
-//    Index = 0;
-//  }
-//  if(++ Index == 30) Index = 0;
+}
+
+static void _AddData_Usage(GRAPH_DATA_Handle hData, int DataID) {
+  GUI_USE_PARA(DataID);
+  GRAPH_DATA_YT_AddValue(hData, osGetCPUUsage() + _DataAdjust);
 }
 
 /*********************************************************************
 *
 *       DATA _aWave - Keep below _AddData-functions
 */
-//GRAPH_WAVE _aWave[] = {
-//  {
-//    157,                // Vertical scale offset in relation to GRAPH_DIV
-//    152,                // Vertical data  offset in relation to GRAPH_DIV
-//    21,                 // Vertical grid  offset in relation to GRAPH_DIV
-//    _AddData_Heartbeat, // Pointer to specific AddData function
-//    1                   // Number of waves
-//  },
-//  {0}
-//};
-
-GraphWaveDef WaveList[] = {
+GraphWaveDef WaveList[WAVE_NUMBER] = {
   {
-    "Euler",
-    30,
-    _AddData_Heartbeat,
-    2
+    "Euler Angle",
+    35,
+    _AddData_Euler,
+    2,
+	20             /* 20ms */
   },
-  {0}
+  {
+    "CPU Usage",
+	0,
+	_AddData_Usage,
+	1,
+	50             /* 50ms */
+  },
 };
-
-/*********************************************************************
-*
-*       _ShowGraph
-*/
-//static void _ShowGraph(GRAPH_Handle hGraph, GRAPH_DATA_Handle hData[], int DataCount, void (* pfAddData)(GRAPH_DATA_Handle hData, int DataID)) {
-////  int Count, Data_xSize, xSize;
-//  int TimeStart, TimeDiff, TimeStep;
-//  int i, Flag;
-//
-////  xSize      = LCD_GetXSize();
-////  Data_xSize = xSize - (BORDER_LEFT + BORDER_RIGHT);
-////  Count      = 0;
-//  //
-//  // Attach data objects
-//  //
-//  for (i = 0; i < DataCount; i++) {
-//    GRAPH_AttachData(hGraph, hData[i]);
-//  }
-//  //
-//  // Add values before GRAPH is displayed
-//  //
-////  while (Count < Data_xSize) {
-////    for (i = 0; i < DataCount; i++) {
-////      pfAddData(hData[i], i);
-////    }
-////    Count++;
-////  }
-//  //
-//  // Add values depending on time
-//  //
-//
-//  TimeStart = GUI_GetTime();
-//  Flag = 1;
-//  do {
-//    TimeDiff = GUI_GetTime() - TimeStart;
-//    for (i = 0; i < DataCount; i++) {
-//      pfAddData(hData[i], i);
-//    }
-//    if (Flag) {
-//      Flag = 0;
-//      GUI_Exec();
-//      GRAPH_DetachScale(hGraph, _hScaleH);
-//      GRAPH_DetachScale(hGraph, _hScaleV);
-//      WM_ValidateWindow(hGraph);
-//    }
-//
-//    TimeStep  = GUI_GetTime() - TimeStart;
-//    if ((TimeStep - TimeDiff) < TIME_STEP) {
-//      GUI_Delay(TIME_STEP - (TimeStep - TimeDiff));
-//    }
-//  } while ((TimeDiff < TIME_RUN));
-//  for (i = 0; i < DataCount; i++) {
-//    GRAPH_DetachData(hGraph, hData[i]);
-//  }
-//}
 
 /*********************************************************************
 *
@@ -214,18 +133,15 @@ GraphWaveDef WaveList[] = {
 static void _cbBk(WM_MESSAGE * pMsg) {
   switch (pMsg->MsgId) {
   case WM_PAINT:
-//    GUI_SetBkColor(BK_COLOR_1);
-//    GUI_Clear();
-  //
-  // Draw background
-  //
-  GUI_DrawBitmap(&bmbackground, 0, 0);
+    GUI_SetBkColor(BK_COLOR_1);
+    GUI_Clear();
   break;
   default:
     WM_DefaultProc(pMsg);
   }
 }
 
+static int select_wave = 0;
 static int should_exit = 0;
 
 void gui_graph_start(void)
@@ -233,8 +149,8 @@ void gui_graph_start(void)
   const WIDGET_EFFECT * pEffectOld;
   GRAPH_Handle          hGraph;
   GRAPH_DATA_Handle     hData[MAX_NUM_DATA_OBJ];
-  int                   xSize, ySize, i;
-//  int                   Data_ySize;
+  int                   xSize, ySize, i, current_wave_id;
+  GUI_TIMER_TIME        TimeStart, TimeDiff;
 
   xSize      = LCD_GetXSize();
   ySize      = LCD_GetYSize();
@@ -263,7 +179,6 @@ void gui_graph_start(void)
   for (i = 0; i < MAX_NUM_DATA_OBJ; i++) {
     hData[i] = GRAPH_DATA_YT_Create(_aColorData[i], xSize - (BORDER_LEFT + BORDER_RIGHT), 0, 0);
   }
-//  Data_ySize = ySize - BORDER_BOTTOM;
   //
   // Create and configure GRAPH_SCALE objects
   //
@@ -271,48 +186,48 @@ void gui_graph_start(void)
   _hScaleV = GRAPH_SCALE_Create(BORDER_LEFT   >> 1, GUI_TA_HCENTER, GRAPH_SCALE_CF_VERTICAL,   TICK_DIST_V);
   GRAPH_SCALE_SetPos(_hScaleH, ySize - SCALE_H_HEIGHT);
   GRAPH_SCALE_SetOff(_hScaleH, -5);
-  // attach horizontal & vertical scale
-  GRAPH_AttachScale(hGraph, _hScaleH);
-  GRAPH_AttachScale(hGraph, _hScaleV);
-  //
-  // Show some graphs
-  //
-//  _DataAdjust = (Data_ySize * _aWave[0].DataVOff) >> GRAPH_DIV;
-  _DataAdjust = WaveList[0].ScaleVOff;
-  GRAPH_SetGridOffY (hGraph, 0);//(Data_ySize * _aWave[0].GridVOff) >> GRAPH_DIV
-  GRAPH_SCALE_SetOff(_hScaleV, WaveList[0].ScaleVOff);//(((Data_ySize - BORDER_BOTTOM) * _aWave[0].ScaleVOff) >> GRAPH_DIV)
-//  _ShowGraph(hGraph, hData, _aWave[0].NumWaves, _aWave[0].pfAddData);
-
-  for(i = 0; i < WaveList[0].NumWaves; i ++)
-    GRAPH_AttachData(hGraph, hData[i]);
-
-  GUI_Exec();
-  GRAPH_DetachScale(hGraph, _hScaleH);
-  GRAPH_DetachScale(hGraph, _hScaleV);
-  WM_ValidateWindow(hGraph);
 
   btn_evt_register_callback(&graph_btn_evt);
-
+  //
+  // Show graphs
+  //
   do {
-//    _aWave[0].pfAddData(hData[0], 0);
-    for(i = 0; i < WaveList[0].NumWaves; i ++) {
-      WaveList[0].pfAddData(hData[i], i);
+    current_wave_id = select_wave;
+    ky_info(TAG, "Show Wave: %s", WaveList[current_wave_id].Title);
+
+    _DataAdjust = WaveList[current_wave_id].ScaleVOff;
+    GRAPH_SetGridOffY (hGraph, WaveList[current_wave_id].ScaleVOff % GRID_DIST_Y);
+    GRAPH_SCALE_SetOff(_hScaleV, WaveList[current_wave_id].ScaleVOff);
+
+    // attach horizontal & vertical scale
+    GRAPH_AttachScale(hGraph, _hScaleH);
+    GRAPH_AttachScale(hGraph, _hScaleV);
+
+    for(i = 0; i < WaveList[current_wave_id].NumWaves; i ++) {
+      GRAPH_AttachData(hGraph, hData[i]);
     }
-    GUI_Delay(15);
+
+    GUI_Exec();
+    GRAPH_DetachScale(hGraph, _hScaleH);
+    GRAPH_DetachScale(hGraph, _hScaleV);
+    WM_ValidateWindow(hGraph);
+
+    do {
+      TimeStart = GUI_GetTime();
+      for(i = 0; i < WaveList[0].NumWaves; i ++) {
+        WaveList[current_wave_id].pfAddData(hData[i], i);
+      }
+      TimeDiff = GUI_GetTime() - TimeStart;
+      if(TimeDiff < WaveList[current_wave_id].DataPeriod) {
+        GUI_Delay(WaveList[current_wave_id].DataPeriod - TimeDiff);
+      }
+    } while((should_exit == 0) && (current_wave_id == select_wave));
+
+    for(i = 0; i < WaveList[0].NumWaves; i ++) {
+      GRAPH_DetachData(hGraph, hData[i]);
+    }
   } while(should_exit == 0);
 
-  for(i = 0; i < WaveList[0].NumWaves; i ++)
-    GRAPH_DetachData(hGraph, hData[i]);
-//  i = 0;
-//  while (_aWave[i].pfAddData != 0) {
-////    GRAPH_AttachScale(hGraph, _hScaleH);
-////    GRAPH_AttachScale(hGraph, _hScaleV);
-//    _DataAdjust = (Data_ySize * _aWave[i].DataVOff) >> GRAPH_DIV;
-//    GRAPH_SetGridOffY (hGraph, (Data_ySize * _aWave[i].GridVOff) >> GRAPH_DIV);
-//    GRAPH_SCALE_SetOff(_hScaleV, (((Data_ySize - BORDER_BOTTOM) * _aWave[i].ScaleVOff) >> GRAPH_DIV));
-//    _ShowGraph(hGraph, hData, _aWave[i].NumWaves, _aWave[i].pfAddData);
-//    i++;
-//  }
   btn_evt_unregister_callback(&graph_btn_evt);
   should_exit = 0;
   //
@@ -336,7 +251,12 @@ static void graph_btn_evt_cb(int id, btn_evt_type_t evt)
       should_exit = 1;
     }
     if(id == BTN_LEFT) {
-      ky_info("GRAPH", "print any log to test the CPU usage");
+      if(select_wave > 0) select_wave --;
+      else select_wave = WAVE_NUMBER - 1;
+    }
+    if(id == BTN_RIGHT) {
+      if(select_wave < (WAVE_NUMBER - 1)) select_wave ++;
+      else select_wave = 0;
     }
   }
 }
