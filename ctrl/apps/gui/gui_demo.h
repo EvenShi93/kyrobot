@@ -12,9 +12,19 @@
 
 #include "WM.h"
 
+typedef enum {
+  menu_code_waves = 0,
+  menu_code_system = 1,
+  menu_code_nothing = 0xE,
+  menu_code_poweroff = 0xF,
+} main_menu_code_t;
+
+main_menu_code_t gui_iconview_start(void);
+
 void gui_graph_start(void);
-int gui_iconview_start(void);
+
 int gui_setting_menu_start(void);
+
 void gui_config_backlight_start(void);
 
 void gui_ctrl_motor_start(void);
