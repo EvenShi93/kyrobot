@@ -18,6 +18,7 @@ $(BuildPath)/driver/bsp/ubloxb.o \
 $(BuildPath)/driver/bsp/leds.o \
 $(BuildPath)/driver/bsp/gpios.o \
 $(BuildPath)/driver/bsp/buttons.o \
+$(BuildPath)/driver/bsp/voltage.o \
 $(BuildPath)/driver/bsp/imuif.o \
 $(BuildPath)/driver/bsp/magif.o \
 $(BuildPath)/driver/bsp/disp.o \
