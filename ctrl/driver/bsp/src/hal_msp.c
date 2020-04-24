@@ -155,4 +155,34 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
   }
 }
 
+/**
+  * @brief ADC MSP Initialization
+  *        This function configures the hardware resources used in this example:
+  *           - Peripheral's clock enable
+  *           - Peripheral's GPIO Configuration
+  * @param hadc: ADC handle pointer
+  * @retval None
+  */
+void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
+{
+  if(hadc->Instance == BAT_ADC) {
+    bat_adc_msp_init(hadc);
+  }
+}
+
+/**
+  * @brief ADC MSP De-Initialization
+  *        This function frees the hardware resources used in this example:
+  *          - Disable the Peripheral's clock
+  *          - Revert GPIO to their default state
+  * @param hadc: ADC handle pointer
+  * @retval None
+  */
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
+{
+  if(hadc->Instance == BAT_ADC) {
+    bat_adc_msp_deinit(hadc);
+  }
+}
+
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/
