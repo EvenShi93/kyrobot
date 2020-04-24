@@ -25,6 +25,8 @@ struct BtnState {
 
 static struct btn_cb_t *btn_cb_root = NULL;
 
+static float battery_voltage = 12.0f;
+
 static void btn_event_cb(int id, btn_evt_type_t evt);
 #if BUTTON_EVENT_CALLBACK_TEST
 static void button_event_test_cb(int id, btn_evt_type_t evt);
@@ -46,6 +48,10 @@ void evt_proc_task(void const *argument)
   }
   uint32_t btn_sta = 0;
   buttons_init();
+  if(voltage_measure_init() != status_ok) {
+    ky_err(TAG, "voltage adc init failed");
+    vTaskDelete(NULL);
+  }
   task_timestamp = xTaskGetTickCountFromISR();
   for(int i = 0; i < NBTNS; i ++) {
     btn_state[i].state = 0;
@@ -89,9 +95,16 @@ void evt_proc_task(void const *argument)
         }
       }
     }
+    // update voltage
+    battery_voltage = 3.3f * ((10.0f + 3.3f) / 3.3f) * voltage_get_measurement() / 4096.0f;
     // detect period is 50ms
     delay(50);
   }
+}
+
+float battery_volt_read(void)
+{
+  return battery_voltage;
 }
 
 void btn_evt_register_callback(struct btn_cb_t *pcb)

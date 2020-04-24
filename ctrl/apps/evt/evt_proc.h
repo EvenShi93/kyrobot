@@ -25,6 +25,8 @@ struct btn_cb_t {
   struct btn_cb_t *next;
 };
 
+float battery_volt_read(void);
+
 void btn_evt_register_callback(struct btn_cb_t *pcb);
 void btn_evt_unregister_callback(struct btn_cb_t *pcb);
 
