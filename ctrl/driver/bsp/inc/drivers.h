@@ -9,6 +9,7 @@
 #include "steerif.h"
 #include "motorif.h"
 #include "buttons.h"
+#include "voltage.h"
 
 #include "ubloxa.h"
 #include "ubloxb.h"
