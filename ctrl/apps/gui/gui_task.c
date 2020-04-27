@@ -29,6 +29,7 @@ static const char *TAG = "GUI";
 
 vscn_handle_t *ips_ram;
 
+static osThreadId emwin_task_handle;
 static uint32_t displayer_off = 0;
 
 void emwin_task(void const *argument);
@@ -87,7 +88,7 @@ void gui_task(void const *argument)
     ky_err(TAG, "disp init failed");
     goto exit;
   }
-  dispif_set_backlight(500); // display on
+
   if(vscn_init(ips_ram) != status_ok) {
     ky_err(TAG, "gui init failed");
     goto exit;
@@ -95,11 +96,14 @@ void gui_task(void const *argument)
   vscn_clear(ips_ram);
 
   osThreadDef(EMWIN, emwin_task, osPriorityNormal, 0, 2048);
-  if(osThreadCreate(osThread(EMWIN), NULL) == NULL) {
+  emwin_task_handle = osThreadCreate(osThread(EMWIN), NULL);
+  if(emwin_task_handle == NULL) {
     ky_err(TAG, "emwin task create failed.");
+    goto exit;
   }
 
   btn_evt_register_callback(&home_btn_evt);
+  dispif_set_backlight(500); // display on
 
   for(;;) {
     delay(30);
@@ -109,12 +113,14 @@ void gui_task(void const *argument)
         disp_backlight_save = dispif_get_backlight();
         dispif_set_backlight(0);
         disp_display_off(ips_drv);
+        vTaskSuspend(emwin_task_handle); // suspend GUI task.
         disp_switch_flag = displayer_off;
       }
     } else {
       if(disp_switch_flag != displayer_off) {
         // turn on the displayer
         disp_display_on(ips_drv);
+        vTaskResume(emwin_task_handle); // resume GUI task.
         dispif_set_backlight(disp_backlight_save);
         disp_switch_flag = displayer_off;
       } else {
