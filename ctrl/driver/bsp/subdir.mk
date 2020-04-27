@@ -7,7 +7,7 @@
 OBJS += \
 $(BuildPath)/driver/bsp/callback.o \
 $(BuildPath)/driver/bsp/comif.o \
-$(BuildPath)/driver/bsp/ec20.o \
+$(BuildPath)/driver/bsp/controlif.o \
 $(BuildPath)/driver/bsp/hal_msp.o \
 $(BuildPath)/driver/bsp/mcu_irq.o \
 $(BuildPath)/driver/bsp/gpio_irq.o \
