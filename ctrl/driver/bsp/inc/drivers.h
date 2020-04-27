@@ -3,13 +3,13 @@
 
 #include "gpios.h"
 #include "leds.h"
-#include "ec20.h"
 #include "comif.h"
 #include "dispif.h"
 #include "steerif.h"
 #include "motorif.h"
 #include "buttons.h"
 #include "voltage.h"
+#include "controlif.h"
 #include "remoterif.h"
 
 #include "ubloxa.h"
