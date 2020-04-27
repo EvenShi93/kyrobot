@@ -20,6 +20,7 @@
 #endif /* CONFIG_STEMWIN_DEMO_ENABLE */
 
 #include "gui_demo.h"
+#include "evt_proc.h"
 
 #include "boot_logo.c"
 #include "background.c"
@@ -28,16 +29,27 @@ static const char *TAG = "GUI";
 
 vscn_handle_t *ips_ram;
 
+static uint32_t displayer_off = 0;
+
 void emwin_task(void const *argument);
 
 static status_t ips_write_cmd(uint8_t cmd);
 static status_t ips_write_dat(uint8_t dat);
 static status_t ips_write_buf(uint8_t* buf, uint16_t size);
 
+static void gui_home_btn_evt_cb(int id, btn_evt_type_t evt);
+
+static struct btn_cb_t home_btn_evt = {
+  gui_home_btn_evt_cb,
+  NULL
+};
+
 void gui_task(void const *argument)
 {
   uint8_t *fb;
   disp_dev_t *ips_drv;
+  uint32_t disp_switch_flag = 0;
+  uint32_t disp_backlight_save = 0;
 
   ky_info(TAG, "GUI task started");
 
@@ -87,9 +99,28 @@ void gui_task(void const *argument)
     ky_err(TAG, "emwin task create failed.");
   }
 
+  btn_evt_register_callback(&home_btn_evt);
+
   for(;;) {
-    delay(33);
-    disp_refresh(ips_drv, ips_ram->ui_buf);
+    delay(30);
+    if(displayer_off != 0) {
+      if(disp_switch_flag != displayer_off) {
+        // turn off the displayer
+        disp_backlight_save = dispif_get_backlight();
+        dispif_set_backlight(0);
+        disp_display_off(ips_drv);
+        disp_switch_flag = displayer_off;
+      }
+    } else {
+      if(disp_switch_flag != displayer_off) {
+        // turn on the displayer
+        disp_display_on(ips_drv);
+        dispif_set_backlight(disp_backlight_save);
+        disp_switch_flag = displayer_off;
+      } else {
+        disp_refresh(ips_drv, ips_ram->ui_buf);
+      }
+    }
   }
 
 exit:
@@ -160,4 +191,13 @@ static status_t ips_write_buf(uint8_t* buf, uint16_t size)
 {
   output_port_set(IO_DISP_DC);
   return dispif_tx_bytes_dma(buf, size);
+}
+
+static void gui_home_btn_evt_cb(int id, btn_evt_type_t evt)
+{
+  if(evt == btn_evt_pressed) {
+    if(id == BTN_PWR) {
+      displayer_off ^= 1;
+    }
+  }
 }
