@@ -42,4 +42,7 @@ typedef struct {
 status_t disp_init(disp_dev_t *hdisp);
 status_t disp_refresh(disp_dev_t *hdisp, uint8_t *buffer);
 
+status_t disp_display_on(disp_dev_t *hdisp);
+status_t disp_display_off(disp_dev_t *hdisp);
+
 #endif /* BSP_INC_DISP_H_ */

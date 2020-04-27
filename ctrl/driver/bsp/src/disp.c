@@ -132,6 +132,16 @@ status_t disp_refresh(disp_dev_t *hdisp, uint8_t *buffer)
   return hdisp->wr_buf(buffer, hdisp->frame_width * hdisp->frame_height * 2);
 }
 
+status_t disp_display_on(disp_dev_t *hdisp)
+{
+  return hdisp->wr_reg(0x29);
+}
+
+status_t disp_display_off(disp_dev_t *hdisp)
+{
+  return hdisp->wr_reg(0x28);
+}
+
 static status_t disp_set_addr(disp_dev_t *hdisp, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
   switch(hdisp->direction) {
