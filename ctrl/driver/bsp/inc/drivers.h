@@ -10,9 +10,9 @@
 #include "motorif.h"
 #include "buttons.h"
 #include "voltage.h"
+#include "remoterif.h"
 
 #include "ubloxa.h"
-#include "ubloxb.h"
 #include "rtcmif.h"
 
 #include "imuif.h"
