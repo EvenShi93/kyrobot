@@ -34,8 +34,8 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
     comif_msp_init(huart);
   } else if(huart->Instance == RMT_UART) {
     rmtif_msp_init(huart);
-//  } else if(huart->Instance == EC20_UART) {
-//    ec20if_msp_init(huart);
+  } else if(huart->Instance == CTRL_UART) {
+    ctrlif_msp_init(huart);
 //  } else if(huart->Instance == UBXB_UART) {
 //    ubxbif_msp_init(huart);
   }
@@ -57,8 +57,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
     comif_msp_deinit(huart);
   } else if(huart->Instance == RMT_UART) {
     rmtif_msp_deinit(huart);
-//  } else if(huart->Instance == EC20_UART) {
-//    ec20if_msp_deinit(huart);
+  } else if(huart->Instance == CTRL_UART) {
+    ctrlif_msp_deinit(huart);
 //  } else if(huart->Instance == UBXB_UART) {
 //    ubxbif_msp_deinit(huart);
   }
