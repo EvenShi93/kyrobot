@@ -7,6 +7,7 @@
 
 #include "gui_demo.h"
 
+#include "TEXT.h"
 #include "ICONVIEW.h"
 
 #include "log.h"
@@ -1783,7 +1784,7 @@ static const BITMAP_ITEM _aBitmapItem[] = {
 //  {&_bmWrite,   "Write"   , "Write an email"},
 //  {&_bmPassword,"Password", "Determine the system password", 2},
   {&_bmRemote,  "Network" , "Select network", menu_code_nothing},
-  {&_bmClock,   "Clock"   , "Adjust current time and date", menu_code_nothing},
+//  {&_bmClock,   "Clock"   , "Adjust current time and date", menu_code_nothing},
   {&_bmPower,   "Power"   , "Power Off", menu_code_poweroff}
 };
 
@@ -1799,6 +1800,7 @@ static const BITMAP_ITEM _aBitmapItem[] = {
 */
 static void _cbWin(WM_MESSAGE * pMsg) {
   int NCode, Id, Sel;
+  WM_HWIN hItem;
   switch (pMsg->MsgId) {
   case WM_NOTIFY_PARENT:
     Id    = WM_GetId(pMsg->hWinSrc);      /* Id of widget */
@@ -1811,6 +1813,8 @@ static void _cbWin(WM_MESSAGE * pMsg) {
         // Change widget text changing the selection
         //
         Sel   = ICONVIEW_GetSel(pMsg->hWinSrc);
+        hItem = WM_GetDialogItem(pMsg->hWin, GUI_ID_TEXT0);
+        TEXT_SetText(hItem, _aBitmapItem[Sel].pExplanation);
         ky_info(TAG, "%s", _aBitmapItem[Sel].pExplanation);
         break;
       }
@@ -1843,6 +1847,7 @@ static int should_exit = 0;
 */
 main_menu_code_t gui_iconview_start(void) {
   WM_CALLBACK * pcbPrev;
+  WM_HWIN       hText;
   int           i, xSize, ySize;
 
   WM_EnableMemdev(WM_HBKWIN);
@@ -1852,7 +1857,7 @@ main_menu_code_t gui_iconview_start(void) {
   //
   xSize = LCD_GetXSize();
   ySize = LCD_GetYSize();
-  hIconView = ICONVIEW_CreateEx(0, 0, xSize, ySize - 10,
+  hIconView = ICONVIEW_CreateEx(0, 0, xSize - 40, ySize - 14,
                            WM_HBKWIN, WM_CF_SHOW | WM_CF_HASTRANS,
                            0, GUI_ID_ICONVIEW0, 55, 60);
   for (i = 0; i < GUI_COUNTOF(_aBitmapItem); i++) {
@@ -1865,7 +1870,17 @@ main_menu_code_t gui_iconview_start(void) {
   ICONVIEW_SetFont(hIconView, &GUI_Font13B_ASCII);
   WM_SetFocus(hIconView);
 
+  //
+  // Create explanation
+  //
+  hText = TEXT_CreateEx(0, ySize - 14, 160, 14, WM_HBKWIN, WM_CF_SHOW, 0, GUI_ID_TEXT0, "");
+  TEXT_SetFont(hText, &GUI_Font13_ASCII);
+  TEXT_SetTextColor(hText, GUI_WHITE);
+  TEXT_SetWrapMode(hText, GUI_WRAPMODE_WORD);
+  TEXT_SetTextAlign(hText, GUI_TA_HCENTER | GUI_TA_VCENTER);
+
   ICONVIEW_SetSel(hIconView, cur_sel);
+  TEXT_SetText(hText, _aBitmapItem[cur_sel].pExplanation);
   btn_evt_register_callback(&icon_btn_evt);
   do {
     GUI_Delay(50);
