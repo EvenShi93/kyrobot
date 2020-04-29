@@ -23,4 +23,8 @@ typedef struct {
   uint32_t buttons;
 } rf_ctrl_t;
 
+#define RF_CHANNEL_VAL_MIN   0
+#define RF_CHANNEL_VAL_MID   512
+#define RF_CHANNEL_VAL_MAX   1024
+
 #endif /* EVT_RF_TYPE_H_ */
