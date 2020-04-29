@@ -290,7 +290,7 @@ void gui_graph_start(void)
 #endif /* GRAPH_SHOW_SCALE_HORIZON */
     GRAPH_AttachScale(hGraph, _hScaleV);
 
-    for(i = 0; i < WaveList[current_wave_id].NumWaves; i ++) {
+    for(i = 0; (i < WaveList[current_wave_id].NumWaves) && (i < MAX_NUM_DATA_OBJ); i ++) {
       GRAPH_AttachData(hGraph, hData[i]);
     }
 
@@ -303,7 +303,7 @@ void gui_graph_start(void)
 
     do {
       TimeStart = GUI_GetTime();
-      for(i = 0; i < WaveList[current_wave_id].NumWaves; i ++) {
+      for(i = 0; (i < WaveList[current_wave_id].NumWaves) && (i < MAX_NUM_DATA_OBJ); i ++) {
         WaveList[current_wave_id].pfAddData(hData[i], i);
       }
       TimeDiff = GUI_GetTime() - TimeStart;
@@ -312,7 +312,7 @@ void gui_graph_start(void)
       }
     } while((should_exit == 0) && (current_wave_id == select_wave));
 
-    for(i = 0; i < WaveList[current_wave_id].NumWaves; i ++) {
+    for(i = 0; (i < WaveList[current_wave_id].NumWaves) && (i < MAX_NUM_DATA_OBJ); i ++) {
       GRAPH_DetachData(hGraph, hData[i]);
     }
   } while(should_exit == 0);
