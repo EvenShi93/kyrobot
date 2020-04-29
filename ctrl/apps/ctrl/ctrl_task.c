@@ -12,9 +12,9 @@
 
 static const char *TAG = "CTRL";
 
-#define STEER_CTRL_PWM_POS_MIN         1000
-#define STEER_CTRL_PWM_POS_MID         1500
-#define STEER_CTRL_PWM_POS_MAX         2000
+#define STEER_CTRL_PWM_POS_MIN         900
+#define STEER_CTRL_PWM_POS_MID         1400
+#define STEER_CTRL_PWM_POS_MAX         1900
 
 #define STEER_CTRL_PWM_PERIOD          5000
 
