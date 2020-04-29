@@ -36,8 +36,8 @@ status_t rmtif_init(void)
   rmtif_cache = kmm_alloc(RMTIF_CACHE_DEPTH);
   if(rmtif_cache == NULL) return status_nomem;
 
-  __HAL_UART_ENABLE_IT(&RMT_UartHandle, UART_IT_IDLE);
   HAL_UART_Receive_DMA(&RMT_UartHandle, (uint8_t *)rmtif_cache, RMTIF_CACHE_DEPTH);
+  __HAL_UART_ENABLE_IT(&RMT_UartHandle, UART_IT_IDLE);
   return status_ok;
 }
 
@@ -90,11 +90,12 @@ void rmtif_txcplt_callback(UART_HandleTypeDef *huart)
 
 void rmtif_rxcplt_callback(UART_HandleTypeDef *huart)
 {
+
 }
 
 static void UART_IDLE_Callback(UART_HandleTypeDef *huart)
 {
-	if(__HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE) != RESET) {
+  if(__HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE) != RESET) {
     __HAL_UART_CLEAR_IDLEFLAG(huart);
     __HAL_UART_CLEAR_IT(huart, UART_CLEAR_IDLEF);
 

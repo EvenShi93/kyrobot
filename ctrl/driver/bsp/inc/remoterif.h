@@ -6,7 +6,7 @@
 /* Definition for RMT_UART clock resources */
 #define RMT_UART                            USART2
 #define RMT_UART_CLK_ENABLE()               __USART2_CLK_ENABLE()
-#define RMT_UART_DMA_CLK_ENABLE()           __HAL_RCC_DMA2_CLK_ENABLE()
+#define RMT_UART_DMA_CLK_ENABLE()           __HAL_RCC_DMA1_CLK_ENABLE()
 #define RMT_UART_RX_GPIO_CLK_ENABLE()       __GPIOA_CLK_ENABLE()
 #define RMT_UART_TX_GPIO_CLK_ENABLE()       __GPIOA_CLK_ENABLE()
 
