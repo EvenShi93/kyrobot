@@ -16,7 +16,9 @@
 
 #include "att_est_q.h"
 
-static const char *TAG = "WAVE";
+//static const char *TAG = "WAVE";
+
+#define GRAPH_SHOW_SCALE_HORIZON       (0)
 
 #define BK_COLOR_0        0xFF5555
 #define BK_COLOR_1        0x880000
@@ -24,16 +26,27 @@ static const char *TAG = "WAVE";
 #define DIST_TO_WIN      5
 
 #define BORDER_TOP       0
+#if GRAPH_SHOW_SCALE_HORIZON
 #define BORDER_BOTTOM    9
-#define BORDER_LEFT      19
+#else
+#define BORDER_BOTTOM    0
+#endif /* GRAPH_SHOW_SCALE_HORIZON */
+#define BORDER_LEFT      32
 #define BORDER_RIGHT     0
+
+#if GRAPH_SHOW_SCALE_HORIZON
+#define SCALE_H_POS      4
+#endif /* GRAPH_SHOW_SCALE_HORIZON */
+#define SCALE_V_POS      (BORDER_LEFT - 9)
 
 #define COLOR_BK         GUI_DARKGRAY
 #define COLOR_BORDER     BK_COLOR_1
 #define COLOR_FRAME      GUI_BLACK
 #define COLOR_GRID       GUI_GRAY
 
+#if GRAPH_SHOW_SCALE_HORIZON
 #define SCALE_H_HEIGHT   4 // height if horizontal scale
+#endif /* GRAPH_SHOW_SCALE_HORIZON */
 
 #define TICK_DIST_H      25
 #define TICK_DIST_V      20
@@ -79,9 +92,13 @@ static GUI_COLOR _aColorData[MAX_NUM_DATA_OBJ] = {
   0x000080
 };
 
-GRAPH_SCALE_Handle _hScaleH, _hScaleV;
+#if GRAPH_SHOW_SCALE_HORIZON
+GRAPH_SCALE_Handle _hScaleH;
+#endif /* GRAPH_SHOW_SCALE_HORIZON */
+GRAPH_SCALE_Handle _hScaleV;
 static int         _DataOffset;
 static float       _DataFactor;
+static char*       _DataTitle;
 
 /*********************************************************************
 *
@@ -141,6 +158,31 @@ static const GraphWaveDef WaveList[WAVE_NUMBER] = {
 
 /*********************************************************************
 *
+*       _UserDraw
+*
+* Function description
+*   This routine is called by the GRAPH object before anything is drawn
+*   and after the last drawing operation.
+*/
+static void _UserDraw(WM_HWIN hWin, int Stage) {
+  if (Stage == GRAPH_DRAW_LAST) {
+//    char acText[] = "Temperature";
+    GUI_RECT Rect;
+    GUI_RECT RectInvalid;
+    int FontSizeY;
+
+    GUI_SetFont(&GUI_Font13_ASCII);
+    FontSizeY = GUI_GetFontSizeY();
+    WM_GetInsideRect(&Rect);
+    WM_GetInvalidRect(hWin, &RectInvalid);
+    Rect.x1 = Rect.x0 + FontSizeY;
+    GUI_SetColor(GUI_YELLOW);
+    GUI_DispStringInRectEx(_DataTitle, &Rect, GUI_TA_HCENTER, strlen(_DataTitle), GUI_ROTATE_CCW);
+  }
+}
+
+/*********************************************************************
+*
 *       _cbBk
 */
 static void _cbBk(WM_MESSAGE * pMsg) {
@@ -195,10 +237,14 @@ void gui_graph_start(void)
   //
   // Create and configure GRAPH_SCALE objects
   //
-  _hScaleH = GRAPH_SCALE_Create(BORDER_BOTTOM >> 1, GUI_TA_VCENTER, GRAPH_SCALE_CF_HORIZONTAL, TICK_DIST_H);
-  _hScaleV = GRAPH_SCALE_Create(BORDER_LEFT   >> 1, GUI_TA_HCENTER, GRAPH_SCALE_CF_VERTICAL,   TICK_DIST_V);
+  _hScaleV = GRAPH_SCALE_Create(SCALE_V_POS, GUI_TA_HCENTER, GRAPH_SCALE_CF_VERTICAL,   TICK_DIST_V);
+#if GRAPH_SHOW_SCALE_HORIZON
+  _hScaleH = GRAPH_SCALE_Create(SCALE_H_POS, GUI_TA_VCENTER, GRAPH_SCALE_CF_HORIZONTAL, TICK_DIST_H);
   GRAPH_SCALE_SetPos(_hScaleH, ySize - SCALE_H_HEIGHT);
   GRAPH_SCALE_SetOff(_hScaleH, -5);
+#endif /* GRAPH_SHOW_SCALE_HORIZON */
+
+  GRAPH_SetUserDraw(hGraph, _UserDraw);
 
   btn_evt_register_callback(&graph_btn_evt);
   //
@@ -206,7 +252,8 @@ void gui_graph_start(void)
   //
   do {
     current_wave_id = select_wave;
-    ky_info(TAG, "Show Wave: %s", WaveList[current_wave_id].Title);
+    _DataTitle = (char *)WaveList[current_wave_id].Title;
+//    ky_info(TAG, "Show Wave: %s", WaveList[current_wave_id].Title);
 
     _DataOffset = WaveList[current_wave_id].ScaleVOff;
     _DataFactor = WaveList[current_wave_id].DataFactor;
@@ -215,7 +262,9 @@ void gui_graph_start(void)
     GRAPH_SCALE_SetFactor(_hScaleV, _DataFactor);
 
     // attach horizontal & vertical scale
+#if GRAPH_SHOW_SCALE_HORIZON
     GRAPH_AttachScale(hGraph, _hScaleH);
+#endif /* GRAPH_SHOW_SCALE_HORIZON */
     GRAPH_AttachScale(hGraph, _hScaleV);
 
     for(i = 0; i < WaveList[current_wave_id].NumWaves; i ++) {
@@ -223,7 +272,9 @@ void gui_graph_start(void)
     }
 
     GUI_Exec();
+#if GRAPH_SHOW_SCALE_HORIZON
     GRAPH_DetachScale(hGraph, _hScaleH);
+#endif /* GRAPH_SHOW_SCALE_HORIZON */
     GRAPH_DetachScale(hGraph, _hScaleV);
     WM_ValidateWindow(hGraph);
 
@@ -248,9 +299,13 @@ void gui_graph_start(void)
   //
   // Clean up
   //
+#if GRAPH_SHOW_SCALE_HORIZON
   GRAPH_DetachScale(hGraph, _hScaleH);
+#endif /* GRAPH_SHOW_SCALE_HORIZON */
   GRAPH_DetachScale(hGraph, _hScaleV);
+#if GRAPH_SHOW_SCALE_HORIZON
   GRAPH_SCALE_Delete(_hScaleH);
+#endif /* GRAPH_SHOW_SCALE_HORIZON */
   GRAPH_SCALE_Delete(_hScaleV);
   for (i = 0; i < MAX_NUM_DATA_OBJ; i++) {
     GRAPH_DATA_YT_Delete(hData[i]);
