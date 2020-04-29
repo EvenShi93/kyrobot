@@ -13,8 +13,8 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
     ubxaif_txcplt_callback(UartHandle);
   } else if(UartHandle->Instance == COM_UART) {
     comif_txcplt_callback(UartHandle);
-//  } else if(UartHandle->Instance == RTCM_UART) {
-//    rtcmif_txcplt_callback(UartHandle);
+  } else if(UartHandle->Instance == RMT_UART) {
+    rmtif_txcplt_callback(UartHandle);
 //  } else if(UartHandle->Instance == EC20_UART) {
 //    ec20if_txcplt_callback(UartHandle);
 //  } else if(UartHandle->Instance == UBXB_UART) {
@@ -37,8 +37,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
     ubxaif_rxcplt_callback(UartHandle);
   } else if(UartHandle->Instance == COM_UART) {
     comif_rxcplt_callback(UartHandle);
-//  } else if(UartHandle->Instance == RTCM_UART) {
-//    rtcmif_rxcplt_callback(UartHandle);
+  } else if(UartHandle->Instance == RMT_UART) {
+    rmtif_rxcplt_callback(UartHandle);
 //  } else if(UartHandle->Instance == EC20_UART) {
 //    ec20if_rxcplt_callback(UartHandle);
 //  } else if(UartHandle->Instance == UBXB_UART) {
