@@ -15,6 +15,7 @@
 #include "cpu_utils.h"
 
 #include "att_est_q.h"
+#include "rf_evt_proc.h"
 
 //static const char *TAG = "WAVE";
 
@@ -31,7 +32,7 @@
 #else
 #define BORDER_BOTTOM    0
 #endif /* GRAPH_SHOW_SCALE_HORIZON */
-#define BORDER_LEFT      32
+#define BORDER_LEFT      30
 #define BORDER_RIGHT     0
 
 #if GRAPH_SHOW_SCALE_HORIZON
@@ -57,7 +58,7 @@
 #define GRID_DIST_X      25
 #define GRID_DIST_Y      10
 
-#define WAVE_NUMBER      3
+#define WAVE_NUMBER      4
 #define MAX_NUM_DATA_OBJ 5 // max waves we support
 
 static void graph_btn_evt_cb(int id, btn_evt_type_t evt);
@@ -125,6 +126,20 @@ static void _AddData_Voltage(GRAPH_DATA_Handle hData, int DataID) {
   GRAPH_DATA_YT_AddValue(hData, (I16)(battery_volt_read() / _DataFactor + _DataOffset));
 }
 
+static void _AddData_Remote(GRAPH_DATA_Handle hData, int DataID) {
+  switch(DataID) {
+  case 0:
+    GRAPH_DATA_YT_AddValue(hData, (I16)(rmt_get_pit_chan() / _DataFactor + _DataOffset)); break;
+  case 1:
+    GRAPH_DATA_YT_AddValue(hData, (I16)(rmt_get_rol_chan() / _DataFactor + _DataOffset)); break;
+  case 2:
+    GRAPH_DATA_YT_AddValue(hData, (I16)(rmt_get_yaw_chan() / _DataFactor + _DataOffset)); break;
+  case 3:
+    GRAPH_DATA_YT_AddValue(hData, (I16)(rmt_get_thr_chan() / _DataFactor + _DataOffset)); break;
+  default: break;
+  }
+}
+
 /*********************************************************************
 *
 *       DATA _aWave - Keep below _AddData-functions
@@ -153,6 +168,14 @@ static const GraphWaveDef WaveList[WAVE_NUMBER] = {
 	1,
 	50,            /* 50ms */
 	0.1f,
+  },
+  {
+    "RF Channel",
+	4,
+	_AddData_Remote,
+	4,
+	50,
+	(1200.0f / (80 - BORDER_BOTTOM)),
   },
 };
 
@@ -280,7 +303,7 @@ void gui_graph_start(void)
 
     do {
       TimeStart = GUI_GetTime();
-      for(i = 0; i < WaveList[0].NumWaves; i ++) {
+      for(i = 0; i < WaveList[current_wave_id].NumWaves; i ++) {
         WaveList[current_wave_id].pfAddData(hData[i], i);
       }
       TimeDiff = GUI_GetTime() - TimeStart;
@@ -289,7 +312,7 @@ void gui_graph_start(void)
       }
     } while((should_exit == 0) && (current_wave_id == select_wave));
 
-    for(i = 0; i < WaveList[0].NumWaves; i ++) {
+    for(i = 0; i < WaveList[current_wave_id].NumWaves; i ++) {
       GRAPH_DetachData(hGraph, hData[i]);
     }
   } while(should_exit == 0);
