@@ -1888,6 +1888,7 @@ main_menu_code_t gui_iconview_start(void) {
   btn_evt_unregister_callback(&icon_btn_evt);
   should_exit = 0;
   WM_DeleteWindow(hIconView);
+  WM_DeleteWindow(hText);
   WM_SetCallback(WM_HBKWIN, pcbPrev);
   return _aBitmapItem[cur_sel].optCode;
 }
