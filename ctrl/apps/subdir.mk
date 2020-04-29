@@ -102,7 +102,8 @@ $(BuildPath)/apps/gui/gui_setting_menu.o
 endif
 
 OBJS += \
-$(BuildPath)/apps/evt/evt_proc.o
+$(BuildPath)/apps/evt/evt_proc.o \
+$(BuildPath)/apps/evt/remote_task.o
 
 OBJ_DIRS = $(sort $(dir $(OBJS)))
 
