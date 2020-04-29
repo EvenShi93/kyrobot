@@ -51,6 +51,8 @@ void APP_StartThread(void const *argument)
 
   osThreadDef(UGUI, gui_task, osPriorityNormal, 0, 512);
   if(osThreadCreate(osThread(UGUI), NULL) == NULL) ky_err(TAG, "gui task create failed.");
+  osThreadDef(REMT, rmt_proc_task, osPriorityNormal, 0, 256);
+  if(osThreadCreate(osThread(REMT), NULL) == NULL) ky_err(TAG, "rf task create failed.");
   osThreadDef(CTRL, ctrl_task, osPriorityNormal, 0, 512);
   if(osThreadCreate(osThread(CTRL), NULL) == NULL) ky_err(TAG, "ctrl task create failed.");
   osThreadDef(SINS, att_est_q_task, osPriorityNormal, 0, 512);
