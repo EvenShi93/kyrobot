@@ -107,14 +107,14 @@ void ctrl_task(void const *argument)
         ky_info(TAG, "encoder val: %d", motor_vel);
       }
 #endif /* MOTOR_ENCODER_COUNTER_TEST */
-//    if(motor_exp == MOTOR_VEL_EXP_MID) {
-//      motor_ctr = 0;
-//      ctrl_pid->I_sum = 0;
-//      ctrl_pid->preErr = 0;
-//    } else {
-        pid_loop(ctrl_pid, motor_exp, motor_vel);
-        motor_ctr += ctrl_pid->Output;
-//    }
+      pid_loop(ctrl_pid, motor_exp, motor_vel);
+      motor_ctr += ctrl_pid->Output;
+      // if stopped, close motor output.
+      if((motor_exp == MOTOR_VEL_EXP_MID) && (motor_vel == MOTOR_VEL_EXP_MID)) {
+        motor_ctr = 0;
+        ctrl_pid->I_sum = 0;
+        ctrl_pid->preErr = 0;
+      }
       if(motor_ctr > 1000) motor_ctr = 1000;
       if(motor_ctr < -1000) motor_ctr = -1000;
       if(motor_ctr > 0) {
