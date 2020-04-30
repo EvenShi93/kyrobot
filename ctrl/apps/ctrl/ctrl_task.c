@@ -12,6 +12,8 @@
 
 static const char *TAG = "CTRL";
 
+#define MOTOR_ENCODER_COUNTER_TEST     (0)
+
 #define STEER_CTRL_PWM_POS_MIN         900
 #define STEER_CTRL_PWM_POS_MID         1400
 #define STEER_CTRL_PWM_POS_MAX         1900
@@ -25,9 +27,17 @@ static const char *TAG = "CTRL";
 void ctrl_task(void const *argument)
 {
   float rf_temp;
+  int16_t motor_vel;
+#if MOTOR_ENCODER_COUNTER_TEST
+  uint32_t task_timestamp = 0, log_ts = 0;
+#endif /* MOTOR_ENCODER_COUNTER_TEST */
   rf_ctrl_t *rf_data;
   if(motorif_init() != status_ok) {
     ky_err(TAG, "MOTOR initialize failed");
+    vTaskDelete(NULL);
+  }
+  if(encoderif_init() != status_ok) {
+    ky_err(TAG, "Encoder INIT FAIL");
     vTaskDelete(NULL);
   }
   if(steerif_init(STEER_CTRL_PWM_PERIOD, STEER_CTRL_PWM_POS_MID) != status_ok) {
@@ -57,5 +67,13 @@ void ctrl_task(void const *argument)
       motorif_set_dutycycle_a(-rf_temp);
       motorif_set_dutycycle_b(0);
     }
+    motor_vel = encoderif_take_counter();
+#if MOTOR_ENCODER_COUNTER_TEST
+    task_timestamp = xTaskGetTickCountFromISR();
+    if((task_timestamp - log_ts) > 1000) {
+      log_ts = task_timestamp;
+      ky_info(TAG, "encoder val: %d", motor_vel);
+    }
+#endif /* MOTOR_ENCODER_COUNTER_TEST */
   }
 }
