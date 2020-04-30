@@ -13,6 +13,8 @@
 #include "controlif.h"
 #include "remoterif.h"
 
+#include "notifytimer.h"
+
 #include "ubloxa.h"
 #include "rtcmif.h"
 
