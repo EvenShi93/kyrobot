@@ -14,6 +14,7 @@
 #include "evt_proc.h"
 #include "cpu_utils.h"
 
+#include "ctrl_task.h"
 #include "att_est_q.h"
 #include "rf_evt_proc.h"
 
@@ -58,7 +59,7 @@
 #define GRID_DIST_X      25
 #define GRID_DIST_Y      10
 
-#define WAVE_NUMBER      4
+#define WAVE_NUMBER      5
 #define MAX_NUM_DATA_OBJ 5 // max waves we support
 
 static void graph_btn_evt_cb(int id, btn_evt_type_t evt);
@@ -140,6 +141,11 @@ static void _AddData_Remote(GRAPH_DATA_Handle hData, int DataID) {
   }
 }
 
+static void _AddData_MotCtrl(GRAPH_DATA_Handle hData, int DataID) {
+  if(DataID == 0) GRAPH_DATA_YT_AddValue(hData, (I16)(ctrl_get_motor_exp() / _DataFactor + _DataOffset));
+  if(DataID == 1) GRAPH_DATA_YT_AddValue(hData, (I16)(ctrl_get_motor_vel() / _DataFactor + _DataOffset));
+}
+
 /*********************************************************************
 *
 *       DATA _aWave - Keep below _AddData-functions
@@ -176,6 +182,14 @@ static const GraphWaveDef WaveList[WAVE_NUMBER] = {
 	4,
 	50,
 	(1200.0f / (80 - BORDER_BOTTOM)),
+  },
+  {
+    "Motor Control",
+    0, //	(80 - BORDER_BOTTOM) / 2 - 4,
+	_AddData_MotCtrl,
+	2,
+	50,
+	(2500.0f / (80 - BORDER_BOTTOM)),
   },
 };
 
