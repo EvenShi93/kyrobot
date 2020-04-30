@@ -39,14 +39,24 @@ typedef struct {
   float X, Y, Z;
 } Vector3D;
 
+typedef struct
+{
+  float kp, ki, kd, preErr, Output, I_max, I_sum, dt, D_max;
+} PID;
+
 void NormalizeVector(Vector3D *v);
 float ScalarProduct(Vector3D *va, Vector3D *vb);
+float apply_deadband(float value, float deadband);
+void step_change(float *in, float target, float step, float deadBand);
+float apply_limit(float in, float min, float max);
 
 void fusionQ_6dot(IMU_UNIT_6DOF *unit, Quat_T *q, float prop_gain, float intg_gain, float dt);
 void fusionQ_9dot(IMU_UNIT_9DOF *unit, Quat_T *q, float prop_gain, float intg_gain, float dt);
 void Quat2Euler(Quat_T* q, Euler_T* eur);
 
 double computeAzimuth(double lat1, double lon1, double lat2, double lon2);
+
+void pid_loop(PID* pid, float expect, float measure);
 
 #endif /* __ALGORITHM_H */
 
