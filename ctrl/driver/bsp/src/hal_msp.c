@@ -156,6 +156,18 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
 }
 
 /**
+  * @brief  Initializes the TIM Encoder Interface MSP.
+  * @param  htim TIM Encoder Interface handle
+  * @retval None
+  */
+void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
+{
+  if(htim->Instance == ENC_TIM) {
+    encoderif_msp_init(htim);
+  }
+}
+
+/**
   * @brief ADC MSP Initialization
   *        This function configures the hardware resources used in this example:
   *           - Peripheral's clock enable

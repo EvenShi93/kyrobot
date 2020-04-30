@@ -9,6 +9,7 @@
 #include "motorif.h"
 #include "buttons.h"
 #include "voltage.h"
+#include "encoderif.h"
 #include "controlif.h"
 #include "remoterif.h"
 
