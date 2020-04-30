@@ -86,17 +86,4 @@ __PACK_BEGIN typedef struct {
   float yaw;
 } __PACK_END Euler_T;
 
-__PACK_BEGIN typedef struct {
-  float fData0, fData1, fData2, fData3;
-} __PACK_END DebugFloat_T;
-
-__PACK_BEGIN typedef struct {
-  float kp, ki, kd, preErr, Pout, Iout, Dout, Output, I_max, I_sum, dt, D_max;
-} __PACK_END PID;
-
-__PACK_BEGIN typedef struct {
-  uint8_t info_type;
-  int32_t lon, lat;
-} __PACK_END Location_T;
-
 #endif /* __SYSDATATYPES_H */
