@@ -91,8 +91,8 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *SpiHandle)
 {
   if(SpiHandle->Instance == IMU_SPI) {
     imuif_rxtxcplt_callback(SpiHandle);
-  } else if(SpiHandle->Instance == FLASH_SPI) {
-    flashif_rxtxcplt_callback(SpiHandle);
+  } else if(SpiHandle->Instance == SD_SPI) {
+    sdif_rxtxcplt_callback(SpiHandle);
   }
 }
 

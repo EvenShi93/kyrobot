@@ -78,8 +78,8 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
 {
   if (hspi->Instance == IMU_SPI) {
     imuif_msp_init(hspi);
-  } else if(hspi->Instance == FLASH_SPI) {
-    flashif_msp_init(hspi);
+  } else if(hspi->Instance == SD_SPI) {
+    sdif_msp_init(hspi);
   } else if(hspi->Instance == DISP_SPI) {
     dispif_msp_init(hspi);
   }
@@ -97,8 +97,8 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
 {
   if(hspi->Instance == IMU_SPI) {
     imuif_msp_deinit(hspi);
-  } else if(hspi->Instance == FLASH_SPI) {
-    flashif_msp_deinit(hspi);
+  } else if(hspi->Instance == SD_SPI) {
+    sdif_msp_deinit(hspi);
   } else if(hspi->Instance == DISP_SPI) {
     dispif_msp_deinit(hspi);
   }
