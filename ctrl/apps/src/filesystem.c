@@ -11,7 +11,7 @@
 
 static const char *TAG = "FS";
 
-extern const Diskio_drvTypeDef mtd_driver;
+extern const Diskio_drvTypeDef SD_Driver;
 
 static DWORD volume_total_size = 0;
 static FATFS *fatfs;
@@ -34,7 +34,7 @@ status_t fatfs_mount(void)
   }
 
   ky_info(TAG, "link disk I/O.");
-  ret = FATFS_LinkDriver(&mtd_driver, path);
+  ret = FATFS_LinkDriver(&SD_Driver, path);
   if(ret != FR_OK) {
     ky_err(TAG, "Link the disk I/O driver failed.");
     goto exit;
@@ -42,7 +42,7 @@ status_t fatfs_mount(void)
 
 mount:
   ky_info(TAG, "mount fatfs to %s", path);
-  ret = f_mount(fatfs, (TCHAR const *)path, 1); // force mount immediately to get capacity of the disk.
+  ret = f_mount(fatfs, (TCHAR const *)path, 0); // force mount immediately to get capacity of the disk.
   if(ret != FR_OK) {
     if(ret == FR_NO_FILESYSTEM && mkfs_flag == 0) {
       ky_warn(TAG, "warning: NO FS FOND! mkfatfs now ...");
@@ -59,18 +59,18 @@ mount:
       }
       goto mount;
     }
-    ky_err(TAG, "mount fatfs failed.");
+    ky_err(TAG, "mount fatfs failed. %d", ret);
     goto exit;
   }
 
   volume_total_size = (fatfs->n_fatent - 2) * fatfs->csize;
 /* DEBUG INFORMATION */
-  ky_info(TAG, "disk capacity: %ld.", volume_total_size);
+  ky_info(TAG, "disk capacity: %lu.", volume_total_size);
   ret = f_getfree(path, (DWORD *)&free_clust, &fatfs);
   if(ret == FR_OK)
     ky_info(TAG, "disk free: %ld.", free_clust * fatfs->csize);
   else
-    ky_info(TAG, "failed to get disk free info.");
+    ky_err(TAG, "failed to get disk free info. %d", ret);
 
   exit:
     kmm_free(path);
