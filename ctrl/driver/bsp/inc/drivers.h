@@ -24,8 +24,7 @@
 #include "magif.h"
 #include "ist83xx.h"
 
-#include "flashif.h"
-#include "w25qxx.h"
+#include "sdcard.h"
 
 #include "usb_cdcif.h"
 

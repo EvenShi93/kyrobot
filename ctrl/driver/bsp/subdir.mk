@@ -27,13 +27,12 @@ $(BuildPath)/driver/bsp/steerif.o \
 $(BuildPath)/driver/bsp/motorif.o \
 $(BuildPath)/driver/bsp/encoderif.o \
 $(BuildPath)/driver/bsp/notifytimer.o \
-$(BuildPath)/driver/bsp/flashif.o \
+$(BuildPath)/driver/bsp/sdif.o \
 $(BuildPath)/driver/bsp/usbdif.o \
 $(BuildPath)/driver/bsp/ist83xx.o \
 $(BuildPath)/driver/bsp/icm42605.o \
-$(BuildPath)/driver/bsp/w25qxx.o \
-$(BuildPath)/driver/bsp/usb_cdcif.o \
-$(BuildPath)/driver/bsp/w25_diskio.o
+$(BuildPath)/driver/bsp/sdcard.o \
+$(BuildPath)/driver/bsp/usb_cdcif.o
 
 OBJ_DIRS = $(sort $(dir $(OBJS)))
 
