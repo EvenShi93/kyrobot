@@ -3,7 +3,6 @@
 
 #include "gpios.h"
 #include "leds.h"
-#include "comif.h"
 #include "dispif.h"
 #include "steerif.h"
 #include "motorif.h"
@@ -11,7 +10,8 @@
 #include "voltage.h"
 #include "encoderif.h"
 #include "controlif.h"
-#include "remoterif.h"
+
+#include "periph.h"
 
 #include "notifytimer.h"
 
