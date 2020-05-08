@@ -1,8 +1,7 @@
 #ifndef __USART2_H
 #define __USART2_H
 
-#include "SysConfig.h"
-#include "periph_config.h"
+#include "periph.h"
 
 status_t usart2_init(uint32_t baudrate);
 status_t usart2_deinit(void);
