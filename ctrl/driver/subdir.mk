@@ -5,3 +5,4 @@
 ################################################################################
 
 -include driver/bsp/subdir.mk
+-include driver/periph/subdir.mk
