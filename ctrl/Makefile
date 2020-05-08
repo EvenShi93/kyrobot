@@ -30,6 +30,7 @@ INCS = -I$(TopPath)/startup \
        -I$(TopPath)/apps/demo \
        -I$(TopPath)/apps/ctrl \
        -I$(TopPath)/driver/bsp/inc \
+       -I$(TopPath)/driver/periph/inc \
        -I$(TopPath)/driver/cmsis/device \
        -I$(TopPath)/driver/cmsis/core \
        -I$(TopPath)/driver/stdriver/inc \
