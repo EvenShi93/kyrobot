@@ -10,6 +10,9 @@
 
 #include "config.h"
 
+#define UART_HAL_TRANSMIT_TIMEOUT           (1000)
+#define USART_HAL_TRANSMIT_TIMEOUT          UART_HAL_TRANSMIT_TIMEOUT
+
 /*## PERIPHERAL DEFINITIONS FOR USART2 #################################*/
 /* Definition for USART2 clock resources */
 #if USART2_ENABLE
@@ -43,5 +46,39 @@
 #define USART2_DMA_RX_IRQn                  DMA1_Stream5_IRQn
 #define USART2_DMA_RX_IRQHandler            DMA1_Stream5_IRQHandler
 #endif /* USART2_DMA_RX_ENABLE */
+
+/*## PERIPHERAL DEFINITIONS FOR USART6 #################################*/
+/* Definition for USART6 clock resources */
+#if USART6_ENABLE
+#define USART6_GPIO_CLK_ENABLE()            __GPIOC_CLK_ENABLE()
+#endif /* USART6_ENABLE */
+
+/* Definition for USART6 Pins */
+#if USART6_TX_ENABLE
+#define USART6_TX_PIN                       GPIO_PIN_6
+#define USART6_TX_GPIO_PORT                 GPIOC
+#define USART6_TX_AF                        GPIO_AF8_USART6
+#endif /* USART6_TX_ENABLE */
+#if USART6_RX_ENABLE
+#define USART6_RX_PIN                       GPIO_PIN_7
+#define USART6_RX_GPIO_PORT                 GPIOC
+#define USART6_RX_AF                        GPIO_AF8_USART6
+#endif /* USART6_RX_ENABLE */
+
+#if USART6_DMA_TX_ENABLE
+#define USART6_DMA_TX_CLK_ENABLE()          __HAL_RCC_DMA2_CLK_ENABLE()
+#define USART6_TX_DMA_STREAM                DMA2_Stream6
+#define USART6_TX_DMA_CHANNEL               DMA_CHANNEL_5
+#define USART6_DMA_TX_IRQn                  DMA2_Stream6_IRQn
+#define USART6_DMA_TX_IRQHandler            DMA2_Stream6_IRQHandler
+#endif /* USART6_DMA_TX_ENABLE */
+
+#if USART6_DMA_RX_ENABLE
+#define USART6_DMA_RX_CLK_ENABLE()          __HAL_RCC_DMA2_CLK_ENABLE()
+#define USART6_RX_DMA_STREAM                DMA2_Stream2
+#define USART6_RX_DMA_CHANNEL               DMA_CHANNEL_5
+#define USART6_DMA_RX_IRQn                  DMA2_Stream2_IRQn
+#define USART6_DMA_RX_IRQHandler            DMA2_Stream2_IRQHandler
+#endif /* USART6_DMA_RX_ENABLE */
 
 #endif /* _PERIPH_CONFIG_H_ */
