@@ -3,6 +3,7 @@
 static const char *TAG = "APP";
 
 static void led_thread(void const *argument);
+static status_t log_tx_string(const char *p);
 
 #define STR1(R) #R
 #define STR2(R) STR1(R)
@@ -34,10 +35,10 @@ void APP_StartThread(void const *argument)
   /* lock power */
   output_port_set(IO_PWR_CTRL);
 
-  comif_init();
-  log_init(comif_tx_string_util);
-  comif_tx_string_util("!!!KERNEL START!!!\n");
-  comif_tx_string_util(SystemInfo);
+  usart6_init(115200);
+  log_init(log_tx_string);
+  log_tx_string("!!!KERNEL START!!!\n");
+  log_tx_string(SystemInfo);
 
   // mount FATFS logic driver
   if(fatfs_mount() != status_ok) {
@@ -87,6 +88,11 @@ static void led_thread(void const *argument)
 
     osDelay(500);
   }
+}
+
+static status_t log_tx_string(const char *p)
+{
+  return usart6_tx_bytes((uint8_t *)p, strlen((const char *)p));
 }
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/
