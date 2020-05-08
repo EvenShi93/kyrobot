@@ -29,6 +29,10 @@ static const char *TAG = "ttyS2";
 
 #include "string.h"
 
+#if USART2_TX_ENABLE
+#include "cmsis_os.h"
+#endif /* USART2_TX_ENABLE */
+
 #if USART2_RX_ENABLE
 #include "ringbuffer.h"
 #endif /* USART2_RX_ENABLE */
@@ -41,6 +45,10 @@ static DMA_HandleTypeDef *Usart2TxDmaHandle;
 #if USART2_DMA_RX_ENABLE
 static DMA_HandleTypeDef *Usart2RxDmaHandle;
 #endif /* USART2_DMA_RX_ENABLE */
+
+#if USART2_TX_ENABLE
+static osMutexId u2_tx_mutex;
+#endif /* USART2_TX_ENABLE */
 
 #if USART2_RX_ENABLE
 #define USART2_DRV_RX_CACHE_SIZE            128
@@ -62,6 +70,8 @@ static void usart2_rxcplt_callback(UART_HandleTypeDef *huart);
 
 status_t usart2_init(uint32_t baudrate)
 {
+  status_t ret = status_ok;
+
   Usart2Handle = kmm_alloc(sizeof(UART_HandleTypeDef));
 #if USART2_RX_ENABLE
   usart2_rb = kmm_alloc(sizeof(ringbuffer_handle));
@@ -86,19 +96,8 @@ status_t usart2_init(uint32_t baudrate)
 #endif /* USART2_DMA_RX_ENABLE */
   ) {
     ky_err(TAG, "memory alloc fail");
-    kmm_free(Usart2Handle);
-#if USART2_RX_ENABLE
-    kmm_free(usart2_rb);
-    kmm_free(_u2_user_rx_cache);
-    kmm_free(_u2_drv_rx_buffer);
-#endif /* USART2_RX_ENABLE */
-#if USART2_DMA_TX_ENABLE
-    kmm_free(Usart2TxDmaHandle);
-#endif /* USART2_DMA_TX_ENABLE */
-#if USART2_DMA_RX_ENABLE
-    kmm_free(Usart2RxDmaHandle);
-#endif /* USART2_DMA_RX_ENABLE */
-    return status_nomem;
+    ret = status_nomem;
+    goto error;
   }
   memset(Usart2Handle, 0, sizeof(UART_HandleTypeDef));
 #if USART2_RX_ENABLE
@@ -112,6 +111,16 @@ status_t usart2_init(uint32_t baudrate)
 #if USART2_DMA_RX_ENABLE
   memset(Usart2RxDmaHandle, 0, sizeof(DMA_HandleTypeDef));
 #endif /* USART2_DMA_RX_ENABLE */
+
+#if USART2_TX_ENABLE
+  /* Create the mutex  */
+  osMutexDef(U2TxMutex);
+  u2_tx_mutex = osMutexCreate(osMutex(U2TxMutex));
+  if(u2_tx_mutex == NULL) {
+    ret = status_error;
+    goto error;
+  }
+#endif /* USART2_TX_ENABLE */
 
   /* Configure the UART peripheral */
   /* Put the USART peripheral in the Asynchronous mode (UART Mode) */
@@ -146,7 +155,10 @@ status_t usart2_init(uint32_t baudrate)
 #if USART2_RX_ENABLE
   Usart2Handle->RxCpltCallback = usart2_rxcplt_callback;
 #endif /* USART2_RX_ENABLE */
-  if(HAL_UART_Init(Usart2Handle) != HAL_OK) return status_error;
+  if(HAL_UART_Init(Usart2Handle) != HAL_OK) {
+    ret = status_error;
+    goto error;
+  }
 
 #if USART2_RX_ENABLE
   ringbuffer_init(usart2_rb, _u2_user_rx_cache, USART2_USER_RX_CACHE_DEPTH);
@@ -161,7 +173,24 @@ status_t usart2_init(uint32_t baudrate)
 #endif /* USART2_DMA_RX_ENABLE */
   __HAL_UART_ENABLE_IT(Usart2Handle, UART_IT_IDLE);
 #endif /* USART2_RX_ENABLE */
-  return status_ok;
+  return ret;
+error:
+  kmm_free(Usart2Handle);
+#if USART2_RX_ENABLE
+  kmm_free(usart2_rb);
+  kmm_free(_u2_user_rx_cache);
+  kmm_free(_u2_drv_rx_buffer);
+#endif /* USART2_RX_ENABLE */
+#if USART2_DMA_TX_ENABLE
+  kmm_free(Usart2TxDmaHandle);
+#endif /* USART2_DMA_TX_ENABLE */
+#if USART2_DMA_RX_ENABLE
+  kmm_free(Usart2RxDmaHandle);
+#endif /* USART2_DMA_RX_ENABLE */
+#if USART2_TX_ENABLE
+  osMutexDelete(u2_tx_mutex);
+#endif /* USART2_TX_ENABLE */
+  return ret;
 }
 
 status_t usart2_deinit(void)
@@ -185,17 +214,23 @@ status_t usart2_deinit(void)
 #if USART2_TX_ENABLE
 status_t usart2_tx_bytes(uint8_t *p, uint32_t l)
 {
-  return (status_t)HAL_UART_Transmit(Usart2Handle, (uint8_t*)p, l);
+  status_t ret;
+  osMutexWait(u2_tx_mutex, osWaitForever);
+  ret = (status_t)HAL_UART_Transmit(Usart2Handle, (uint8_t*)p, l);
+  osMutexRelease(u2_tx_mutex);
+  return ret;
 }
 
 status_t usart2_tx_bytes_it(uint8_t *p, uint32_t l)
 {
+  osMutexWait(u2_tx_mutex, osWaitForever);
   return (status_t)HAL_UART_Transmit_IT(Usart2Handle, (uint8_t*)p, l);
 }
 
 status_t usart2_tx_bytes_dma(uint8_t *p, uint32_t l)
 {
 #if USART2_DMA_TX_ENABLE
+  osMutexWait(u2_tx_mutex, osWaitForever);
   return (status_t)HAL_UART_Transmit_DMA(Usart2Handle, (uint8_t*)p, l);
 #else
   ky_err(TAG, "DMA TX NOT available");
@@ -242,25 +277,10 @@ uint32_t usart2_cache_usage(void)
 }
 #endif /* USART2_RX_ENABLE */
 
-/* reserved for future
-status_t usart2_set_baudrate(uint32_t baudrate)
-{
-  status_t ret = status_ok;
-  while(_u2_tx_ready == false) {}
-  ret = (status_t)HAL_UART_AbortReceive(Usart2Handle); if(ret != status_ok) return ret;
-  __HAL_UART_DISABLE_IT(Usart2Handle, UART_IT_IDLE);
-  Usart2Handle->Init.BaudRate = baudrate;
-  ret = (status_t)HAL_UART_Init(Usart2Handle); if(ret != status_ok) return ret;
-  _u2_ptr_out = 0;
-  _u2_data_available = 0;
-  __HAL_UART_ENABLE_IT(Usart2Handle, UART_IT_IDLE);
-  return (status_t)HAL_UART_Receive_DMA(Usart2Handle, (uint8_t *)_u2_rx_cache, USART2_USER_RX_CACHE_DEPTH);
-}*/
-
 #if USART2_TX_ENABLE
 static void usart2_txcplt_callback(UART_HandleTypeDef *huart)
 {
-
+  osMutexRelease(u2_tx_mutex);
 }
 #endif /* USART2_TX_ENABLE */
 
