@@ -208,6 +208,9 @@ status_t usart2_deinit(void)
 #if USART2_DMA_RX_ENABLE
   kmm_free(Usart2RxDmaHandle);
 #endif /* USART2_DMA_RX_ENABLE */
+#if USART2_TX_ENABLE
+  osMutexDelete(u2_tx_mutex);
+#endif /* USART2_TX_ENABLE */
   return status_ok;
 }
 
@@ -216,7 +219,7 @@ status_t usart2_tx_bytes(uint8_t *p, uint32_t l)
 {
   status_t ret;
   osMutexWait(u2_tx_mutex, osWaitForever);
-  ret = (status_t)HAL_UART_Transmit(Usart2Handle, (uint8_t*)p, l);
+  ret = (status_t)HAL_UART_Transmit(Usart2Handle, (uint8_t*)p, l, USART_HAL_TRANSMIT_TIMEOUT);
   osMutexRelease(u2_tx_mutex);
   return ret;
 }
@@ -473,12 +476,6 @@ void USART2_IRQHandler(void)
 }
 
 #else /* !USART2_ENABLE */
-
-static status_t periph_disabled(const char *tag)
-{
-  ky_err(tag, "PERIPH DISABLED");
-  return status_error;
-}
 
 status_t usart2_init(uint32_t baudrate)
 {
