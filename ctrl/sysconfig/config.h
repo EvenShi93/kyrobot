@@ -42,6 +42,13 @@
 #define START_TASK_STACK_SIZE                    (256)
 #endif /* FREERTOS_ENABLED */
 
+/* Peripheral Configuration Table */
+#define USART2_ENABLE                            (1)
+#define USART2_TX_ENABLE                         (1)
+#define USART2_RX_ENABLE                         (1)
+#define USART2_DMA_TX_ENABLE                     (1)
+#define USART2_DMA_RX_ENABLE                     (1)
+
 /* Interrupt Priority Table */
 #define INT_PRIORITY_MAX                         5
 #define INT_PRIORITY_MIN                         15
@@ -62,6 +69,10 @@
 #define INT_PRIO_RMTIF_PERIPH                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
 #define INT_PRIO_RMTIF_DMARX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
 #define INT_PRIO_RMTIF_DMATX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
+
+#define INT_PRIO_USART2_PERIPH                   INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
+#define INT_PRIO_USART2_DMARX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
+#define INT_PRIO_USART2_DMATX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
 
 #define INT_PRIO_NOTIFY_TIMER                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 6)
 
@@ -94,6 +105,8 @@
 /*  Total size of IN buffer:  Total size of USB IN buffer: APP_RX_DATA_SIZE*8/MAX_BAUDARATE*1000 should be > CDC_IN_FRAME_INTERVAL */
 #define APP_RX_DATA_SIZE                         256
 #endif /* CONFIG_USB_IF_ENABLE */
+
+#define USART2_USER_RX_CACHE_DEPTH               (256)
 
 #define CONFIG_STEMWIN_DEMO_ENABLE               (0)
 
