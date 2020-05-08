@@ -36,7 +36,7 @@ void rmt_proc_task(void const *argument)
   uint32_t task_timestamp = 0, log_ts = 0;
 #endif /* RMT_PROC_TASK_TEST_ENABLE */
 
-  if(rmtif_init() != status_ok) {
+  if(usart2_init(115200) != status_ok) {
     ky_err(TAG, "RF IF INIT FAILED");
     vTaskDelete(NULL);
   }
@@ -69,7 +69,7 @@ void rmt_proc_task(void const *argument)
   for(;;) {
     delay(25);
     do {
-      recv_len = rmtif_rx_bytes(recv_cache, RMT_RECV_CACHE_SIZE);
+      recv_len = usart2_rx_bytes(recv_cache, RMT_RECV_CACHE_SIZE);
       if(recv_len > 0) {
         decode_cnt = 0;
         while(decode_cnt < recv_len) {
