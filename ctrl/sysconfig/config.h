@@ -44,10 +44,16 @@
 
 /* Peripheral Configuration Table */
 #define USART2_ENABLE                            (1)
-#define USART2_TX_ENABLE                         (1)
+#define USART2_TX_ENABLE                         (0)
 #define USART2_RX_ENABLE                         (1)
-#define USART2_DMA_TX_ENABLE                     (1)
+#define USART2_DMA_TX_ENABLE                     (0)
 #define USART2_DMA_RX_ENABLE                     (1)
+
+#define USART6_ENABLE                            (1)
+#define USART6_TX_ENABLE                         (1)
+#define USART6_RX_ENABLE                         (0)
+#define USART6_DMA_TX_ENABLE                     (0)
+#define USART6_DMA_RX_ENABLE                     (0)
 
 /* Interrupt Priority Table */
 #define INT_PRIORITY_MAX                         5
@@ -65,10 +71,6 @@
 #define INT_PRIO_IMUIF_INT2                      INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 9)
 
 #define INT_PRIO_DISPIF_DMATX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 4)
-
-#define INT_PRIO_RMTIF_PERIPH                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
-#define INT_PRIO_RMTIF_DMARX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
-#define INT_PRIO_RMTIF_DMATX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
 
 #define INT_PRIO_USART2_PERIPH                   INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
 #define INT_PRIO_USART2_DMARX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
@@ -89,9 +91,9 @@
 #define INT_PRIO_MAGIF_ER                        INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 9)
 #define INT_PRIO_MAGIF_EV                        INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 9)
 
-#define INT_PRIO_COMIF_PERIPH                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 10)
-#define INT_PRIO_COMIF_DMARX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 10)
-#define INT_PRIO_COMIF_DMATX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 10)
+#define INT_PRIO_USART6_PERIPH                   INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 10)
+#define INT_PRIO_USART6_DMARX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 10)
+#define INT_PRIO_USART6_DMATX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 10)
 
 #define INT_PRIO_OTGFS_INT                       INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 9)
 
@@ -107,6 +109,7 @@
 #endif /* CONFIG_USB_IF_ENABLE */
 
 #define USART2_USER_RX_CACHE_DEPTH               (256)
+#define USART6_USER_RX_CACHE_DEPTH               (256)
 
 #define CONFIG_STEMWIN_DEMO_ENABLE               (0)
 
