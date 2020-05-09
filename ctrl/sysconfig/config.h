@@ -49,6 +49,12 @@
 #define USART2_DMA_TX_ENABLE                     (0)
 #define USART2_DMA_RX_ENABLE                     (1)
 
+#define UART4_ENABLE                             (0)
+#define UART4_TX_ENABLE                          (1)
+#define UART4_RX_ENABLE                          (1)
+#define UART4_DMA_TX_ENABLE                      (1)
+#define UART4_DMA_RX_ENABLE                      (1)
+
 #define USART6_ENABLE                            (1)
 #define USART6_TX_ENABLE                         (1)
 #define USART6_RX_ENABLE                         (0)
@@ -78,13 +84,9 @@
 
 #define INT_PRIO_NOTIFY_TIMER                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 6)
 
-#define INT_PRIO_GSMIF_PERIPH                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 4)
-#define INT_PRIO_GSMIF_DMARX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 4)
-#define INT_PRIO_GSMIF_DMATX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 4)
-
-#define INT_PRIO_UBXAIF_PERIPH                   INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 6)
-#define INT_PRIO_UBXAIF_DMARX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 6)
-#define INT_PRIO_UBXAIF_DMATX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 6)
+#define INT_PRIO_UART4_PERIPH                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 4)
+#define INT_PRIO_UART4_DMARX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 4)
+#define INT_PRIO_UART4_DMATX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 4)
 
 #define INT_PRIO_MAGIF_DMARX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 8)
 #define INT_PRIO_MAGIF_DMATX                     INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 8)
@@ -99,16 +101,13 @@
 
 #define INT_PRIO_FLASHIF_IT                      INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 2)
 
-#define INT_PRIO_RTCMIF_PERIPH                   INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 7)
-#define INT_PRIO_RTCMIF_DMARX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
-#define INT_PRIO_RTCMIF_DMATX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 7)
-
 #if CONFIG_USB_ENABLE
 /*  Total size of IN buffer:  Total size of USB IN buffer: APP_RX_DATA_SIZE*8/MAX_BAUDARATE*1000 should be > CDC_IN_FRAME_INTERVAL */
 #define APP_RX_DATA_SIZE                         256
 #endif /* CONFIG_USB_IF_ENABLE */
 
 #define USART2_USER_RX_CACHE_DEPTH               (256)
+#define UART4_USER_RX_CACHE_DEPTH                (256)
 #define USART6_USER_RX_CACHE_DEPTH               (256)
 
 #define CONFIG_STEMWIN_DEMO_ENABLE               (0)
