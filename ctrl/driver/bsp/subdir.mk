@@ -6,13 +6,10 @@
 
 OBJS += \
 $(BuildPath)/driver/bsp/callback.o \
-$(BuildPath)/driver/bsp/controlif.o \
 $(BuildPath)/driver/bsp/hal_msp.o \
 $(BuildPath)/driver/bsp/mcu_irq.o \
 $(BuildPath)/driver/bsp/gpio_irq.o \
-$(BuildPath)/driver/bsp/rtcmif.o \
 $(BuildPath)/driver/bsp/timebase.o \
-$(BuildPath)/driver/bsp/ubloxa.o \
 $(BuildPath)/driver/bsp/leds.o \
 $(BuildPath)/driver/bsp/gpios.o \
 $(BuildPath)/driver/bsp/buttons.o \
