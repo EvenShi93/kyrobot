@@ -7,6 +7,7 @@
 OBJS += \
 $(BuildPath)/driver/periph/periph.o \
 $(BuildPath)/driver/periph/usart2.o \
+$(BuildPath)/driver/periph/uart4.o \
 $(BuildPath)/driver/periph/usart6.o
 
 OBJ_DIRS = $(sort $(dir $(OBJS)))
