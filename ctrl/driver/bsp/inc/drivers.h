@@ -9,14 +9,10 @@
 #include "buttons.h"
 #include "voltage.h"
 #include "encoderif.h"
-#include "controlif.h"
 
 #include "periph.h"
 
 #include "notifytimer.h"
-
-#include "ubloxa.h"
-#include "rtcmif.h"
 
 #include "imuif.h"
 #include "icm42605.h"
