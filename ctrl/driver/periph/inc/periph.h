@@ -13,6 +13,7 @@
 #include "periph_config.h"
 
 #include "usart2.h"
+#include "uart4.h"
 #include "usart6.h"
 
 status_t periph_disabled(const char *tag);
