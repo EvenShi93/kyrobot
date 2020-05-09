@@ -47,6 +47,40 @@
 #define USART2_DMA_RX_IRQHandler            DMA1_Stream5_IRQHandler
 #endif /* USART2_DMA_RX_ENABLE */
 
+/*## PERIPHERAL DEFINITIONS FOR UART4 #################################*/
+/* Definition for UART4 clock resources */
+#if UART4_ENABLE
+#define UART4_GPIO_CLK_ENABLE()            __GPIOA_CLK_ENABLE()
+#endif /* UART4_ENABLE */
+
+/* Definition for UART4 Pins */
+#if UART4_TX_ENABLE
+#define UART4_TX_PIN                       GPIO_PIN_0
+#define UART4_TX_GPIO_PORT                 GPIOA
+#define UART4_TX_AF                        GPIO_AF8_UART4
+#endif /* UART4_TX_ENABLE */
+#if UART4_RX_ENABLE
+#define UART4_RX_PIN                       GPIO_PIN_1
+#define UART4_RX_GPIO_PORT                 GPIOA
+#define UART4_RX_AF                        GPIO_AF8_UART4
+#endif /* UART4_RX_ENABLE */
+
+#if UART4_DMA_TX_ENABLE
+#define UART4_DMA_TX_CLK_ENABLE()          __HAL_RCC_DMA1_CLK_ENABLE()
+#define UART4_TX_DMA_STREAM                DMA1_Stream4
+#define UART4_TX_DMA_CHANNEL               DMA_CHANNEL_4
+#define UART4_DMA_TX_IRQn                  DMA1_Stream4_IRQn
+#define UART4_DMA_TX_IRQHandler            DMA1_Stream4_IRQHandler
+#endif /* UART4_DMA_TX_ENABLE */
+
+#if UART4_DMA_RX_ENABLE
+#define UART4_DMA_RX_CLK_ENABLE()          __HAL_RCC_DMA1_CLK_ENABLE()
+#define UART4_RX_DMA_STREAM                DMA1_Stream2
+#define UART4_RX_DMA_CHANNEL               DMA_CHANNEL_4
+#define UART4_DMA_RX_IRQn                  DMA1_Stream2_IRQn
+#define UART4_DMA_RX_IRQHandler            DMA1_Stream2_IRQHandler
+#endif /* UART4_DMA_RX_ENABLE */
+
 /*## PERIPHERAL DEFINITIONS FOR USART6 #################################*/
 /* Definition for USART6 clock resources */
 #if USART6_ENABLE
