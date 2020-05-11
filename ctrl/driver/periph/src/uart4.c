@@ -47,7 +47,7 @@ static DMA_HandleTypeDef *Uart4RxDmaHandle;
 #endif /* UART4_DMA_RX_ENABLE */
 
 #if UART4_TX_ENABLE
-static osMutexId u2_tx_mutex;
+static osMutexId u4_tx_mutex;
 #endif /* UART4_TX_ENABLE */
 
 #if UART4_RX_ENABLE
@@ -114,9 +114,9 @@ status_t uart4_init(uint32_t baudrate)
 
 #if UART4_TX_ENABLE
   /* Create the mutex  */
-  osMutexDef(U2TxMutex);
-  u2_tx_mutex = osMutexCreate(osMutex(U2TxMutex));
-  if(u2_tx_mutex == NULL) {
+  osMutexDef(U4TxMutex);
+  u4_tx_mutex = osMutexCreate(osMutex(U4TxMutex));
+  if(u4_tx_mutex == NULL) {
     ret = status_error;
     goto error;
   }
@@ -188,7 +188,7 @@ error:
   kmm_free(Uart4RxDmaHandle);
 #endif /* UART4_DMA_RX_ENABLE */
 #if UART4_TX_ENABLE
-  osMutexDelete(u2_tx_mutex);
+  osMutexDelete(u4_tx_mutex);
 #endif /* UART4_TX_ENABLE */
   return ret;
 }
@@ -209,7 +209,7 @@ status_t uart4_deinit(void)
   kmm_free(Uart4RxDmaHandle);
 #endif /* UART4_DMA_RX_ENABLE */
 #if UART4_TX_ENABLE
-  osMutexDelete(u2_tx_mutex);
+  osMutexDelete(u4_tx_mutex);
 #endif /* UART4_TX_ENABLE */
   return status_ok;
 }
@@ -218,22 +218,22 @@ status_t uart4_deinit(void)
 status_t uart4_tx_bytes(uint8_t *p, uint32_t l)
 {
   status_t ret;
-  osMutexWait(u2_tx_mutex, osWaitForever);
+  osMutexWait(u4_tx_mutex, osWaitForever);
   ret = (status_t)HAL_UART_Transmit(Uart4Handle, (uint8_t*)p, l, USART_HAL_TRANSMIT_TIMEOUT);
-  osMutexRelease(u2_tx_mutex);
+  osMutexRelease(u4_tx_mutex);
   return ret;
 }
 
 status_t uart4_tx_bytes_it(uint8_t *p, uint32_t l)
 {
-  osMutexWait(u2_tx_mutex, osWaitForever);
+  osMutexWait(u4_tx_mutex, osWaitForever);
   return (status_t)HAL_UART_Transmit_IT(Uart4Handle, (uint8_t*)p, l);
 }
 
 status_t uart4_tx_bytes_dma(uint8_t *p, uint32_t l)
 {
 #if UART4_DMA_TX_ENABLE
-  osMutexWait(u2_tx_mutex, osWaitForever);
+  osMutexWait(u4_tx_mutex, osWaitForever);
   return (status_t)HAL_UART_Transmit_DMA(Uart4Handle, (uint8_t*)p, l);
 #else
   ky_err(TAG, "DMA TX NOT available");
@@ -283,7 +283,7 @@ uint32_t uart4_cache_usage(void)
 #if UART4_TX_ENABLE
 static void uart4_txcplt_callback(UART_HandleTypeDef *huart)
 {
-  osMutexRelease(u2_tx_mutex);
+  osMutexRelease(u4_tx_mutex);
 }
 #endif /* UART4_TX_ENABLE */
 
