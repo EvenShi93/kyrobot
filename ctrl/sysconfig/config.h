@@ -43,6 +43,12 @@
 #endif /* FREERTOS_ENABLED */
 
 /* Peripheral Configuration Table */
+#define USART1_ENABLE                            (0)
+#define USART1_TX_ENABLE                         (0)
+#define USART1_RX_ENABLE                         (0)
+#define USART1_DMA_TX_ENABLE                     (0)
+#define USART1_DMA_RX_ENABLE                     (0)
+
 #define USART2_ENABLE                            (1)
 #define USART2_TX_ENABLE                         (0)
 #define USART2_RX_ENABLE                         (1)
@@ -78,6 +84,10 @@
 
 #define INT_PRIO_DISPIF_DMATX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 4)
 
+#define INT_PRIO_USART1_PERIPH                   INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 7)
+#define INT_PRIO_USART1_DMARX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 7)
+#define INT_PRIO_USART1_DMATX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 7)
+
 #define INT_PRIO_USART2_PERIPH                   INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
 #define INT_PRIO_USART2_DMARX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
 #define INT_PRIO_USART2_DMATX                    INT_PRIORITY_LIMIT(INT_PRIORITY_MAX + 5)
@@ -106,6 +116,7 @@
 #define APP_RX_DATA_SIZE                         256
 #endif /* CONFIG_USB_IF_ENABLE */
 
+#define USART1_USER_RX_CACHE_DEPTH               (256)
 #define USART2_USER_RX_CACHE_DEPTH               (256)
 #define UART4_USER_RX_CACHE_DEPTH                (256)
 #define USART6_USER_RX_CACHE_DEPTH               (256)

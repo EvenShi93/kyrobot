@@ -13,6 +13,40 @@
 #define UART_HAL_TRANSMIT_TIMEOUT           (1000)
 #define USART_HAL_TRANSMIT_TIMEOUT          UART_HAL_TRANSMIT_TIMEOUT
 
+/*## PERIPHERAL DEFINITIONS FOR USART1 #################################*/
+/* Definition for USART1 clock resources */
+#if USART1_ENABLE
+#define USART1_GPIO_CLK_ENABLE()            __GPIOB_CLK_ENABLE()
+#endif /* USART1_ENABLE */
+
+/* Definition for USART1 Pins */
+#if USART1_TX_ENABLE
+#define USART1_TX_PIN                       GPIO_PIN_6
+#define USART1_TX_GPIO_PORT                 GPIOB
+#define USART1_TX_AF                        GPIO_AF7_USART1
+#endif /* USART1_TX_ENABLE */
+#if USART1_RX_ENABLE
+#define USART1_RX_PIN                       GPIO_PIN_7
+#define USART1_RX_GPIO_PORT                 GPIOB
+#define USART1_RX_AF                        GPIO_AF7_USART1
+#endif /* USART1_RX_ENABLE */
+
+#if USART1_DMA_TX_ENABLE
+#define USART1_DMA_TX_CLK_ENABLE()          __HAL_RCC_DMA2_CLK_ENABLE()
+#define USART1_TX_DMA_STREAM                DMA2_Stream7
+#define USART1_TX_DMA_CHANNEL               DMA_CHANNEL_4
+#define USART1_DMA_TX_IRQn                  DMA2_Stream7_IRQn
+#define USART1_DMA_TX_IRQHandler            DMA2_Stream7_IRQHandler
+#endif /* USART1_DMA_TX_ENABLE */
+
+#if USART1_DMA_RX_ENABLE
+#define USART1_DMA_RX_CLK_ENABLE()          __HAL_RCC_DMA2_CLK_ENABLE()
+#define USART1_RX_DMA_STREAM                DMA2_Stream5
+#define USART1_RX_DMA_CHANNEL               DMA_CHANNEL_4
+#define USART1_DMA_RX_IRQn                  DMA2_Stream5_IRQn
+#define USART1_DMA_RX_IRQHandler            DMA2_Stream5_IRQHandler
+#endif /* USART1_DMA_RX_ENABLE */
+
 /*## PERIPHERAL DEFINITIONS FOR USART2 #################################*/
 /* Definition for USART2 clock resources */
 #if USART2_ENABLE

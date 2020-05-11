@@ -12,6 +12,7 @@
 
 #include "periph_config.h"
 
+#include "usart1.h"
 #include "usart2.h"
 #include "uart4.h"
 #include "usart6.h"
