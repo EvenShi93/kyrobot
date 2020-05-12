@@ -2,6 +2,8 @@
 
 static const char *TAG = "APP";
 
+static const uart_dev_t *log_uart;
+
 static void led_thread(void const *argument);
 static status_t log_tx_string(const char *p);
 
@@ -34,8 +36,15 @@ void APP_StartThread(void const *argument)
 
   /* lock power */
   output_port_set(IO_PWR_CTRL);
-
-  usart6_init(115200);
+  led_off(LED_GREEN);
+  if(periph_get_uart_drv(log_uart, "ttyS6") != status_ok) {
+    for(;;) {
+      led_toggle(LED_BLUE);
+      delay(50);
+    }
+  }
+  led_on(LED_BLUE);
+  log_uart->uart_init(115200);
   log_init(log_tx_string);
   log_tx_string("!!!KERNEL START!!!\n");
   log_tx_string(SystemInfo);
@@ -92,7 +101,7 @@ static void led_thread(void const *argument)
 
 static status_t log_tx_string(const char *p)
 {
-  return usart6_tx_bytes((uint8_t *)p, strlen((const char *)p));
+  return log_uart->uart_tx((uint8_t *)p, strlen((const char *)p));
 }
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/
