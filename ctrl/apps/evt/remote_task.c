@@ -27,6 +27,7 @@ static struct rf_info_t {
 
 void rmt_proc_task(void const *argument)
 {
+  const uart_dev_t *rmt_uart = NULL;
   kyLinkConfig_t *cfg = NULL;
   KYLINK_CORE_HANDLE *kylink_rmt;
   uint8_t *kylink_decoder_cache;
@@ -36,8 +37,13 @@ void rmt_proc_task(void const *argument)
   uint32_t task_timestamp = 0, log_ts = 0;
 #endif /* RMT_PROC_TASK_TEST_ENABLE */
 
-  if(usart2_init(115200) != status_ok) {
-    ky_err(TAG, "RF IF INIT FAILED");
+  if(periph_get_uart_drv(rmt_uart, "ttyS2") == status_ok) {
+    if(rmt_uart->uart_init(115200) != status_ok) {
+      ky_err(TAG, "RF IF INIT FAILED");
+      vTaskDelete(NULL);
+    }
+  } else {
+    ky_err(TAG, "UART dose NOT exist");
     vTaskDelete(NULL);
   }
 
@@ -69,7 +75,7 @@ void rmt_proc_task(void const *argument)
   for(;;) {
     delay(25);
     do {
-      recv_len = usart2_rx_bytes(recv_cache, RMT_RECV_CACHE_SIZE);
+      recv_len = rmt_uart->uart_rx(recv_cache, RMT_RECV_CACHE_SIZE);
       if(recv_len > 0) {
         decode_cnt = 0;
         while(decode_cnt < recv_len) {
@@ -104,6 +110,10 @@ exit:
   kmm_free(kylink_rmt);
   kmm_free(recv_cache);
   kmm_free(kylink_decoder_cache);
+  if(rmt_uart != NULL) {
+    rmt_uart->uart_deinit();
+    rmt_uart = NULL;
+  }
   vTaskDelete(NULL);
 }
 
