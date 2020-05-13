@@ -1,4 +1,4 @@
-# Gimbal controller
+# kyRobot controller
 
 #### MCU:
 ```STM32F732RET6, Cortex-M7F, Freq(216MHz), ROM(512K), RAM(256K), LQFP64```
