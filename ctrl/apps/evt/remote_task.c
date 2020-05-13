@@ -25,9 +25,11 @@ static struct rf_info_t {
   rf_ctrl_t rf_data;
 } *rf_info;
 
+extern const uart_dev_t usart2_dev;
+
 void rmt_proc_task(void const *argument)
 {
-  const uart_dev_t *rmt_uart = NULL;
+  const uart_dev_t *rmt_uart = &usart2_dev;
   kyLinkConfig_t *cfg = NULL;
   KYLINK_CORE_HANDLE *kylink_rmt;
   uint8_t *kylink_decoder_cache;
@@ -36,16 +38,6 @@ void rmt_proc_task(void const *argument)
 #if RMT_PROC_TASK_TEST_ENABLE
   uint32_t task_timestamp = 0, log_ts = 0;
 #endif /* RMT_PROC_TASK_TEST_ENABLE */
-
-  if(periph_get_uart_drv(rmt_uart, "ttyS2") == status_ok) {
-    if(rmt_uart->uart_init(115200) != status_ok) {
-      ky_err(TAG, "RF IF INIT FAILED");
-      vTaskDelete(NULL);
-    }
-  } else {
-    ky_err(TAG, "UART dose NOT exist");
-    vTaskDelete(NULL);
-  }
 
   cfg = kmm_alloc(sizeof(kyLinkConfig_t));
   recv_cache = kmm_alloc(RMT_RECV_CACHE_SIZE);
