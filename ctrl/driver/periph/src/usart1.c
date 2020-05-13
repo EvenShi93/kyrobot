@@ -1,4 +1,4 @@
-#include "usart1.h"
+#include "periph.h"
 #include "log.h"
 
 #if ((!USART1_TX_ENABLE) && (!USART1_RX_ENABLE))
@@ -23,7 +23,27 @@
 #define USART1_DMA_RX_ENABLE                (0)
 #endif /* !USART1_RX_ENABLE */
 
+static status_t usart1_init(uint32_t baudrate);
+static status_t usart1_deinit(void);
+static status_t usart1_tx_bytes(uint8_t *p, uint32_t l);
+static status_t usart1_tx_bytes_it(uint8_t *p, uint32_t l);
+static status_t usart1_tx_bytes_dma(uint8_t *p, uint32_t l);
+
+static uint32_t usart1_rx_bytes(uint8_t *p, uint32_t l);
+static uint32_t usart1_cache_usage(void);
+
 static const char *TAG = "ttyS1";
+
+const uart_dev_t usart1_dev = {
+//  "ttyS1",
+  usart1_init,
+  usart1_deinit,
+  usart1_rx_bytes,
+  usart1_tx_bytes,
+  usart1_tx_bytes_it,
+  usart1_tx_bytes_dma,
+  usart1_cache_usage,
+};
 
 #if USART1_ENABLE
 
@@ -68,7 +88,7 @@ static void usart1_txcplt_callback(UART_HandleTypeDef *huart);
 static void usart1_rxcplt_callback(UART_HandleTypeDef *huart);
 #endif /* USART1_RX_ENABLE */
 
-status_t usart1_init(uint32_t baudrate)
+static status_t usart1_init(uint32_t baudrate)
 {
   status_t ret = status_ok;
 
@@ -193,7 +213,7 @@ error:
   return ret;
 }
 
-status_t usart1_deinit(void)
+static status_t usart1_deinit(void)
 {
   HAL_UART_DeInit(Usart1Handle);
   kmm_free(Usart1Handle);
@@ -215,7 +235,7 @@ status_t usart1_deinit(void)
 }
 
 #if USART1_TX_ENABLE
-status_t usart1_tx_bytes(uint8_t *p, uint32_t l)
+static status_t usart1_tx_bytes(uint8_t *p, uint32_t l)
 {
   status_t ret;
   osMutexWait(u1_tx_mutex, osWaitForever);
@@ -224,13 +244,13 @@ status_t usart1_tx_bytes(uint8_t *p, uint32_t l)
   return ret;
 }
 
-status_t usart1_tx_bytes_it(uint8_t *p, uint32_t l)
+static status_t usart1_tx_bytes_it(uint8_t *p, uint32_t l)
 {
   osMutexWait(u1_tx_mutex, osWaitForever);
   return (status_t)HAL_UART_Transmit_IT(Usart1Handle, (uint8_t*)p, l);
 }
 
-status_t usart1_tx_bytes_dma(uint8_t *p, uint32_t l)
+static status_t usart1_tx_bytes_dma(uint8_t *p, uint32_t l)
 {
 #if USART1_DMA_TX_ENABLE
   osMutexWait(u1_tx_mutex, osWaitForever);
@@ -241,40 +261,40 @@ status_t usart1_tx_bytes_dma(uint8_t *p, uint32_t l)
 #endif /* USART1_DMA_TX_ENABLE */
 }
 #else
-status_t usart1_tx_bytes(uint8_t *p, uint32_t l)
+static status_t usart1_tx_bytes(uint8_t *p, uint32_t l)
 {
   return status_error;
 }
 
-status_t usart1_tx_bytes_it(uint8_t *p, uint32_t l)
+static status_t usart1_tx_bytes_it(uint8_t *p, uint32_t l)
 {
   return status_error;
 }
 
-status_t usart1_tx_bytes_dma(uint8_t *p, uint32_t l)
+static status_t usart1_tx_bytes_dma(uint8_t *p, uint32_t l)
 {
   return status_error;
 }
 #endif /* USART1_TX_ENABLE */
 
 #if USART1_RX_ENABLE
-uint32_t usart1_rx_bytes(uint8_t *p, uint32_t l)
+static uint32_t usart1_rx_bytes(uint8_t *p, uint32_t l)
 {
   return ringbuffer_poll(usart1_rb, p, l);
 }
 
-uint32_t usart1_cache_usage(void)
+static uint32_t usart1_cache_usage(void)
 {
   return ringbuffer_usage(usart1_rb);
 }
 
 #else
-uint32_t usart1_rx_bytes(uint8_t *p, uint32_t l)
+static uint32_t usart1_rx_bytes(uint8_t *p, uint32_t l)
 {
   return 0;
 }
 
-uint32_t usart1_cache_usage(void)
+static uint32_t usart1_cache_usage(void)
 {
   return 0;
 }
@@ -477,37 +497,37 @@ void USART1_IRQHandler(void)
 
 #else /* !USART1_ENABLE */
 
-status_t usart1_init(uint32_t baudrate)
+static status_t usart1_init(uint32_t baudrate)
 {
   return periph_disabled(TAG);
 }
 
-status_t usart1_deinit(void)
+static status_t usart1_deinit(void)
 {
   return periph_disabled(TAG);
 }
 
-status_t usart1_tx_bytes(uint8_t *p, uint32_t l)
+static status_t usart1_tx_bytes(uint8_t *p, uint32_t l)
 {
   return periph_disabled(TAG);
 }
 
-status_t usart1_tx_bytes_it(uint8_t *p, uint32_t l)
+static status_t usart1_tx_bytes_it(uint8_t *p, uint32_t l)
 {
   return periph_disabled(TAG);
 }
 
-status_t usart1_tx_bytes_dma(uint8_t *p, uint32_t l)
+static status_t usart1_tx_bytes_dma(uint8_t *p, uint32_t l)
 {
   return periph_disabled(TAG);
 }
 
-uint32_t usart1_rx_bytes(uint8_t *p, uint32_t l)
+static uint32_t usart1_rx_bytes(uint8_t *p, uint32_t l)
 {
   return periph_disabled(TAG);
 }
 
-uint32_t usart1_cache_usage(void)
+static uint32_t usart1_cache_usage(void)
 {
   return periph_disabled(TAG);
 }

@@ -1,4 +1,4 @@
-#include "uart4.h"
+#include "periph.h"
 #include "log.h"
 
 #if ((!UART4_TX_ENABLE) && (!UART4_RX_ENABLE))
@@ -23,7 +23,27 @@
 #define UART4_DMA_RX_ENABLE                (0)
 #endif /* !UART4_RX_ENABLE */
 
+static status_t uart4_init(uint32_t baudrate);
+static status_t uart4_deinit(void);
+static status_t uart4_tx_bytes(uint8_t *p, uint32_t l);
+static status_t uart4_tx_bytes_it(uint8_t *p, uint32_t l);
+static status_t uart4_tx_bytes_dma(uint8_t *p, uint32_t l);
+
+static uint32_t uart4_rx_bytes(uint8_t *p, uint32_t l);
+static uint32_t uart4_cache_usage(void);
+
 static const char *TAG = "ttyS4";
+
+const uart_dev_t uart4_dev = {
+//  "ttyS4",
+  uart4_init,
+  uart4_deinit,
+  uart4_rx_bytes,
+  uart4_tx_bytes,
+  uart4_tx_bytes_it,
+  uart4_tx_bytes_dma,
+  uart4_cache_usage,
+};
 
 #if UART4_ENABLE
 
@@ -68,7 +88,7 @@ static void uart4_txcplt_callback(UART_HandleTypeDef *huart);
 static void uart4_rxcplt_callback(UART_HandleTypeDef *huart);
 #endif /* UART4_RX_ENABLE */
 
-status_t uart4_init(uint32_t baudrate)
+static status_t uart4_init(uint32_t baudrate)
 {
   status_t ret = status_ok;
 
@@ -193,7 +213,7 @@ error:
   return ret;
 }
 
-status_t uart4_deinit(void)
+static status_t uart4_deinit(void)
 {
   HAL_UART_DeInit(Uart4Handle);
   kmm_free(Uart4Handle);
@@ -215,7 +235,7 @@ status_t uart4_deinit(void)
 }
 
 #if UART4_TX_ENABLE
-status_t uart4_tx_bytes(uint8_t *p, uint32_t l)
+static status_t uart4_tx_bytes(uint8_t *p, uint32_t l)
 {
   status_t ret;
   osMutexWait(u4_tx_mutex, osWaitForever);
@@ -224,13 +244,13 @@ status_t uart4_tx_bytes(uint8_t *p, uint32_t l)
   return ret;
 }
 
-status_t uart4_tx_bytes_it(uint8_t *p, uint32_t l)
+static status_t uart4_tx_bytes_it(uint8_t *p, uint32_t l)
 {
   osMutexWait(u4_tx_mutex, osWaitForever);
   return (status_t)HAL_UART_Transmit_IT(Uart4Handle, (uint8_t*)p, l);
 }
 
-status_t uart4_tx_bytes_dma(uint8_t *p, uint32_t l)
+static status_t uart4_tx_bytes_dma(uint8_t *p, uint32_t l)
 {
 #if UART4_DMA_TX_ENABLE
   osMutexWait(u4_tx_mutex, osWaitForever);
@@ -241,40 +261,40 @@ status_t uart4_tx_bytes_dma(uint8_t *p, uint32_t l)
 #endif /* UART4_DMA_TX_ENABLE */
 }
 #else
-status_t uart4_tx_bytes(uint8_t *p, uint32_t l)
+static status_t uart4_tx_bytes(uint8_t *p, uint32_t l)
 {
   return status_error;
 }
 
-status_t uart4_tx_bytes_it(uint8_t *p, uint32_t l)
+static status_t uart4_tx_bytes_it(uint8_t *p, uint32_t l)
 {
   return status_error;
 }
 
-status_t uart4_tx_bytes_dma(uint8_t *p, uint32_t l)
+static status_t uart4_tx_bytes_dma(uint8_t *p, uint32_t l)
 {
   return status_error;
 }
 #endif /* UART4_TX_ENABLE */
 
 #if UART4_RX_ENABLE
-uint32_t uart4_rx_bytes(uint8_t *p, uint32_t l)
+static uint32_t uart4_rx_bytes(uint8_t *p, uint32_t l)
 {
   return ringbuffer_poll(uart4_rb, p, l);
 }
 
-uint32_t uart4_cache_usage(void)
+static uint32_t uart4_cache_usage(void)
 {
   return ringbuffer_usage(uart4_rb);
 }
 
 #else
-uint32_t uart4_rx_bytes(uint8_t *p, uint32_t l)
+static uint32_t uart4_rx_bytes(uint8_t *p, uint32_t l)
 {
   return 0;
 }
 
-uint32_t uart4_cache_usage(void)
+static uint32_t uart4_cache_usage(void)
 {
   return 0;
 }
@@ -477,37 +497,37 @@ void UART4_IRQHandler(void)
 
 #else /* !UART4_ENABLE */
 
-status_t uart4_init(uint32_t baudrate)
+static status_t uart4_init(uint32_t baudrate)
 {
   return periph_disabled(TAG);
 }
 
-status_t uart4_deinit(void)
+static status_t uart4_deinit(void)
 {
   return periph_disabled(TAG);
 }
 
-status_t uart4_tx_bytes(uint8_t *p, uint32_t l)
+static status_t uart4_tx_bytes(uint8_t *p, uint32_t l)
 {
   return periph_disabled(TAG);
 }
 
-status_t uart4_tx_bytes_it(uint8_t *p, uint32_t l)
+static status_t uart4_tx_bytes_it(uint8_t *p, uint32_t l)
 {
   return periph_disabled(TAG);
 }
 
-status_t uart4_tx_bytes_dma(uint8_t *p, uint32_t l)
+static status_t uart4_tx_bytes_dma(uint8_t *p, uint32_t l)
 {
   return periph_disabled(TAG);
 }
 
-uint32_t uart4_rx_bytes(uint8_t *p, uint32_t l)
+static uint32_t uart4_rx_bytes(uint8_t *p, uint32_t l)
 {
   return periph_disabled(TAG);
 }
 
-uint32_t uart4_cache_usage(void)
+static uint32_t uart4_cache_usage(void)
 {
   return periph_disabled(TAG);
 }
