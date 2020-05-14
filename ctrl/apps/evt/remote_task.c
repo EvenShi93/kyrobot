@@ -39,6 +39,11 @@ void rmt_proc_task(void const *argument)
   uint32_t task_timestamp = 0, log_ts = 0;
 #endif /* RMT_PROC_TASK_TEST_ENABLE */
 
+  if(rmt_uart->uart_init(115200) != status_ok) {
+    ky_err(TAG, "failed to init rmt_uart");
+    vTaskDelete(NULL);
+  }
+
   cfg = kmm_alloc(sizeof(kyLinkConfig_t));
   recv_cache = kmm_alloc(RMT_RECV_CACHE_SIZE);
   rf_info = kmm_alloc(sizeof(struct rf_info_t));
