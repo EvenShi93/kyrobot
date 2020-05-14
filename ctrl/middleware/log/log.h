@@ -59,7 +59,11 @@ uint32_t log_timestamp(void);
 #define LOG_RESET_COLOR
 #endif //CONFIG_LOG_COLORS_ENABLED
 
-#define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter " (%ld) %s: " format LOG_RESET_COLOR "\n\r"
+#define LOG_CR            "\r"
+#define LOG_LF            "\n"
+#define LOG_CRLF          "\r\n"
+
+#define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter " (%ld) %s: " format LOG_RESET_COLOR LOG_CRLF
 
 #define LOG_LEVEL(level, tag, format, ...) do {                         \
         if (level==LOG_ERROR )          { log_write(LOG_FORMAT(E, format), log_timestamp(), tag, ##__VA_ARGS__); } \
