@@ -12,19 +12,19 @@ static status_t log_tx_string(const char *p);
 #define STR2(R) STR1(R)
 
 static const char SystemInfo[] =
-"\n  .--,       .--,"
-"\n ( (  \\.---./  ) )"
-"\n  '.__/o   o\\__.'"
-"\n     {=  ^  =}"               "\t\t\t"   "kyRobot Controller Board based on STM32F7xx"
-"\n      >  -  <"                "\t\t\t"   "Author:  kyChu<kychu@qq.com>"
-"\n     /       \\"              "\t\t\t"   "Version: " STR2(__VERSION_STR__)
-"\n    //       \\\\"            "\t\t\t"   "Date:    " __DATE__
-"\n   //|   .   |\\\\"             "\t\t"   "Time:    " __TIME__
-"\n   \"'\\       /'\"_.-~^`'-."     "\t"   "Board:   kyRobot Core Board(20200401 V1)"
-"\n      \\  _  /--'         `"      "\t"   "ALL RIGHTS RESERVED BY kyChu<kychu@qq.com>"
-"\n    ___)( )(___"
-"\n   (((__) (__)))"
-"\n"
+"\n\r  .--,       .--,"
+"\n\r ( (  \\.---./  ) )"
+"\n\r  '.__/o   o\\__.'"
+"\n\r     {=  ^  =}"               "\t\t\t"   "kyRobot Controller Board based on STM32F7xx"
+"\n\r      >  -  <"                "\t\t\t"   "Author:  kyChu<kychu@qq.com>"
+"\n\r     /       \\"              "\t\t\t"   "Version: " STR2(__VERSION_STR__)
+"\n\r    //       \\\\"            "\t\t\t"   "Date:    " __DATE__
+"\n\r   //|   .   |\\\\"             "\t\t"   "Time:    " __TIME__
+"\n\r   \"'\\       /'\"_.-~^`'-."     "\t"   "Board:   kyRobot Core Board(20200401 V1)"
+"\n\r      \\  _  /--'         `"      "\t"   "ALL RIGHTS RESERVED BY kyChu<kychu@qq.com>"
+"\n\r    ___)( )(___"
+"\n\r   (((__) (__)))"
+"\n\r"
 ;
 
 #define TEST_CASE_TASK_ENABLE                    (0)
