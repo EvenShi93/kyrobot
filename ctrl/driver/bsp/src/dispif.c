@@ -92,7 +92,7 @@ status_t dispif_init(void)
        + Counter direction = Up
   */
   TimHandle.Instance = DISP_BL_TIM;
-
+  TimHandle.State = HAL_TIM_STATE_RESET;
   TimHandle.Init.Prescaler         = 8;
   TimHandle.Init.Period            = 999;
   TimHandle.Init.ClockDivision     = 0;
