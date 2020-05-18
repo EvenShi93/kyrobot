@@ -86,6 +86,12 @@ status_t steerif_init(uint32_t period_us, uint32_t poswidth_us)
   return status_ok;
 }
 
+status_t steerif_deinit(void)
+{
+
+  return status_ok;
+}
+
 status_t steerif_set_poswidth(uint32_t poswidth_us)
 {
   if(poswidth_us <= 2000) {

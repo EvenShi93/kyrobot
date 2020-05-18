@@ -22,5 +22,6 @@
 status_t steerif_init(uint32_t period_us, uint32_t poswidth_us);
 status_t steerif_set_poswidth(uint32_t poswidth_us);
 void steerif_msp_init(TIM_HandleTypeDef *htim);
+status_t steerif_deinit(void);
 
 #endif /* BSP_INC_STEERIF_H_ */
