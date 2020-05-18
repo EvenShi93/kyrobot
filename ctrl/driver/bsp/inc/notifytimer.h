@@ -13,5 +13,6 @@
 typedef void (*NotifyTimerCallback)(void);
 
 status_t notify_timer_init(uint32_t period_ms, NotifyTimerCallback cb);
+status_t notify_timer_deinit(void);
 
 #endif /* BSP_INC_NOTIFYTIMER_H_ */

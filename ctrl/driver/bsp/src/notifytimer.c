@@ -45,6 +45,15 @@ status_t notify_timer_init(uint32_t period_ms, NotifyTimerCallback cb)
   return status_ok;
 }
 
+status_t notify_timer_deinit(void)
+{
+  __HAL_RCC_TIM7_FORCE_RESET();
+  __HAL_RCC_TIM7_RELEASE_RESET();
+  __TIM7_CLK_DISABLE();
+  HAL_NVIC_DisableIRQ(TIM7_IRQn);
+  return status_ok;
+}
+
 void TIM7_IRQHandler(void)
 {
   if (__TIM7_GET_FLAG(TIM_FLAG_UPDATE) != RESET) {
