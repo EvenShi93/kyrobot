@@ -1,5 +1,7 @@
 #include "apps.h"
 
+#include "console.h"
+
 static const char *TAG = "APP";
 
 extern const uart_dev_t usart6_dev;
@@ -31,6 +33,8 @@ static const char SystemInfo[] =
 
 void APP_StartThread(void const *argument)
 {
+  console_cfg_t console_cfg;
+
   osDelay(500);
   /* Initialize GPIOs */
   board_gpio_init();
@@ -79,6 +83,11 @@ void APP_StartThread(void const *argument)
   /* LED INDICATOR TASK */
   osThreadDef(LEDS, led_thread, osPriorityNormal, 0, 128); // stack size = 128B
   if(osThreadCreate(osThread(LEDS), NULL) == NULL) ky_err(TAG, "leds task create failed.");
+
+  console_cfg.prompt = NULL;
+  console_cfg.console_tx = log_uart->uart_tx;
+  console_cfg.console_rx = log_uart->uart_rx;
+  console_start(&console_cfg);
 
   vTaskDelete(NULL);
 }
