@@ -1,6 +1,6 @@
 #include "apps.h"
 
-#include "console.h"
+#include "syscmds.h"
 
 static const char *TAG = "APP";
 
@@ -54,6 +54,8 @@ void APP_StartThread(void const *argument)
     vTaskDelete(NULL);
   }
 
+  syscmds_register();
+
 //  osThreadDef(MAGS, magnetics_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 4); // stack size = 512B
 //  osThreadDef(GNSS, gnss_navg_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 2); // stack size = 256B
 //  osThreadDef(RTCM, rtcm_transfer_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 2); // stack size = 256B
@@ -62,10 +64,6 @@ void APP_StartThread(void const *argument)
   if(osThreadCreate(osThread(UGUI), NULL) == NULL) ky_err(TAG, "gui task create failed.");
   osThreadDef(REMT, rmt_proc_task, osPriorityNormal, 0, 256);
   if(osThreadCreate(osThread(REMT), NULL) == NULL) ky_err(TAG, "rf task create failed.");
-  osThreadDef(CTRL, ctrl_task, osPriorityNormal, 0, 512);
-  if(osThreadCreate(osThread(CTRL), NULL) == NULL) ky_err(TAG, "ctrl task create failed.");
-  osThreadDef(SINS, att_est_q_task, osPriorityNormal, 0, 512);
-  if(osThreadCreate(osThread(SINS), NULL) == NULL) ky_err(TAG, "sins task create failed.");
   osThreadDef(EVET, evt_proc_task, osPriorityNormal, 0, 256);
   if(osThreadCreate(osThread(EVET), NULL) == NULL) ky_err(TAG, "event task create failed.");
 //  if(osThreadCreate(osThread(MAGS), NULL) == NULL) ky_err(TAG, "mags task create failed.");
