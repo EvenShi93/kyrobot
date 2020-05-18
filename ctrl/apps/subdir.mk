@@ -15,6 +15,7 @@ $(BuildPath)/apps/src/cpu_utils.o \
 $(BuildPath)/apps/src/filesystem.o \
 $(BuildPath)/apps/src/filetransfer.o \
 $(BuildPath)/apps/src/mesg.o \
+$(BuildPath)/apps/src/syscmds.o \
 $(BuildPath)/apps/src/sd_diskio.o
 
 OBJS += \
