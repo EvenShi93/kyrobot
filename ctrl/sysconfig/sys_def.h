@@ -53,11 +53,13 @@
 
 typedef enum 
 {
-  status_ok      = 0x00U,
-  status_error   = 0x01U,
-  status_busy    = 0x02U,
-  status_timeout = 0x03U,
-  status_nomem   = 0x04U
+  status_ok        = 0x00U,
+  status_error     = 0x01U,
+  status_busy      = 0x02U,
+  status_timeout   = 0x03U,
+  status_nomem     = 0x04U,
+  status_inv_arg   = 0x05U,
+  status_not_found = 0x06U,
 } status_t;
 
 #endif /* __SYS_DEF_H */
