@@ -5,7 +5,7 @@
  *      Author: kychu
  */
 
-#include "apps.h"
+#include "drivers.h"
 
 #include "algorithm.h"
 
@@ -38,18 +38,21 @@ static int16_t motor_vel;
 /*
  * used to keep ctrl_task task handle
  */
-static osThreadId ctrlThread;
+static osThreadId ctrl_task_id;
 
+static uint32_t _task_should_exit = 0;
+
+static void ctrl_task(void const *argument);
 static void ctrl_task_notify(void);
 
-void ctrl_task(void const *argument)
+static void ctrl_task(void const *argument)
 {
-  PID *ctrl_pid;
+  PID *ctrl_pid = NULL;
+  rf_ctrl_t *rf_data = NULL;
   float steer_exp, motor_ctr = 0;
 #if MOTOR_ENCODER_COUNTER_TEST
   uint32_t task_timestamp = 0, log_ts = 0;
 #endif /* MOTOR_ENCODER_COUNTER_TEST */
-  rf_ctrl_t *rf_data;
   if(motorif_init() != status_ok) {
     ky_err(TAG, "MOTOR initialize failed");
     goto exit;
@@ -62,7 +65,6 @@ void ctrl_task(void const *argument)
     ky_err(TAG, "Failed to initialize STEER");
     goto exit;
   }
-  ctrlThread = xTaskGetCurrentTaskHandle();
   if(notify_timer_init(CONTROL_LOOP_PERIOD, ctrl_task_notify) != status_ok) {
     ky_err(TAG, "notify timer start failed");
     goto exit;
@@ -70,10 +72,8 @@ void ctrl_task(void const *argument)
   rf_data = kmm_alloc(sizeof(rf_ctrl_t));
   ctrl_pid = kmm_alloc(sizeof(PID));
   if(rf_data == NULL || ctrl_pid == NULL) {
-    kmm_free(rf_data);
-    kmm_free(ctrl_pid);
     ky_err(TAG, "no memory for CTRL");
-    vTaskDelete(NULL);
+    goto exit;
   }
   ctrl_pid->kp = 0.15f;
   ctrl_pid->ki = 0.00f;
@@ -85,7 +85,7 @@ void ctrl_task(void const *argument)
   ctrl_pid->Output = 0.0f;
   ctrl_pid->dt = CONTROL_LOOP_PERIOD * 0.001f;
   ky_info(TAG, "ctrl task started.");
-  for(;;) {
+  while(!_task_should_exit) {
     if(xTaskNotifyWait(0xFFFFFFFF, 0xFFFFFFFF, NULL, 100) == pdTRUE) {
       rmt_get_channels(rf_data);
       // steer control
@@ -126,14 +126,50 @@ void ctrl_task(void const *argument)
       }
     }
   }
+  notify_timer_deinit();
+  motorif_set_dutycycle_a(MOTOR_VEL_EXP_MID);
+  motorif_set_dutycycle_b(MOTOR_VEL_EXP_MID);
+  steerif_set_poswidth(STEER_CTRL_PWM_POS_MID);
+  steerif_deinit();
 exit:
+  kmm_free(rf_data);
+  kmm_free(ctrl_pid);
+  ctrl_task_id = NULL;
+  ky_warn(TAG, "exit");
   vTaskDelete(NULL);
 }
 
 static void ctrl_task_notify(void)
 {
-  osSignalSet(ctrlThread, 0x00000001);
+  osSignalSet(ctrl_task_id, 0x00000001);
 }
 
 float ctrl_get_motor_exp(void) { return motor_exp; }
 float ctrl_get_motor_vel(void) { return motor_vel; }
+
+osThreadDef(CTRL, ctrl_task, osPriorityNormal, 0, 512);
+
+int ctrl_main(int argc, char **argv)
+{
+  if(argc < 2) return -1;
+  if(strcmp(argv[1], "start") == 0) {
+    if(ctrl_task_id == NULL) {
+      _task_should_exit = 0;
+      ctrl_task_id = osThreadCreate(osThread(CTRL), NULL);
+      if(ctrl_task_id == NULL) {
+        ky_err(TAG, "task create failed.");
+        return -2;
+      }
+    } else {
+      ky_warn(TAG, "already started");
+    }
+    return 0;
+  }
+  if(strcmp(argv[1], "stop") == 0) {
+    if(ctrl_task_id != NULL) {
+      _task_should_exit = 1;
+      return 0;
+    }
+  }
+  return -1;
+}

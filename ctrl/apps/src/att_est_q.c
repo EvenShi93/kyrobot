@@ -15,6 +15,8 @@
 
 #include "cpu_utils.h"
 
+#include <string.h>
+
 static const char *TAG = "SINS";
 
 static Euler_T est_e = {0, 0, 0};
@@ -41,9 +43,10 @@ static struct MsgList msg_list_quat = {
   NULL
 };
 
+static void att_est_q_task(void const *argument);
 static void imu_peace_check(_3AxisUnit *pgyr);
 
-void att_est_q_task(void const *argument)
+static void att_est_q_task(void const *argument)
 {
   (void) argument;
   uint8_t st_ret = 0;
@@ -132,19 +135,6 @@ void att_est_q_task(void const *argument)
           mesg_send_mesg((const void *)&est_q, TYPE_QUAT_Info_Resp, sizeof(Quat_T));
         }
       }
-
-/* TEST CODE */
-//        tcnt ++;
-//        led_on(LED_BLUE);
-//        if(tcnt & 1)
-//          ky_info("g:%d, %d, %d\na:%d, %d, %d\n", imu_raw.Gyr.X, imu_raw.Gyr.Y, imu_raw.Gyr.Z
-//                                                , imu_raw.Acc.X, imu_raw.Acc.Y, imu_raw.Acc.Z);
-//        	ky_info("g:%2.2f, %2.2f, %2.2f; a:%2.2f, %2.2f, %2.2f\n", imu_unit.Gyr.X, imu_unit.Gyr.Y, imu_unit.Gyr.Z
-//                                                                  , imu_unit.Acc.X, imu_unit.Acc.Y, imu_unit.Acc.Z);
-//        else
-//          ky_info("pitch: %2.2f, roll: %2.2f, yaw: %2.2f  [%2d%%]\n", est_e.pitch, est_e.roll, est_e.yaw, osGetCPUUsage());
-//        led_off(LED_BLUE);
-//        ky_info("pitch: %2.2f, roll: %2.2f, yaw: %2.2f -%d-  [%2d%%]\n", est_e.pitch, est_e.roll, est_e.yaw, gyr_peace_flag, osGetCPUUsage());
     }
   }
 }
@@ -181,6 +171,34 @@ static void imu_peace_check(_3AxisUnit *pgyr)
   last_gyr.X = pgyr->X;
   last_gyr.Y = pgyr->Y;
   last_gyr.Z = pgyr->Z;
+}
+
+static osThreadId sins_task_id = NULL;
+osThreadDef(SINS, att_est_q_task, osPriorityNormal, 0, 512);
+
+int sins_main(int argc, char **argv)
+{
+  if(argc < 2) return -1;
+  if(strcmp(argv[1], "start") == 0) {
+    if(sins_task_id == NULL) {
+      sins_task_id = osThreadCreate(osThread(SINS), NULL);
+      if(sins_task_id == NULL) {
+        ky_err(TAG, "task create failed");
+        return -2;
+      }
+    } else {
+      ky_warn(TAG, "already started");
+    }
+    return 0;
+  }
+  if(strcmp(argv[1], "stop") == 0) {
+    if(sins_task_id != NULL) {
+      vTaskDelete(sins_task_id);
+      sins_task_id = NULL;
+      return 0;
+    }
+  }
+  return -1;
 }
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/

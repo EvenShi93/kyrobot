@@ -10,8 +10,7 @@
 
 #include "drivers.h"
 
-void att_est_q_task(void const *argument);
-
+int sins_main(int argc, char **argv);
 void att_est_get_euler(Euler_T *e);
 
 #endif /* APPS_INC_ATT_EST_Q_H_ */
