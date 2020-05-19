@@ -38,7 +38,7 @@ static int16_t motor_vel;
 /*
  * used to keep ctrl_task task handle
  */
-static osThreadId ctrl_task_id;
+static osThreadId ctrl_task_id = NULL;
 
 static uint32_t _task_should_exit = 0;
 
