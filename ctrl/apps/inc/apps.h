@@ -23,7 +23,6 @@
 
 void gui_task(void const *argument);
 void evt_proc_task(void const *argument);
-void rmt_proc_task(void const *argument);
 
 void test_case_task(void const *argument);
 
