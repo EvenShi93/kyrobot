@@ -16,7 +16,8 @@ $(BuildPath)/apps/src/filesystem.o \
 $(BuildPath)/apps/src/filetransfer.o \
 $(BuildPath)/apps/src/mesg.o \
 $(BuildPath)/apps/src/syscmds.o \
-$(BuildPath)/apps/src/sd_diskio.o
+$(BuildPath)/apps/src/sd_diskio.o \
+$(BuildPath)/apps/src/printHardFault.o
 
 OBJS += \
 $(BuildPath)/apps/guicfg/gui_drv.o \
