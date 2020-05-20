@@ -92,7 +92,7 @@ static void console_task(void const *argument)
 
 static void start_action(void)
 {
-  // enter '\r' 3 times.
+  // press Enter 3 times.
   uint8_t c, count = 0;
   do {
     if(console->console_rx(&c, 1) == 0) {
