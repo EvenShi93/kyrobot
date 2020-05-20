@@ -56,10 +56,10 @@
 #define USART2_DMA_RX_ENABLE                     (1)
 
 #define UART4_ENABLE                             (0)
-#define UART4_TX_ENABLE                          (1)
-#define UART4_RX_ENABLE                          (1)
-#define UART4_DMA_TX_ENABLE                      (1)
-#define UART4_DMA_RX_ENABLE                      (1)
+#define UART4_TX_ENABLE                          (0)
+#define UART4_RX_ENABLE                          (0)
+#define UART4_DMA_TX_ENABLE                      (0)
+#define UART4_DMA_RX_ENABLE                      (0)
 
 #define USART6_ENABLE                            (1)
 #define USART6_TX_ENABLE                         (1)
