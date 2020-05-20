@@ -7,6 +7,8 @@ static const char *TAG = "APP";
 extern const uart_dev_t usart6_dev;
 static const uart_dev_t *log_uart;
 
+static console_cfg_t console_cfg;
+
 static void led_thread(void const *argument);
 static status_t log_tx_string(const char *p);
 
@@ -33,8 +35,6 @@ static const char SystemInfo[] =
 
 void APP_StartThread(void const *argument)
 {
-  console_cfg_t console_cfg;
-
   osDelay(500);
   /* Initialize GPIOs */
   board_gpio_init();
@@ -56,19 +56,12 @@ void APP_StartThread(void const *argument)
 
   syscmds_register();
 
-//  osThreadDef(MAGS, magnetics_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 4); // stack size = 512B
-//  osThreadDef(GNSS, gnss_navg_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 2); // stack size = 256B
-//  osThreadDef(RTCM, rtcm_transfer_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 2); // stack size = 256B
-
   osThreadDef(UGUI, gui_task, osPriorityNormal, 0, 512);
   if(osThreadCreate(osThread(UGUI), NULL) == NULL) ky_err(TAG, "gui task create failed.");
-  osThreadDef(REMT, rmt_proc_task, osPriorityNormal, 0, 256);
-  if(osThreadCreate(osThread(REMT), NULL) == NULL) ky_err(TAG, "rf task create failed.");
   osThreadDef(EVET, evt_proc_task, osPriorityNormal, 0, 256);
   if(osThreadCreate(osThread(EVET), NULL) == NULL) ky_err(TAG, "event task create failed.");
+//  osThreadDef(MAGS, magnetics_task, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 4); // stack size = 512B
 //  if(osThreadCreate(osThread(MAGS), NULL) == NULL) ky_err(TAG, "mags task create failed.");
-//  if(osThreadCreate(osThread(GNSS), NULL) == NULL) ky_err(TAG, "gnss task create failed.");
-//  if(osThreadCreate(osThread(RTCM), NULL) == NULL) ky_err(TAG, "rtcm task create failed.");
 #if (TEST_CASE_TASK_ENABLE)
   osThreadDef(TEST, test_case_task, osPriorityNormal, 0, 1024); // stack size = 1KB
   if(osThreadCreate(osThread(TEST), NULL) == NULL) ky_err(TAG, "test task create failed.");
