@@ -10,24 +10,29 @@
 #include "rf_type.h"
 #include "rf_evt_proc.h"
 
-const static char *TAG = "RMTP";
+static const char *TAG = "RF";
 
 #define RMT_PROC_TASK_TEST_ENABLE             (0)
 
 #define RMT_DECODER_CACHE_SIZE                (20)
 #define RMT_RECV_CACHE_SIZE                   (24)
 
+static osThreadId rmt_proc_id = NULL;
+
+static uint32_t _task_should_exit = 0;
+
+static void rmt_proc_task(void const *argument);
 static void rmt_decode_callback(kyLinkBlockDef *pBlock);
 
 static struct rf_info_t {
   uint32_t rf_timestamp;
   uint32_t rf_lost_flag;
   rf_ctrl_t rf_data;
-} *rf_info;
+} *rf_info = NULL;
 
 extern const uart_dev_t usart2_dev;
 
-void rmt_proc_task(void const *argument)
+static void rmt_proc_task(void const *argument)
 {
   const uart_dev_t *rmt_uart = &usart2_dev;
   kyLinkConfig_t *cfg = NULL;
@@ -39,8 +44,11 @@ void rmt_proc_task(void const *argument)
   uint32_t task_timestamp = 0, log_ts = 0;
 #endif /* RMT_PROC_TASK_TEST_ENABLE */
 
+  ky_info(TAG, "rf task started");
+
   if(rmt_uart->uart_init(115200) != status_ok) {
     ky_err(TAG, "failed to init rmt_uart");
+    rmt_proc_id = NULL;
     vTaskDelete(NULL);
   }
 
@@ -68,8 +76,7 @@ void rmt_proc_task(void const *argument)
   cfg->txfunc = NULL;
   kylink_init(kylink_rmt, cfg);
   kmm_free(cfg);
-
-  for(;;) {
+  while(!_task_should_exit) {
     delay(25);
     do {
       recv_len = rmt_uart->uart_rx(recv_cache, RMT_RECV_CACHE_SIZE);
@@ -80,6 +87,7 @@ void rmt_proc_task(void const *argument)
         }
       }
     } while(recv_len > 0);
+
     if((xTaskGetTickCountFromISR() - rf_info->rf_timestamp) > 1000) {
       if(rf_info->rf_lost_flag == 0) {
         rf_info->rf_lost_flag = 1;
@@ -91,6 +99,7 @@ void rmt_proc_task(void const *argument)
         ky_warn(TAG, "rf signal lost");
       }
     }
+
 #if RMT_PROC_TASK_TEST_ENABLE
     task_timestamp = xTaskGetTickCountFromISR();
     if((task_timestamp - log_ts) > 1000) {
@@ -100,7 +109,6 @@ void rmt_proc_task(void const *argument)
     }
 #endif /* RMT_PROC_TASK_TEST_ENABLE */
   }
-
 exit:
   kmm_free(cfg);
   kmm_free(rf_info);
@@ -111,6 +119,8 @@ exit:
     rmt_uart->uart_deinit();
     rmt_uart = NULL;
   }
+  rmt_proc_id = NULL;
+  ky_warn(TAG, "exit");
   vTaskDelete(NULL);
 }
 
@@ -130,4 +140,31 @@ static void rmt_decode_callback(kyLinkBlockDef *pBlock)
     rf_info->rf_timestamp = xTaskGetTickCountFromISR();
     rf_info->rf_lost_flag = 0;
   }
+}
+
+osThreadDef(REMT, rmt_proc_task, osPriorityNormal, 0, 256);
+
+int remote_main(int argc, char **argv)
+{
+  if(argc < 2) return -1;
+  if(strcmp(argv[1], "start") == 0) {
+    if(rmt_proc_id == NULL) {
+      _task_should_exit = 0;
+      rmt_proc_id = osThreadCreate(osThread(REMT), NULL);
+      if(rmt_proc_id == NULL) {
+        ky_err(TAG, "task create failed.");
+        return -2;
+      }
+    } else {
+      ky_warn(TAG, "already started");
+    }
+    return 0;
+  }
+  if(strcmp(argv[1], "stop") == 0) {
+    if(rmt_proc_id != NULL) {
+      _task_should_exit = 1;
+      return 0;
+    }
+  }
+  return -1;
 }
