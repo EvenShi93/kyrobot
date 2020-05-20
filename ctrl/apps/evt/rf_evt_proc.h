@@ -10,6 +10,8 @@
 
 #include "rf_type.h"
 
+int remote_main(int argc, char **argv);
+
 uint16_t rmt_get_thr_chan(void);
 uint16_t rmt_get_yaw_chan(void);
 uint16_t rmt_get_pit_chan(void);
