@@ -9,6 +9,7 @@
 
 #include "ctrl_task.h"
 #include "att_est_q.h"
+#include "rf_evt_proc.h"
 
 const console_cmd_t sins_cmd = {
   .command = "sins",
@@ -24,8 +25,16 @@ const console_cmd_t ctrl_cmd = {
   .func = &ctrl_main,
 };
 
+const console_cmd_t rf_cmd = {
+  .command = "rf",
+  .help = "remote controller",
+  .hint = NULL,
+  .func = &remote_main,
+};
+
 void syscmds_register(void)
 {
   console_cmd_register(&sins_cmd);
   console_cmd_register(&ctrl_cmd);
+  console_cmd_register(&rf_cmd);
 }
