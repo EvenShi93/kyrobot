@@ -6,7 +6,8 @@
 
 # Add inputs and outputs from these tool invocations to the build variables
 S_SRCS += \
-./startup/startup_stm32.s 
+./startup/startup_stm32.s \
+./startup/handlers.s
 
 C_SRCS += \
 ./startup/start.c \
@@ -16,6 +17,7 @@ C_SRCS += \
 OBJS += \
 $(BuildPath)/startup/start.o \
 $(BuildPath)/startup/syscalls.o \
+$(BuildPath)/startup/handlers.o \
 $(BuildPath)/startup/startup_stm32.o \
 $(BuildPath)/startup/system_stm32f7xx.o
 
