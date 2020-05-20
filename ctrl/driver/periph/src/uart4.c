@@ -36,13 +36,13 @@ static const char *TAG = "ttyS4";
 
 const uart_dev_t uart4_dev = {
 //  "ttyS4",
-  uart4_init,
-  uart4_deinit,
-  uart4_rx_bytes,
-  uart4_tx_bytes,
-  uart4_tx_bytes_it,
-  uart4_tx_bytes_dma,
-  uart4_cache_usage,
+  &uart4_init,
+  &uart4_deinit,
+  &uart4_rx_bytes,
+  &uart4_tx_bytes,
+  &uart4_tx_bytes_it,
+  &uart4_tx_bytes_dma,
+  &uart4_cache_usage,
 };
 
 #if UART4_ENABLE

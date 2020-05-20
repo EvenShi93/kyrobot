@@ -36,13 +36,13 @@ static const char *TAG = "ttyS1";
 
 const uart_dev_t usart1_dev = {
 //  "ttyS1",
-  usart1_init,
-  usart1_deinit,
-  usart1_rx_bytes,
-  usart1_tx_bytes,
-  usart1_tx_bytes_it,
-  usart1_tx_bytes_dma,
-  usart1_cache_usage,
+  &usart1_init,
+  &usart1_deinit,
+  &usart1_rx_bytes,
+  &usart1_tx_bytes,
+  &usart1_tx_bytes_it,
+  &usart1_tx_bytes_dma,
+  &usart1_cache_usage,
 };
 
 #if USART1_ENABLE
