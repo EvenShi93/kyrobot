@@ -13,12 +13,12 @@
 
 #if FREERTOS_ENABLED
 #define kmm_alloc                                pvPortMalloc
-#define kmm_free                                 vPortFree
+#define kmm_free(x)                              do { vPortFree(x); x = NULL; } while(0)
 #else
 #include <stdlib.h>
 
 #define kmm_alloc                                malloc
-#define kmm_free                                 free
+#define kmm_free(x)                              do { free(x); x = NULL; } while(0)
 #endif /* FREERTOS_ENABLED */
 
 #if FREERTOS_ENABLED
