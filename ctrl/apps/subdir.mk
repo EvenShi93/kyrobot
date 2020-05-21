@@ -28,6 +28,9 @@ $(BuildPath)/apps/guicfg/gui_x_rtos.o
 OBJS += \
 $(BuildPath)/apps/ctrl/ctrl_task.o
 
+OBJS += \
+$(BuildPath)/apps/leds/led_task.o
+
 ifeq ($(STEMWIN_DEMO_ENABLE), y)
 OBJS += \
 $(BuildPath)/apps/demo/GUIDEMO_Automotive.o \
