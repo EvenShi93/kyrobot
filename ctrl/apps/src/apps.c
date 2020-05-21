@@ -7,7 +7,6 @@ static const char *TAG = "APP";
 static const uart_dev_t *log_uart;
 static console_cfg_t console_cfg;
 
-static void led_thread(void const *argument);
 static status_t log_tx_string(const char *p);
 
 #define STR1(R) #R
@@ -73,27 +72,12 @@ void APP_StartThread(void const *argument)
 //  osThreadDef(FILE, transfile_task, osPriorityNormal, 0, 512); // stack size = 512B
 //  if(osThreadCreate(osThread(FILE), NULL) == NULL) ky_err(TAG, "file task create failed.");
 
-  /* LED INDICATOR TASK */
-  osThreadDef(LEDS, led_thread, osPriorityNormal, 0, 128); // stack size = 128B
-  if(osThreadCreate(osThread(LEDS), NULL) == NULL) ky_err(TAG, "leds task create failed.");
-
   console_cfg.prompt = NULL;
   console_cfg.console_tx = log_uart->uart_tx;
   console_cfg.console_rx = log_uart->uart_rx;
   console_start(&console_cfg);
 
   vTaskDelete(NULL);
-}
-
-static void led_thread(void const *argument)
-{
-  (void) argument;
-
-  for(;;) {
-    led_toggle(LED_GREEN);
-
-    osDelay(500);
-  }
 }
 
 static status_t log_tx_string(const char *p)
