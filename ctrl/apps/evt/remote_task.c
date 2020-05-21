@@ -30,11 +30,9 @@ static struct rf_info_t {
   rf_ctrl_t rf_data;
 } *rf_info = NULL;
 
-extern const uart_dev_t usart2_dev;
-
 static void rmt_proc_task(void const *argument)
 {
-  const uart_dev_t *rmt_uart = &usart2_dev;
+  const uart_dev_t *rmt_uart = NULL;
   kyLinkConfig_t *cfg = NULL;
   KYLINK_CORE_HANDLE *kylink_rmt;
   uint8_t *kylink_decoder_cache;
@@ -45,6 +43,12 @@ static void rmt_proc_task(void const *argument)
 #endif /* RMT_PROC_TASK_TEST_ENABLE */
 
   ky_info(TAG, "rf task started");
+
+  if(periph_get_uart_drv(&rmt_uart, "ttyS2") != status_ok) {
+    ky_err(TAG, "failed to get ttyS2 driver");
+    rmt_proc_id = NULL;
+    vTaskDelete(NULL);
+  }
 
   if(rmt_uart->uart_init(115200) != status_ok) {
     ky_err(TAG, "failed to init rmt_uart");

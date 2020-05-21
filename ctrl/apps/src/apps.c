@@ -4,9 +4,7 @@
 
 static const char *TAG = "APP";
 
-extern const uart_dev_t usart6_dev;
 static const uart_dev_t *log_uart;
-
 static console_cfg_t console_cfg;
 
 static void led_thread(void const *argument);
@@ -42,7 +40,11 @@ void APP_StartThread(void const *argument)
   /* lock power */
   output_port_set(IO_PWR_CTRL);
 
-  log_uart = &usart6_dev;
+  if(periph_get_uart_drv(&log_uart, "ttyS6") != status_ok) {
+    led_on(LED_BLUE);
+    led_on(LED_GREEN);
+    vTaskDelete(NULL);
+  }
   log_uart->uart_init(115200);
   log_init(log_tx_string);
   log_tx_string("!!!KERNEL START!!!\n");
