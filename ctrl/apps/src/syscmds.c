@@ -11,6 +11,8 @@
 #include "att_est_q.h"
 #include "rf_evt_proc.h"
 
+extern int led_main(int argc, char *argv[]);
+
 const console_cmd_t sins_cmd = {
   .command = "sins",
   .help = "SINS",
@@ -32,9 +34,17 @@ const console_cmd_t rf_cmd = {
   .func = &remote_main,
 };
 
+const console_cmd_t led_cmd = {
+  .command = "led",
+  .help = NULL,
+  .hint = NULL,
+  .func = &led_main,
+};
+
 void syscmds_register(void)
 {
   console_cmd_register(&sins_cmd);
   console_cmd_register(&ctrl_cmd);
   console_cmd_register(&rf_cmd);
+  console_cmd_register(&led_cmd);
 }
