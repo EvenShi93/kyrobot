@@ -23,7 +23,7 @@ typedef struct {
   uint32_t (* uart_cache_usage)(void);
 } uart_dev_t;
 
-//status_t periph_get_uart_drv(uart_dev_t *drv, const char *name);
+status_t periph_get_uart_drv(const uart_dev_t **drv, const char *name);
 
 status_t periph_disabled(const char *tag);
 
