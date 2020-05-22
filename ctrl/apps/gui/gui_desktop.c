@@ -23,6 +23,8 @@
 
 static const char *TAG = "MENU";
 
+#define MSG_BATTERY_ICON (WM_USER + 0)
+
 static void iconview_btn_evt_cb(int id, btn_evt_type_t evt);
 
 /*********************************************************************
@@ -70,6 +72,8 @@ static const BITMAP_ITEM _aBitmapItem[] = {
   {&_bmPower,   "Power"   , "Power Off", menu_code_poweroff}
 };
 
+static int battery_level = 4;
+
 /*********************************************************************
 *
 *       Private routines
@@ -83,6 +87,7 @@ static const BITMAP_ITEM _aBitmapItem[] = {
 static void _cbWin(WM_MESSAGE * pMsg) {
   int NCode, Id, Sel;
   WM_HWIN hItem;
+  GUI_RECT Rect;
   switch (pMsg->MsgId) {
   case WM_NOTIFY_PARENT:
     Id    = WM_GetId(pMsg->hWinSrc);      /* Id of widget */
@@ -103,11 +108,34 @@ static void _cbWin(WM_MESSAGE * pMsg) {
       break;
     }
     break;
+  case MSG_BATTERY_ICON:
+
+	  Rect.x0 = LCD_GetXSize() - ((40 + bmbl_4.XSize) / 2);
+	  Rect.y0 = 5;
+	  Rect.x1 = Rect.x0 + bmbl_4.XSize;
+	  Rect.y1 = Rect.y0 + bmbl_4.YSize;
+	  WM_InvalidateRect(pMsg->hWin, &Rect);
+  break;
   case WM_PAINT:
     //
     // Draw background
     //
     GUI_DrawBitmap(&bmbackground, 0, 0);
+    switch(battery_level) {
+    case 4:
+    GUI_DrawBitmap(&bmbl_4, LCD_GetXSize() - ((40 + bmbl_4.XSize) / 2), 5);
+    break;
+    case 3:
+    	GUI_DrawBitmap(&bmbl_3, LCD_GetXSize() - ((40 + bmbl_3.XSize) / 2), 5);
+    break;
+    case 2:
+    	GUI_DrawBitmap(&bmbl_2, LCD_GetXSize() - ((40 + bmbl_2.XSize) / 2), 5);
+    break;
+    case 1:
+    default:
+    	GUI_DrawBitmap(&bmbl_1, LCD_GetXSize() - ((40 + bmbl_1.XSize) / 2), 5);
+    break;
+    }
     break;
   }
 }
@@ -131,6 +159,7 @@ main_menu_code_t gui_iconview_start(void) {
   WM_CALLBACK * pcbPrev;
   WM_HWIN       hText;
   int           i, xSize, ySize;
+  float         battery_voltage;
 
   WM_EnableMemdev(WM_HBKWIN);
   pcbPrev = WM_SetCallback(WM_HBKWIN, _cbWin);
@@ -166,6 +195,28 @@ main_menu_code_t gui_iconview_start(void) {
   btn_evt_register_callback(&icon_btn_evt);
   do {
     GUI_Delay(50);
+    battery_voltage = battery_volt_read();
+    if(battery_voltage > 12.0f) {
+      if(battery_level != 4) {
+        battery_level = 4;
+        WM_SendMessageNoPara(WM_HBKWIN, MSG_BATTERY_ICON);
+      }
+    } else if(battery_voltage > 11.0f) {
+    	if(battery_level != 3) {
+    	        battery_level = 3;
+    	        WM_SendMessageNoPara(WM_HBKWIN, MSG_BATTERY_ICON);
+    	      }
+    } else if(battery_voltage > 10.0f) {
+    	if(battery_level != 2) {
+    	        battery_level = 2;
+    	        WM_SendMessageNoPara(WM_HBKWIN, MSG_BATTERY_ICON);
+    	      }
+    } else {
+    	if(battery_level != 1) {
+    	        battery_level = 1;
+    	        WM_SendMessageNoPara(WM_HBKWIN, MSG_BATTERY_ICON);
+    	      }
+    }
   } while(should_exit == 0);
   btn_evt_unregister_callback(&icon_btn_evt);
   should_exit = 0;
