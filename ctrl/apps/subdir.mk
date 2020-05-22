@@ -52,7 +52,7 @@ else
 OBJS += \
 $(BuildPath)/apps/gui/gui_task.o \
 $(BuildPath)/apps/gui/gui_graph.o \
-$(BuildPath)/apps/gui/gui_iconview.o \
+$(BuildPath)/apps/gui/gui_desktop.o \
 $(BuildPath)/apps/gui/gui_config_bl.o \
 $(BuildPath)/apps/gui/gui_ctrl_motor.o \
 $(BuildPath)/apps/gui/gui_ctrl_steer.o \
