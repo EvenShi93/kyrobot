@@ -1,6 +1,7 @@
 #include "apps.h"
 
 #include "syscmds.h"
+#include "console.h"
 
 static const char *TAG = "APP";
 
