@@ -44,7 +44,7 @@ INCS = -I$(TopPath)/startup \
        -I$(TopPath)/middleware/ubx \
        -I$(TopPath)/middleware/log \
        -I$(TopPath)/middleware/vscn \
-       -I$(TopPath)/middleware/console \
+       -I$(TopPath)/middleware/shell \
        -I$(TopPath)/middleware/STemWin/inc
 
 LD_INCS = -I$(TopPath)/sysconfig
@@ -64,14 +64,14 @@ LIB_PATH := -L$(BuildPath)/rb \
             -L$(BuildPath)/start \
             -L$(BuildPath)/rtos \
             -L$(BuildPath)/fatfs \
+            -L$(BuildPath)/shell \
             -L$(BuildPath)/stdrv \
             -L$(BuildPath)/usbdrv \
             -L$(BuildPath)/kylink \
-            -L$(BuildPath)/console \
             -L$(BuildPath)/algorithm \
             -L$(TopPath)/middleware/STemWin
 # External Libraries
-LIBS := -lrb -lubx -llog -lvscn -lkylink -lconsole -lalgorithm -lstdrv -lrtos -lfatfs -lSTemWin532_cm7_os_ot -lusbdrv
+LIBS := -lrb -lubx -llog -lvscn -lkylink -lshell -lalgorithm -lstdrv -lrtos -lfatfs -lSTemWin532_cm7_os_ot -lusbdrv
 
 # Other configuration # -Wshadow
 CFGS = -mthumb -Dprintf=iprintf -fno-exceptions -fno-builtin --short-enums -ffunction-sections -fdata-sections -fno-strict-aliasing -pipe
@@ -184,8 +184,8 @@ libraries:
 	$(MAKE) -C middleware/ubx BUILD=$(BuildPath)/ubx
 	$(MAKE) -C middleware/log BUILD=$(BuildPath)/log
 	$(MAKE) -C middleware/vscn BUILD=$(BuildPath)/vscn
+	$(MAKE) -C middleware/shell BUILD=$(BuildPath)/shell
 	$(MAKE) -C middleware/kylink BUILD=$(BuildPath)/kylink
-	$(MAKE) -C middleware/console BUILD=$(BuildPath)/console
 	$(MAKE) -C middleware/algorithm BUILD=$(BuildPath)/algorithm
 	$(MAKE) -C middleware/fatfs BUILD=$(BuildPath)/fatfs
 	$(MAKE) -C middleware/freertos BUILD=$(BuildPath)/rtos
