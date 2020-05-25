@@ -8,7 +8,7 @@
 #ifndef INC_SYSCMDS_H_
 #define INC_SYSCMDS_H_
 
-#include "console.h"
+#include "shell.h"
 
 void syscmds_register(void);
 
