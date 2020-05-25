@@ -1,20 +1,8 @@
-// Copyright 2016-2017 Espressif Systems (Shanghai) PTE LTD
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+
+static void sanitize(char* src);
 
 #define SS_FLAG_ESCAPE 0x8
 
@@ -38,7 +26,7 @@ typedef enum {
     state = SS_SPACE; \
 } while(0)
 
-size_t esp_console_split_argv(char *line, char **argv, size_t argv_size)
+size_t shell_split_argv(char *line, char **argv, size_t argv_size)
 {
     const int QUOTE = '"';
     const int ESCAPE = '\\';
@@ -47,6 +35,7 @@ size_t esp_console_split_argv(char *line, char **argv, size_t argv_size)
     int argc = 0;
     char *next_arg_start = line;
     char *out_ptr = line;
+    sanitize(line);
     for (char *in_ptr = line; argc < argv_size - 1; ++in_ptr) {
         int char_in = (unsigned char) *in_ptr;
         if (char_in == 0) {
@@ -117,4 +106,16 @@ size_t esp_console_split_argv(char *line, char **argv, size_t argv_size)
     argv[argc] = NULL;
 
     return argc;
+}
+
+static void sanitize(char* src)
+{
+  char* dst = src;
+  for (int c = *src; c != 0; src++, c = *src) {
+    if (isprint(c)) {
+      *dst = c;
+      ++dst;
+    }
+  }
+  *dst = 0;
 }
