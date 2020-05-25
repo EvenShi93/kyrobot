@@ -15,7 +15,6 @@ $(BuildPath)/apps/src/cpu_utils.o \
 $(BuildPath)/apps/src/filesystem.o \
 $(BuildPath)/apps/src/filetransfer.o \
 $(BuildPath)/apps/src/mesg.o \
-$(BuildPath)/apps/src/syscmds.o \
 $(BuildPath)/apps/src/sd_diskio.o \
 $(BuildPath)/apps/src/printHardFault.o
 
@@ -30,6 +29,16 @@ $(BuildPath)/apps/ctrl/ctrl_task.o
 
 OBJS += \
 $(BuildPath)/apps/leds/led_task.o
+
+OBJS += \
+$(BuildPath)/apps/console/console.o
+INCS += \
+-I$(TopPath)/apps/console
+
+OBJS += \
+$(BuildPath)/apps/syscmds/syscmds.o
+INCS += \
+-I$(TopPath)/apps/syscmds
 
 ifeq ($(STEMWIN_DEMO_ENABLE), y)
 OBJS += \
