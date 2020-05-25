@@ -12,9 +12,6 @@
 
 #define SHELL_DEBUG_LOG_ENABLE         (0)
 
-#define SHELL_LINE_CACHE_SIZE          128
-#define SHELL_MAX_CMDLINE_ARGS         8
-
 /**
  * @brief Shell command main function
  * @param argc number of arguments
