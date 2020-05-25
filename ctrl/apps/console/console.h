@@ -10,6 +10,7 @@
 
 #include "shell.h"
 
+#define CONSOLE_TASK_STACK_SIZE        1024
 #define CONSOLE_LINE_CACHE_SIZE        128
 #define CONSOLE_MAX_CMDLINE_ARGS       8
 

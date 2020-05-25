@@ -62,7 +62,7 @@ status_t console_start(console_cfg_t *console)
   argv = (char **)kmm_alloc(CONSOLE_MAX_CMDLINE_ARGS * sizeof(char *));
   if(argv == NULL) return status_nomem;
   memset(argv, 0, CONSOLE_MAX_CMDLINE_ARGS * sizeof(char *));
-  osThreadDef(CONSOLE, console_task, osPriorityNormal, 0, 256);
+  osThreadDef(CONSOLE, console_task, osPriorityNormal, 0, CONSOLE_TASK_STACK_SIZE);
   if(osThreadCreate(osThread(CONSOLE), console) == NULL) return status_error;
   return status_ok;
 }
