@@ -10,8 +10,8 @@
 
   .text
   .syntax unified
-  .cpu cortex-m0
-  .fpu softvfp
+  .cpu cortex-m7
+  .fpu fpv5-sp-d16
   .thumb
 
   .type HardFault_Handler, %function
