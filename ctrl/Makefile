@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile
 # Author: kyChu <kyChu@qq.com>
-# Date:   2019-12-3
+# Date:   2020-09-18
 ################################################################################
 
 # Project Name
@@ -23,6 +23,7 @@ PLATFORM = -mcpu=cortex-m7 -mthumb -mfloat-abi=hard -mfpu=fpv5-sp-d16
 # Include Directories
 INCS = -I$(TopPath)/startup \
        -I$(TopPath)/sysconfig \
+       -I$(TopPath)/apps/ \
        -I$(TopPath)/apps/inc \
        -I$(TopPath)/apps/evt \
        -I$(TopPath)/apps/gui \
@@ -141,6 +142,7 @@ export CFGS
 export DEFS
 export PLATFORM
 export TopPath
+# export BuildPath
 # export OutPath
 
 # All Target
@@ -165,13 +167,13 @@ $(OutPath):
 $(OBJ_DIRS):
 	$(MKDIR) -p $@
 
-# generate elf     @$(OutPath)/objects.list
+# generate elf
 $(ProjName).elf: libraries $(OBJS) | $(OutPath)
 	$(ECHO) ''
 	$(ECHO) ' Building $@'
 	$(CPP) -P -E $(LD_INCS) $(TopPath)/LinkerScript.ld.S > $(BuildPath)/LinkerScript.lds
 	$(ECHO) $(OBJS) > $(OutPath)/objects.list
-	$(CC) $(PLATFORM) $(LIB_PATH) -T$(BuildPath)/LinkerScript.lds $(LD_CFGS)  -Wl,-Map=$(OutPath)/output.map -Wl,--gc-sections -o $(OutPath)/$@ @$(OutPath)/objects.list $(LIBS) -lm
+	$(CC) $(PLATFORM) $(LIB_PATH) -T$(BuildPath)/LinkerScript.lds $(LD_CFGS) -Wl,-Map=$(OutPath)/output.map -Wl,--gc-sections -o $(OutPath)/$@ @$(OutPath)/objects.list $(LIBS) -lm
 	$(MAKE) $(MAKEFLAGS) post-build
 
 # Other Targets
@@ -200,7 +202,7 @@ flash: $(BINARY)
 	@st-flash --reset write $< 0x08000000
 
 jflash: $(BINARY)
-	@JLinkExe -CommanderScript f732.jlink
+	@JLinkExe -CommanderScript platform.jlink
 
 monitor:
 	@./../tools/monitor/Debug/monitor
