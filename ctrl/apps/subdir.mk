@@ -32,13 +32,11 @@ $(BuildPath)/apps/leds/led_task.o
 
 OBJS += \
 $(BuildPath)/apps/console/console.o
-INCS += \
--I$(TopPath)/apps/console
 
 OBJS += \
 $(BuildPath)/apps/syscmds/syscmds.o
-INCS += \
--I$(TopPath)/apps/syscmds
+
+OBJS += $(BuildPath)/apps/test/test.o
 
 ifeq ($(STEMWIN_DEMO_ENABLE), y)
 OBJS += \
