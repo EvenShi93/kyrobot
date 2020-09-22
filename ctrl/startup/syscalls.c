@@ -32,7 +32,7 @@
 //#undef errno
 extern int errno;
 //extern int __io_putchar(int ch) __attribute__((weak));
-extern int __io_getchar(void) __attribute__((weak));
+//extern int __io_getchar(void) __attribute__((weak));
 
 register char * stack_ptr asm("sp");
 
@@ -62,28 +62,28 @@ void _exit (int status)
 	while (1) {}		/* Make sure we hang here */
 }
 
-int _read (int file, char *ptr, int len)
-{
-	int DataIdx;
-
-	for (DataIdx = 0; DataIdx < len; DataIdx++)
-	{
-		*ptr++ = __io_getchar();
-	}
-
-return len;
-}
-
-int _write(int file, char *ptr, int len)
-{
+//int _read (int file, char *ptr, int len)
+//{
 //	int DataIdx;
 //
 //	for (DataIdx = 0; DataIdx < len; DataIdx++)
 //	{
-//		__io_putchar(*ptr++);
+//		*ptr++ = __io_getchar();
 //	}
-	return len;
-}
+//
+//return len;
+//}
+
+//int _write(int file, char *ptr, int len)
+//{
+////	int DataIdx;
+////
+////	for (DataIdx = 0; DataIdx < len; DataIdx++)
+////	{
+////		__io_putchar(*ptr++);
+////	}
+//	return len;
+//}
 
 caddr_t _sbrk(int incr)
 {

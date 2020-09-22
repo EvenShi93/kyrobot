@@ -1,7 +1,7 @@
 #include "apps.h"
 
-#include "syscmds.h"
-#include "console.h"
+#include "syscmds/syscmds.h"
+#include "console/console.h"
 
 static const char *TAG = "APP";
 
@@ -84,6 +84,17 @@ void APP_StartThread(void const *argument)
 static status_t log_tx_string(const char *p)
 {
   return log_uart->uart_tx((uint8_t *)p, strlen((const char *)p));
+}
+
+int _write(int file, char *ptr, int len)
+{
+  if(log_uart->uart_tx((uint8_t *)ptr, len) != status_ok) return -1;
+  return len;
+}
+
+int _read (int file, char *ptr, int len)
+{
+  return log_uart->uart_rx((uint8_t *)ptr, len);
 }
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/
