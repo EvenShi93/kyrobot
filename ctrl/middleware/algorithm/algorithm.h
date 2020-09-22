@@ -9,8 +9,7 @@
 #define __ALGORITHM_H
 
 #include <math.h>
-#include <stdint.h>
-#include "SysConfig.h"
+#include "mtype.h"
 
 #define LIMIT_MAX(x, y)                (((x) > (y)) ? (y) : (x))
 #define LIMIT_MIN(x, y)                (((x) < (y)) ? (y) : (x))
@@ -31,28 +30,15 @@
 #define DEG2RAD(deg)                   ((deg) * 0.017453292519943295769236907684886f)
 #define RAD2DEG(rad)                   ((rad) * 57.295779513082320876798154814105f)
 
-typedef struct {
-  float X, Y;
-} Vector2D;
-
-typedef struct {
-  float X, Y, Z;
-} Vector3D;
-
-typedef struct
-{
-  float kp, ki, kd, preErr, Output, I_max, I_sum, dt, D_max;
-} PID;
-
 void NormalizeVector(Vector3D *v);
 float ScalarProduct(Vector3D *va, Vector3D *vb);
 float apply_deadband(float value, float deadband);
 void step_change(float *in, float target, float step, float deadBand);
 float apply_limit(float in, float min, float max);
 
-void fusionQ_6dot(IMU_UNIT_6DOF *unit, Quat_T *q, float prop_gain, float intg_gain, float dt);
-void fusionQ_9dot(IMU_UNIT_9DOF *unit, Quat_T *q, float prop_gain, float intg_gain, float dt);
-void Quat2Euler(Quat_T* q, Euler_T* eur);
+void fusionQ_6dof(imu_6dof_u *unit, quat_t *q, float prop_gain, float intg_gain, float dt);
+void fusionQ_9dof(imu_9dof_u *unit, quat_t *q, float prop_gain, float intg_gain, float dt);
+void Quat2Euler(quat_t *q, euler_t *e);
 
 double computeAzimuth(double lat1, double lon1, double lat2, double lon2);
 

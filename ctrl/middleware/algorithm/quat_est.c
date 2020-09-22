@@ -18,7 +18,7 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
-void fusionQ_6dot(IMU_UNIT_6DOF *unit, Quat_T *q, float prop_gain, float intg_gain, float dt)
+void fusionQ_6dof(imu_6dof_u *unit, quat_t *q, float prop_gain, float intg_gain, float dt)
 {
 	float recipNorm;
 	float halfvx, halfvy, halfvz;
@@ -43,13 +43,13 @@ void fusionQ_6dot(IMU_UNIT_6DOF *unit, Quat_T *q, float prop_gain, float intg_ga
 	qy = q->qy;
 	qz = q->qz;
 
-	gx = unit->Gyr.X;
-	gy = unit->Gyr.Y;
-	gz = unit->Gyr.Z;
+	gx = unit->Gyr.x;
+	gy = unit->Gyr.y;
+	gz = unit->Gyr.z;
 
-	ax = unit->Acc.X;
-	ay = unit->Acc.Y;
-	az = unit->Acc.Z;
+	ax = unit->Acc.x;
+	ay = unit->Acc.y;
+	az = unit->Acc.z;
 
 	gx *= DEG_TO_RAD;
 	gy *= DEG_TO_RAD;
@@ -118,7 +118,7 @@ void fusionQ_6dot(IMU_UNIT_6DOF *unit, Quat_T *q, float prop_gain, float intg_ga
 #endif /* FREERTOS_ENABLED */
 }
 
-void fusionQ_9dot(IMU_UNIT_9DOF *unit, Quat_T *q, float prop_gain, float intg_gain, float dt)
+void fusionQ_9dof(imu_9dof_u *unit, quat_t *q, float prop_gain, float intg_gain, float dt)
 {
     float recipNorm;
     float qwqw, qwqx, qwqy, qwqz, qxqx, qxqy, qxqz, qyqy, qyqz, qzqz;
@@ -144,21 +144,21 @@ void fusionQ_9dot(IMU_UNIT_9DOF *unit, Quat_T *q, float prop_gain, float intg_ga
     float ax, ay, az;
     float mx, my, mz;
 
-	gx = unit->Gyr.X;
-	gy = unit->Gyr.Y;
-	gz = unit->Gyr.Z;
+	gx = unit->Gyr.x;
+	gy = unit->Gyr.y;
+	gz = unit->Gyr.z;
 
-	ax = unit->Acc.X;
-	ay = unit->Acc.Y;
-	az = unit->Acc.Z;
+	ax = unit->Acc.x;
+	ay = unit->Acc.y;
+	az = unit->Acc.z;
 
     gx = gx * DEG_TO_RAD;
     gy = gy * DEG_TO_RAD;
     gz = gz * DEG_TO_RAD;
 
-    mx = unit->Mag.Y;
-    my = unit->Mag.X;
-    mz = -unit->Mag.Z;
+    mx = unit->Mag.y;
+    my = unit->Mag.x;
+    mz = -unit->Mag.z;
 
 	qw = q->qw;
 	qx = q->qx;
@@ -265,16 +265,16 @@ void fusionQ_9dot(IMU_UNIT_9DOF *unit, Quat_T *q, float prop_gain, float intg_ga
 #endif /* FREERTOS_ENABLED */
 }
 
-void Quat2Euler(Quat_T* q, Euler_T* eur)
+void Quat2Euler(quat_t* q, euler_t* e)
 {
 	float qw = q->qw;
 	float qx = q->qx;
 	float qy = q->qy;
 	float qz = q->qz;
 
-	eur->roll    = atan2f(2 * (qw * qx + qy * qz) , 1 - 2 * (qx * qx + qy * qy))*RAD_TO_DEG;  //+-90
-	eur->pitch   = asinf(2 * (qw * qy - qz * qx))*RAD_TO_DEG;                                 //+-180
-	eur->yaw     = atan2f(2 * (qw * qz + qx * qy) , 1 - 2 * (qy * qy + qz * qz))*RAD_TO_DEG;  //+-180
+	e->roll    = atan2f(2 * (qw * qx + qy * qz) , 1 - 2 * (qx * qx + qy * qy))*RAD_TO_DEG;  //+-90
+	e->pitch   = asinf(2 * (qw * qy - qz * qx))*RAD_TO_DEG;                                 //+-180
+	e->yaw     = atan2f(2 * (qw * qz + qx * qy) , 1 - 2 * (qy * qy + qz * qz))*RAD_TO_DEG;  //+-180
 }
 
 /******************** kyChu<kyChu@qq.com> **** END OF FILE ********************/
