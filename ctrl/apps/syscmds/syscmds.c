@@ -5,11 +5,13 @@
  *      Author: kychu
  */
 
-#include "syscmds.h"
+#include "syscmds/syscmds.h"
 
 #include "ctrl_task.h"
 #include "att_est_q.h"
 #include "rf_evt_proc.h"
+
+#include "test/test.h"
 
 extern int led_main(int argc, char *argv[]);
 
@@ -47,4 +49,5 @@ void syscmds_register(void)
   shell_cmd_register(&ctrl_cmd);
   shell_cmd_register(&rf_cmd);
   shell_cmd_register(&led_cmd);
+  shell_cmd_register(&test_cmd);
 }
