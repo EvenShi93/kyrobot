@@ -336,8 +336,8 @@ exit:
 void check_ist83xx(void)
 {
   int cnt = 0;
-  _3AxisRaw *ist_raw_a = kmm_alloc(sizeof(_3AxisRaw));
-  _3AxisRaw *ist_raw_b = kmm_alloc(sizeof(_3AxisRaw));
+  i16_3d_t *ist_raw_a = kmm_alloc(sizeof(i16_3d_t));
+  i16_3d_t *ist_raw_b = kmm_alloc(sizeof(i16_3d_t));
   ist83xx_dev_t *ist8310_a = kmm_alloc(sizeof(ist83xx_dev_t));
   ist83xx_dev_t *ist8310_b = kmm_alloc(sizeof(ist83xx_dev_t));
   if((ist8310_a == NULL) || (ist8310_b == NULL)) {
@@ -368,7 +368,7 @@ void check_ist83xx(void)
     cnt ++;
     if(cnt >= 200) {
       cnt = 0;
-      ky_info(TAG, "%3d, %3d, %3d;  %3d, %3d, %3d", ist_raw_a->X, ist_raw_a->Y, ist_raw_a->Z, ist_raw_b->X, ist_raw_b->Y, ist_raw_b->Z);
+      ky_info(TAG, "%3d, %3d, %3d;  %3d, %3d, %3d", ist_raw_a->x, ist_raw_a->y, ist_raw_a->z, ist_raw_b->x, ist_raw_b->y, ist_raw_b->z);
     }
   }
 }

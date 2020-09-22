@@ -69,7 +69,7 @@ struct btn_cb_t graph_btn_evt = {
   NULL
 };
 
-static Euler_T euler;
+static euler_t euler;
 
 /*********************************************************************
 *

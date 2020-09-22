@@ -19,12 +19,12 @@
 
 static const char *TAG = "SINS";
 
-static Euler_T est_e = {0, 0, 0};
-static Quat_T est_q = {1, 0, 0, 0};
+static euler_t est_e = {0, 0, 0};
+static quat_t est_q = {1, 0, 0, 0};
 
-static IMU_RAW_6DOF imu_raw;
-static IMU_UNIT_6DOF imu_unit_6dof;
-static IMU_UNIT_9DOF imu_unit_9dof;
+static imu_6dof_r imu_raw;
+static imu_6dof_u imu_unit_6dof;
+static imu_9dof_u imu_unit_9dof;
 
 //static _3AxisUnit gyr_off;
 static uint32_t imu_selftest_done = 0;
@@ -44,7 +44,7 @@ static struct MsgList msg_list_quat = {
 };
 
 static void att_est_q_task(void const *argument);
-static void imu_peace_check(_3AxisUnit *pgyr);
+static void imu_peace_check(f3d_t *pgyr);
 
 static void att_est_q_task(void const *argument)
 {
@@ -92,7 +92,7 @@ static void att_est_q_task(void const *argument)
         time_now = xTaskGetTickCountFromISR();
         if((time_now - test_ts) >= 1000) {
           test_ts = time_now;
-          ky_warn(TAG, "waiting. %d", imu_raw.Gyr.X);
+          ky_warn(TAG, "waiting. %d", imu_raw.Gyr.x);
         }
       }
     } else {
@@ -120,10 +120,10 @@ static void att_est_q_task(void const *argument)
         imu_unit_9dof.Gyr = imu_unit_6dof.Gyr;
         imu_unit_9dof.Temp = imu_unit_6dof.Temp;
         imu_unit_9dof.TS = imu_unit_6dof.TS;
-        imu_unit_9dof.Mag = *(_3AxisUnit *)&mag_data;
-        fusionQ_9dot(&imu_unit_9dof, &est_q, 5, 0, delta_t);
+        imu_unit_9dof.Mag = *(f3d_t *)&mag_data;
+        fusionQ_9dof(&imu_unit_9dof, &est_q, 5, 0, delta_t);
       } else
-        fusionQ_6dot(&imu_unit_6dof, &est_q, 5, 0, delta_t);
+        fusionQ_6dof(&imu_unit_6dof, &est_q, 5, 0, delta_t);
       Quat2Euler(&est_q, &est_e);
 
       /* update message */
@@ -132,30 +132,30 @@ static void att_est_q_task(void const *argument)
       if((msg_quat.msg_st & 0x01) && (msg_quat.msg_rt != 0)) {
         if((time_now - msg_quat_ts) >= 1000 / msg_quat.msg_rt) {
           msg_quat_ts = time_now;
-          mesg_send_mesg((const void *)&est_q, TYPE_QUAT_Info_Resp, sizeof(Quat_T));
+          mesg_send_mesg((const void *)&est_q, TYPE_QUAT_Info_Resp, sizeof(quat_t));
         }
       }
     }
   }
 }
 
-void att_est_get_euler(Euler_T *e)
+void att_est_get_euler(euler_t *e)
 {
   *e = est_e;
 }
 
 #define GYR_PEACE_THRESHOLD                      (0.5f) /* unit: dps */
 
-static _3AxisUnit last_gyr = {0};
-static void imu_peace_check(_3AxisUnit *pgyr)
+static f3d_t last_gyr = {0};
+static void imu_peace_check(f3d_t *pgyr)
 {
   static uint32_t peace_ts = 0;
   static uint32_t peace_tn = 0;
 
   peace_tn = xTaskGetTickCount();
-  if((fabs(pgyr->X - last_gyr.X) < GYR_PEACE_THRESHOLD) &&
-     (fabs(pgyr->Y - last_gyr.Y) < GYR_PEACE_THRESHOLD) &&
-     (fabs(pgyr->Z - last_gyr.Z) < GYR_PEACE_THRESHOLD)) {
+  if((fabs(pgyr->x - last_gyr.x) < GYR_PEACE_THRESHOLD) &&
+     (fabs(pgyr->y - last_gyr.y) < GYR_PEACE_THRESHOLD) &&
+     (fabs(pgyr->z - last_gyr.z) < GYR_PEACE_THRESHOLD)) {
     if(peace_tn - peace_ts > configTICK_RATE_HZ) { // keep 1s.
       if(gyr_peace_flag == 0) {
         gyr_peace_flag = 1;
@@ -168,9 +168,9 @@ static void imu_peace_check(_3AxisUnit *pgyr)
   }
 
   /* update the last data */
-  last_gyr.X = pgyr->X;
-  last_gyr.Y = pgyr->Y;
-  last_gyr.Z = pgyr->Z;
+  last_gyr.x = pgyr->x;
+  last_gyr.y = pgyr->y;
+  last_gyr.z = pgyr->z;
 }
 
 static osThreadId sins_task_id = NULL;

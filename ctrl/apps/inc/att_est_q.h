@@ -11,7 +11,7 @@
 #include "drivers.h"
 
 int sins_main(int argc, char **argv);
-void att_est_get_euler(Euler_T *e);
+void att_est_get_euler(euler_t *e);
 
 #endif /* APPS_INC_ATT_EST_Q_H_ */
 

@@ -9,6 +9,7 @@
 #define BSP_INC_IST83XX_H_
 
 #include "drivers.h"
+#include "algorithm.h"
 
 typedef status_t (*i2c_hw_init)(void);
 typedef status_t (*i2c_hw_ready)(void);
@@ -27,7 +28,7 @@ typedef struct {
 
 status_t ist83xx_init(ist83xx_dev_t *dev);
 status_t ist83xx_read_id(ist83xx_dev_t *dev, uint8_t *id);
-status_t ist83xx_read_data(ist83xx_dev_t *dev, _3AxisRaw *raw);
+status_t ist83xx_read_data(ist83xx_dev_t *dev, i16_3d_t *raw);
 status_t ist83xx_check_status(ist83xx_dev_t *dev, uint8_t *result);
 
 #endif /* BSP_INC_IST83XX_H_ */

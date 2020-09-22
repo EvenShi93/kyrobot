@@ -172,16 +172,16 @@ status_t ist83xx_check_status(ist83xx_dev_t *dev, uint8_t *result)
   return status_ok;
 }
 
-status_t ist83xx_read_data(ist83xx_dev_t *dev, _3AxisRaw *raw)
+status_t ist83xx_read_data(ist83xx_dev_t *dev, i16_3d_t *raw)
 {
   uint8_t val;
-  raw->X = dev->org_data[0] * dev->crossaxis_inv[0][0] +
+  raw->x = dev->org_data[0] * dev->crossaxis_inv[0][0] +
            dev->org_data[1] * dev->crossaxis_inv[1][0] +
            dev->org_data[2] * dev->crossaxis_inv[2][0];
-  raw->Y = dev->org_data[0] * dev->crossaxis_inv[0][1] +
+  raw->y = dev->org_data[0] * dev->crossaxis_inv[0][1] +
            dev->org_data[1] * dev->crossaxis_inv[1][1] +
            dev->org_data[2] * dev->crossaxis_inv[2][1];
-  raw->Z = dev->org_data[0] * dev->crossaxis_inv[0][2] +
+  raw->z = dev->org_data[0] * dev->crossaxis_inv[0][2] +
            dev->org_data[1] * dev->crossaxis_inv[1][2] +
            dev->org_data[2] * dev->crossaxis_inv[2][2];
   /* single measurement mode */

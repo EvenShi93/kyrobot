@@ -31,7 +31,7 @@ static struct ElipCalibData {
 
 __PACK_BEGIN typedef struct {
   uint8_t id;
-  _3AxisRaw raw;
+  i16_3d_t raw;
 } __PACK_END MagRawDef;
 
 __PACK_BEGIN typedef struct {
@@ -108,9 +108,9 @@ void magnetics_task(void const *argument)
     for(int i = 0; i < COMPASS_SENSOR_NUMBER; i ++) {
       ist83xx_read_data(&ist_dev[i], &(ist_raw[i].raw));
       if(mag_calibrated) {
-        ist_val[i].X = (ist_raw[i].raw.X + calib_data[i].offX) * calib_data[i].sclX;
-        ist_val[i].Y = (ist_raw[i].raw.Y + calib_data[i].offY) * calib_data[i].sclY;
-        ist_val[i].Z = (ist_raw[i].raw.Z + calib_data[i].offZ) * calib_data[i].sclZ;
+        ist_val[i].X = (ist_raw[i].raw.x + calib_data[i].offX) * calib_data[i].sclX;
+        ist_val[i].Y = (ist_raw[i].raw.y + calib_data[i].offY) * calib_data[i].sclY;
+        ist_val[i].Z = (ist_raw[i].raw.z + calib_data[i].offZ) * calib_data[i].sclZ;
         if(ist_val[i].X != 0 && ist_val[i].Y != 0 && ist_val[i].Z != 0)
           NormalizeVector(&ist_val[i]);
       }

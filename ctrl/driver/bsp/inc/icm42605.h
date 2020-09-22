@@ -9,6 +9,7 @@
 #define DRIVER_BSP_INC_ICM42605_H_
 
 #include "drivers.h"
+#include "algorithm.h"
 
 #if FREERTOS_ENABLED
 #define imu_delay                                osDelay
@@ -309,10 +310,10 @@
 #define REG_OFFSET_USER8                         0x7F
 
 status_t icm42605_init(void);
-status_t icm42605_selftest(IMU_RAW_6DOF *imu_raw, uint8_t *result);
-status_t icm42605_read(IMU_RAW_6DOF *raw, IMU_UNIT_6DOF *unit, uint32_t timeout);
+status_t icm42605_selftest(imu_6dof_r *imu_raw, uint8_t *result);
+status_t icm42605_read(imu_6dof_r *raw, imu_6dof_u *unit, uint32_t timeout);
 
-status_t icm42605_gyr_offset(_3AxisUnit *gyr_off);
+status_t icm42605_gyr_offset(f3d_t *gyr_off);
 
 #endif /* DRIVER_BSP_INC_ICM42605_H_ */
 

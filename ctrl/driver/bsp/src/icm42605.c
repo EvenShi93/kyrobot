@@ -219,7 +219,7 @@ status_t icm42605_init(void)
   return status_ok;
 }
 
-status_t icm42605_read(IMU_RAW_6DOF *raw, IMU_UNIT_6DOF *unit, uint32_t timeout)
+status_t icm42605_read(imu_6dof_r *raw, imu_6dof_u *unit, uint32_t timeout)
 {
 #if FREERTOS_ENABLED
   if(osSemaphoreWait(imu_semaphore , timeout) == osOK) {
@@ -238,13 +238,13 @@ status_t icm42605_read(IMU_RAW_6DOF *raw, IMU_UNIT_6DOF *unit, uint32_t timeout)
 #endif /* FREERTOS_ENABLED */
 
     if(raw != NULL) {
-      raw->Acc.X = *((int16_t *)&(imu_rx_buffer[2]));
-      raw->Acc.Y = *((int16_t *)&(imu_rx_buffer[4]));
-      raw->Acc.Z = *((int16_t *)&(imu_rx_buffer[6]));
+      raw->Acc.x = *((int16_t *)&(imu_rx_buffer[2]));
+      raw->Acc.y = *((int16_t *)&(imu_rx_buffer[4]));
+      raw->Acc.z = *((int16_t *)&(imu_rx_buffer[6]));
 
-      raw->Gyr.X = *((int16_t *)&(imu_rx_buffer[8]));
-      raw->Gyr.Y = *((int16_t *)&(imu_rx_buffer[10]));
-      raw->Gyr.Z = *((int16_t *)&(imu_rx_buffer[12]));
+      raw->Gyr.x = *((int16_t *)&(imu_rx_buffer[8]));
+      raw->Gyr.y = *((int16_t *)&(imu_rx_buffer[10]));
+      raw->Gyr.z = *((int16_t *)&(imu_rx_buffer[12]));
 
       raw->Temp = (int8_t)imu_rx_buffer[14];
       raw->TS = *((uint16_t *)&(imu_rx_buffer[15]));
@@ -254,13 +254,13 @@ status_t icm42605_read(IMU_RAW_6DOF *raw, IMU_UNIT_6DOF *unit, uint32_t timeout)
     imuif_txrx_bytes_dma(imu_tx_buffer, imu_rx_buffer, 16 +1);
 
     if(unit != NULL && raw != NULL) {
-      unit->Acc.X = raw->Acc.X * 0.002392578125f;
-      unit->Acc.Y = raw->Acc.Y * 0.002392578125f;
-      unit->Acc.Z = raw->Acc.Z * 0.002392578125f;
+      unit->Acc.x = raw->Acc.x * 0.002392578125f;
+      unit->Acc.y = raw->Acc.y * 0.002392578125f;
+      unit->Acc.z = raw->Acc.z * 0.002392578125f;
 
-      unit->Gyr.X = raw->Gyr.X * 0.06103515625f;
-      unit->Gyr.Y = raw->Gyr.Y * 0.06103515625f;
-      unit->Gyr.Z = raw->Gyr.Z * 0.06103515625f;
+      unit->Gyr.x = raw->Gyr.x * 0.06103515625f;
+      unit->Gyr.y = raw->Gyr.y * 0.06103515625f;
+      unit->Gyr.z = raw->Gyr.z * 0.06103515625f;
 
       unit->Temp = raw->Temp / 2.07f + 25.0f;
       unit->TS = raw->TS;
@@ -272,7 +272,7 @@ status_t icm42605_read(IMU_RAW_6DOF *raw, IMU_UNIT_6DOF *unit, uint32_t timeout)
   return status_timeout;
 }
 
-status_t icm42605_selftest(IMU_RAW_6DOF *imu_raw, uint8_t *result)
+status_t icm42605_selftest(imu_6dof_r *imu_raw, uint8_t *result)
 {
   uint32_t st_ts = 0, st_tn = 0;
 
@@ -353,15 +353,15 @@ status_t icm42605_selftest(IMU_RAW_6DOF *imu_raw, uint8_t *result)
 
   do {
     if(icm42605_read(imu_raw, NULL, 10) == status_ok) {
-      if((imu_raw->Gyr.X != -32768) && (imu_raw->Gyr.Y != -32768) && (imu_raw->Gyr.Z != -32768) && \
-         (imu_raw->Acc.X != -32768) && (imu_raw->Acc.Y != -32768) && (imu_raw->Acc.Z != -32768)) {
+      if((imu_raw->Gyr.x != -32768) && (imu_raw->Gyr.y != -32768) && (imu_raw->Gyr.z != -32768) && \
+         (imu_raw->Acc.x != -32768) && (imu_raw->Acc.y != -32768) && (imu_raw->Acc.z != -32768)) {
         st_samples ++;
-        st_vals->st_avg_gyr[0] += imu_raw->Gyr.X;
-        st_vals->st_avg_gyr[1] += imu_raw->Gyr.Y;
-        st_vals->st_avg_gyr[2] += imu_raw->Gyr.Z;
-        st_vals->st_avg_acc[0] += imu_raw->Acc.X;
-        st_vals->st_avg_acc[1] += imu_raw->Acc.Y;
-        st_vals->st_avg_acc[2] += imu_raw->Acc.Z;
+        st_vals->st_avg_gyr[0] += imu_raw->Gyr.x;
+        st_vals->st_avg_gyr[1] += imu_raw->Gyr.y;
+        st_vals->st_avg_gyr[2] += imu_raw->Gyr.z;
+        st_vals->st_avg_acc[0] += imu_raw->Acc.x;
+        st_vals->st_avg_acc[1] += imu_raw->Acc.y;
+        st_vals->st_avg_acc[2] += imu_raw->Acc.z;
       }
     }
     st_tn = imu_ticks();
@@ -411,15 +411,15 @@ status_t icm42605_selftest(IMU_RAW_6DOF *imu_raw, uint8_t *result)
 
   do {
     if(icm42605_read(imu_raw, NULL, 10) == status_ok) {
-      if((imu_raw->Gyr.X != -32768) && (imu_raw->Gyr.Y != -32768) && (imu_raw->Gyr.Z != -32768) && \
-         (imu_raw->Acc.X != -32768) && (imu_raw->Acc.Y != -32768) && (imu_raw->Acc.Z != -32768)) {
+      if((imu_raw->Gyr.x != -32768) && (imu_raw->Gyr.y != -32768) && (imu_raw->Gyr.z != -32768) && \
+         (imu_raw->Acc.x != -32768) && (imu_raw->Acc.y != -32768) && (imu_raw->Acc.z != -32768)) {
         st_samples ++;
-        st_vals->st_avg_gyr_st[0] += imu_raw->Gyr.X;
-        st_vals->st_avg_gyr_st[1] += imu_raw->Gyr.Y;
-        st_vals->st_avg_gyr_st[2] += imu_raw->Gyr.Z;
-        st_vals->st_avg_acc_st[0] += imu_raw->Acc.X;
-        st_vals->st_avg_acc_st[1] += imu_raw->Acc.Y;
-        st_vals->st_avg_acc_st[2] += imu_raw->Acc.Z;
+        st_vals->st_avg_gyr_st[0] += imu_raw->Gyr.x;
+        st_vals->st_avg_gyr_st[1] += imu_raw->Gyr.y;
+        st_vals->st_avg_gyr_st[2] += imu_raw->Gyr.z;
+        st_vals->st_avg_acc_st[0] += imu_raw->Acc.x;
+        st_vals->st_avg_acc_st[1] += imu_raw->Acc.y;
+        st_vals->st_avg_acc_st[2] += imu_raw->Acc.z;
       }
     }
     st_tn = imu_ticks();
@@ -687,7 +687,7 @@ static status_t set_user_offset_regs(int *accel_st_bias, int *gyro_st_bias)
   return status_ok;
 }
 
-status_t icm42605_gyr_offset(_3AxisUnit *gyr_off)
+status_t icm42605_gyr_offset(f3d_t *gyr_off)
 {
   int offx = 0, offy = 0, offz = 0, org = 0;
 
@@ -700,19 +700,19 @@ status_t icm42605_gyr_offset(_3AxisUnit *gyr_off)
   /* GYRO_X_OFFSET */
   org = (((uint16_t)imu_rx_buffer[2] & 0x07) << 8) | imu_rx_buffer[1];
   if(imu_rx_buffer[2] & 0x08) org = -org;
-  offx = org - (int)gyr_off->X / IMU_GYR_OFFSET_RESOLUTION;
+  offx = org - (int)gyr_off->x / IMU_GYR_OFFSET_RESOLUTION;
   if(offx < 0) offx |= 0x08000;
 
   /* GYRO_Y_OFFSET */
   org = ((((uint16_t)imu_rx_buffer[2] & 0x70) >> 4) << 8) | imu_rx_buffer[3];
   if(imu_rx_buffer[2] & 0x80) org = -org;
-  offy = org - (int)gyr_off->Y / IMU_GYR_OFFSET_RESOLUTION;
+  offy = org - (int)gyr_off->y / IMU_GYR_OFFSET_RESOLUTION;
   if(offy < 0) offy |= 0x08000;
 
   /* GYRO_Z_OFFSET */
   org = (((uint16_t)imu_rx_buffer[5] & 0x07) << 8) | imu_rx_buffer[4];
   if(imu_rx_buffer[5] & 0x08) org = -org;
-  offz = org - (int)gyr_off->Z / IMU_GYR_OFFSET_RESOLUTION;
+  offz = org - (int)gyr_off->z / IMU_GYR_OFFSET_RESOLUTION;
   if(offz < 0) offz |= 0x08000;
 
   /* save ACCEL_X_OFFUSER[11:8] */
