@@ -3,8 +3,6 @@
 
 #include "stm32f7xx_hal.h"
 
-#include "SysDataTypes.h"
-
 #include "cmsis_os.h"
 
 #include "sys_def.h"
