@@ -2,7 +2,7 @@
 *****************************************************************************
 **  File        : LinkerScript.ld.S
 **  Author      : kyChu <kyChu@qq.com>
-**
+**  Date        : 2020/9/28
 **  Abstract    : Linker script for STM32F732RETx Device from STM32F7 series
 **                FLASH: 512KBytes mapped at address 0x08000000
 **                SRAM:  256KBytes mapped at address 0x20000000
